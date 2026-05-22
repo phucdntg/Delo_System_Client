@@ -11,6 +11,8 @@ import {
   ORG_ID,
   REFRESH_TOKEN,
 } from "../../shared/constants/systemConstants";
+import { allRTKServices } from "../services/allRTKServices";
+import { store } from "../store";
 
 const AuthContext = createContext(null);
 
@@ -106,6 +108,12 @@ export function AuthProvider({ children }) {
   const saveSelectedOrg = useCallback((org) => {
     setSelectedOrg(org?.id);
     localStorage.setItem(ORG_ID, org?.id || "");
+
+    Object.values(allRTKServices).forEach((service) => {
+      store.dispatch(
+        service.util.invalidateTags([{ type: "Branch", id: "LIST" }]),
+      );
+    });
   }, []);
 
   const value = {

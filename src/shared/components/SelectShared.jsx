@@ -27,7 +27,7 @@ const SelectShared = ({
   const optionsRef = useRef([]);
   const loadingRef = useRef(false);
   const initializedRef = useRef(false);
-  const debounceRef = useRef(null); // ← ref giữ timeout id
+  const debounceRef = useRef(null);
 
   useEffect(() => {
     if (!defaultId || !fetchItemById) {
@@ -85,7 +85,7 @@ const SelectShared = ({
   }, [resetKey]);
 
   useEffect(() => {
-    const seed = defaultValueItem ? [defaultValueItem] : [];
+    const seed = !query && defaultValueItem ? [defaultValueItem] : [];
     optionsRef.current = seed;
     pageRef.current = 1;
     hasMoreRef.current = true;
@@ -126,14 +126,16 @@ const SelectShared = ({
         filterOption={false}
         value={labelReady ? value : undefined}
         suffixIcon={!labelReady ? null : undefined}
-        onSearch={searchable ? handleSearch : undefined} // ← dùng handleSearch
+        onSearch={searchable ? handleSearch : undefined}
         onPopupScroll={onPopupScroll}
         onOpenChange={(open) => {
           if (open && !initializedRef.current) {
             load(1, query, optionsRef.current);
           }
         }}
-        onChange={(val, option) => onChange?.(option?.rawData)}
+        onChange={(val, option) => {
+          onChange?.(option?.rawData);
+        }}
         notFoundContent={loading ? <Spin size="small" /> : "Không có dữ liệu"}
         options={options.map((item) => ({
           label: getLabel(item),

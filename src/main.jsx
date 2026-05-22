@@ -19,11 +19,6 @@ createRoot(document.getElementById("root")).render(
               token: {
                 colorPrimary: "#5865f2",
               },
-              components: {
-                Button: {
-                  colorBgContainer: "#111f43",
-                },
-              },
             }}
           >
             <SidebarProvider>

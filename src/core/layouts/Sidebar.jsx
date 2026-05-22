@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PiBuildingApartment } from "react-icons/pi";
+import { PiBuilding, PiBuildingApartment } from "react-icons/pi";
 import { SlOrganization } from "react-icons/sl";
 import { Link, NavLink } from "react-router";
 import LogoDefault from "../../assets/images/logo-default.png";
@@ -17,6 +17,11 @@ const MENU_ITEMS = [
     label: "Quản lý chi nhánh",
     path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.BRANCH_MANAGEMENT}`,
     icon: <SlOrganization />,
+  },
+  {
+    label: "Quản lý khu vực",
+    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.AREA_MANAGEMENT}`,
+    icon: <PiBuilding />,
   },
 ];
 
