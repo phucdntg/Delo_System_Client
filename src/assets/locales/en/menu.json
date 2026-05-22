@@ -1,0 +1,20 @@
+﻿{
+  "area": "Area Management",
+  "branch": "Branch Management",
+  "counter": "Counter Management",
+  "dashboard": "Dashboard",
+  "device": "Device Management",
+  "org": "Organization Management",
+  "permission": "Permission Management",
+  "public_service_management": "Public Service Management",
+  "report_queue": "Queue Report",
+  "report_satisfaction": "Satisfaction Report",
+  "role": "Role Management",
+  "satisfaction": "Satisfaction Management",
+  "service": "Service Management",
+  "setting": "System Setting",
+  "config_ui": "Config UI",
+  "user": "User Management",
+  "shift": "Shift Management",
+  "logout": "Logout"
+}

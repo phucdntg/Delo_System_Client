@@ -1,0 +1,96 @@
+{
+  "page": {
+    "searchPlaceholder": "Tìm kiếm theo tên, email",
+    "roles": {
+      "superadmin": "Quản trị hệ thống",
+      "supadmin": "Quản trị hệ thống",
+      "admin": "Quản trị viên",
+      "supervisor": "Người giám sát",
+      "user": "Nhân viên"
+    },
+    "labels": {
+      "supadmin": "Supadmin",
+      "systemSuffix": " (Hệ thống)"
+    },
+    "messages": {
+      "deleteSuccess": "Xóa người dùng thành công!",
+      "deleteFailed": "Xóa người dùng thất bại!",
+      "createSuccess": "Thêm người dùng thành công!",
+      "createFailed": "Thêm người dùng thất bại!",
+      "updateSuccess": "Cập nhật người dùng thành công!",
+      "updateFailed": "Cập nhật người dùng thất bại!"
+    }
+  },
+  "table": {
+    "name": "Tên",
+    "email": "Email",
+    "username": "Tên đăng nhập",
+    "role": "Vai trò",
+    "organization": "Tổ chức",
+    "branch": "Chi nhánh",
+    "status": "Trạng thái",
+    "actions": "Hành động",
+    "statuses": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngưng hoạt động",
+      "quit": "Đã nghỉ"
+    }
+  },
+  "form": {
+    "username": "Tên đăng nhập",
+    "usernamePlaceholder": "Nhập tên đăng nhập",
+    "name": "Tên",
+    "namePlaceholder": "Nhập tên người dùng",
+    "email": "Email",
+    "emailPlaceholder": "Nhập địa chỉ email",
+    "password": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "role": "Vai trò",
+    "rolePlaceholder": "Chọn vai trò",
+    "organization": "Tổ chức",
+    "organizationPlaceholder": "Chọn tổ chức",
+    "branch": "Chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "area": "Khu vực",
+    "areaPlaceholder": "Chọn khu vực",
+    "status": "Trạng thái",
+    "statusPlaceholder": "Chọn trạng thái",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+    "sections": {
+      "basicInfo": "Thông tin cơ bản",
+      "permissions": "Phân quyền"
+    },
+    "errors": {
+      "nameRequired": "Vui lòng nhập họ và tên",
+      "usernameRequired": "Vui lòng nhập tên đăng nhập",
+      "usernameFormat": "Tên đăng nhập chỉ gồm chữ và số, không dấu, không khoảng trắng, không ký tự đặc biệt",
+      "emailRequired": "Vui lòng nhập email",
+      "passwordRequired": "Vui lòng nhập mật khẩu",
+      "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+      "roleRequired": "Vui lòng chọn chức vụ",
+      "organizationRequired": "Vui lòng chọn tổ chức",
+      "branchRequired": "Vui lòng chọn chi nhánh",
+      "areaRequired": "Vui lòng chọn khu vực",
+      "confirmPasswordRequired": "Vui lòng nhập lại mật khẩu",
+      "confirmPasswordNotMatch": "Mật khẩu nhập lại không khớp"
+    }
+  },
+  "stats": {
+    "roles": {
+      "supadmin": "Quản trị hệ thống",
+      "admin": "Quản trị viên",
+      "supervisor": "Người giám sát",
+      "user": "Nhân viên"
+    },
+    "active": "Đang hoạt động",
+    "inactiveQuit": "Đang không hoạt động",
+    "employees": "Nhân viên"
+  },
+  "modal": {
+    "createTitle": "Thêm mới",
+    "editTitle": "Cập nhật",
+    "submitSuccess": "Lưu người dùng thành công",
+    "submitFailed": "Lưu người dùng thất bại"
+  }
+}

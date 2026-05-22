@@ -1,0 +1,37 @@
+{
+  "labels": {
+    "name": "Shift name",
+    "branch": "Branch",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "description": "Description"
+  },
+  "placeholder": {
+    "name": "Enter shift name",
+    "startTime": "Select start time",
+    "endTime": "Select end time",
+    "description": "Enter description"
+  },
+  "validation": {
+    "nameRequired": "Please enter shift name",
+    "branchRequired": "Please select branch",
+    "startTimeRequired": "Please select start time",
+    "endTimeRequired": "Please select end time",
+    "endTimeGreaterThanStartTime": "End time must be greater than start time"
+  },
+  "table": {
+    "name": "Shift name",
+    "branch": "Branch",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "actions": "Actions"
+  },
+  "message": {
+    "createSuccess": "Create shift successfully",
+    "updateSuccess": "Update shift successfully",
+    "deleteSuccess": "Delete shift successfully"
+  },
+  "search": {
+    "placeholder": "Search by shift name..."
+  }
+}

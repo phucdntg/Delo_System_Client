@@ -1,0 +1,10 @@
+{
+  "title": "now serving customer number",
+  "nextNumber": "next number",
+  "thankMessage": "We sincerely appreciate your trust",
+  "counterNumberLabel": "Counter",
+  "closedCounterTitle": "Counter closed",
+  "closedCounterMessage": "Please come back later",
+  "closedCounterHint": "Please find another counter for assistance",
+  "staffLabel": "Reception staff"
+}

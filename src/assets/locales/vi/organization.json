@@ -1,0 +1,33 @@
+﻿{
+  "search": {
+    "placeholder": "Tìm kiếm tổ chức"
+  },
+  "table": {
+    "id": "ID",
+    "name": "Tên tổ chức",
+    "subdomain": "Tên miền phụ",
+    "isActive": "Trạng thái hoạt động",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "action": "Hành động"
+  },
+  "modal": {
+    "createTitle": "Tạo tổ chức",
+    "updateTitle": "Cập nhật tổ chức"
+  },
+  "form": {
+    "name": "Tên",
+    "namePlaceholder": "Nhập tên tổ chức",
+    "nameError": "Vui lòng nhập tên tổ chức",
+    "subdomain": "Tên miền phụ",
+    "subdomainPlaceholder": "Nhập tên miền phụ",
+    "subdomainError": "Vui lòng nhập tên miền phụ",
+    "isActive": "Trạng thái hoạt động"
+  },
+  "message": {
+    "createSuccess": "Tổ chức đã được tạo thành công",
+    "updateSuccess": "Tổ chức đã được cập nhật thành công",
+    "createFailed": "Tạo tổ chức thất bại",
+    "updateFailed": "Cập nhật tổ chức thất bại"
+  }
+}

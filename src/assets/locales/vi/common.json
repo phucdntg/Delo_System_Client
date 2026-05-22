@@ -1,0 +1,69 @@
+﻿{
+  "button": {
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "create": "Thêm mới",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "update": "Cập nhật",
+    "reset": "Đặt lại",
+    "ok": "Đồng ý"
+  },
+  "confirm": {
+    "delete": "Bạn có chắc chắn muốn xóa?"
+  },
+  "message": {
+    "deleteSuccess": "Xóa thành công",
+    "deleteFailed": "Xóa thất bại",
+    "saveSuccess": "Lưu thành công",
+    "saveFailed": "Lưu thất bại"
+  },
+  "rangePickerPlaceholder": {
+    "endDate": "Ngày kết thúc",
+    "startDate": "Ngày bắt đầu"
+  },
+  "status": {
+    "statusLabel": "Trạng thái",
+    "total": "Tổng",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "pagination": {
+    "page": "trang"
+  },
+  "chooseOrgRequired": "Vui lòng chọn tổ chức",
+  "table": {
+    "actions": "Hành động",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "noData": "Không có dữ liệu"
+  },
+  "label": {
+    "user": "Người dùng",
+    "superadmin": "Quản trị hệ thống",
+    "image": "Ảnh"
+  },
+  "placeholder": {
+    "selectOrganization": "Chọn tổ chức",
+    "selectBranch": "-- Chọn chi nhánh --",
+    "selectArea": "-- Chọn khu vực --",
+    "selectStatus": "-- Chọn trạng thái --",
+    "selectService": "-- Chọn dịch vụ --"
+  },
+  "forbidden": {
+    "title": "Quyền bị từ chối",
+    "description": "Bạn không có quyền vào trang này.",
+    "contact": "Vui lòng liên hệ quản trị viên hệ thống của bạn",
+    "backBtn": "Quay lại",
+    "navigateBtn": "Đi tới trang có thể truy cập"
+  },
+  "deviceInvalid": {
+    "title": "Thiết bị không hợp lệ",
+    "description": "Không thể tìm thấy thông tin thiết bị với ID đã cung cấp. Vui lòng kiểm tra lại hoặc liên hệ với bộ phận hỗ trợ."
+  },
+  "uploadImage": {
+    "maxSizeError": "Ảnh không được vượt quá {{maxSizeMB}}MB",
+    "deleteImage": "Xóa ảnh"
+  }
+}

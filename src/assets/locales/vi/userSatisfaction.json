@@ -1,0 +1,51 @@
+{
+  "feedbackRequest": "Chúng tôi rất mong nhận được ý kiến từ bạn",
+  "label": {
+    "service": "Dịch vụ",
+    "staff": "Nhân viên",
+    "reviewType": "Loại:",
+    "reviewRating": "Đánh giá:"
+  },
+  "placeholder": {
+    "selectService": "Chọn dịch vụ",
+    "enterStaffName": "Nhập tên nhân viên"
+  },
+  "button": {
+    "submitFeedback": "Đánh giá",
+    "close": "Đóng",
+    "cancel": "Hủy",
+    "confirmSend": "Xác nhận gửi"
+  },
+  "rating": {
+    "verySatisfied": "Rất hài lòng",
+    "satisfied": "Hài lòng",
+    "neutral": "Bình thường",
+    "dissatisfied": "Không hài lòng"
+  },
+  "message": {
+    "feedbackReasonRequest": "Quý khách có thể cho biết thêm lý do hoặc mục cần cải thiện?",
+    "missingService": "Vui lòng chọn dịch vụ trước khi đánh giá",
+    "missingStaff": "Vui lòng chọn nhân viên trước khi đánh giá",
+    "missingReason": "Vui lòng chọn lý do đánh giá",
+    "sendFailed": "Gửi đánh giá thất bại. Vui lòng thử lại sau!",
+    "confirmSendReview": "Bạn có chắc chắn muốn gửi đánh giá này không?",
+    "thankYou": "Đánh giá của Quý khách rất quan trọng đối với chúng tôi"
+  },
+  "deviceInvalid": {
+    "title": "ID Thiết bị không hợp lệ",
+    "description": "Không thể tìm thấy thông tin thiết bị với ID đã cung cấp. Vui lòng kiểm tra lại hoặc liên hệ với bộ phận hỗ trợ."
+  },
+  "modal": {
+    "missingInfoTitle": "Thiếu thông tin",
+    "confirmSendReviewTitle": "Xác nhận gửi đánh giá",
+    "thankYouTitle": "Cảm ơn Quý khách"
+  },
+  "preview": {
+    "noCards": "Chưa có dịch vụ hoặc quầy nào.",
+    "noFooterImage": "Chưa có hình ảnh footer"
+  },
+  "serviceCard": {
+    "waitingLabel": "Số đang chờ (Tiếp theo)",
+    "totalWaiting": "Tổng số đang chờ"
+  }
+}

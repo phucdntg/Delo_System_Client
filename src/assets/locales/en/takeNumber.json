@@ -1,0 +1,34 @@
+{
+  "title": "automatic queue management system",
+  "loadingText": "Getting your number, please wait a moment",
+  "service": "Service",
+  "queueNumber": "Your queue number",
+  "triageArea": "Triage area",
+  "triageCounter": "TRIAGE COUNTER",
+  "triageCounterName": "SERVICE TRIAGE COUNTER",
+  "waitMessage": "Please wait until your number is called",
+  "wishHealth": "Wishing you good health",
+  "patientInstructions": "Please proceed to the counter promptly",
+  "serviceClosed": "This service currently has no available counter",
+  "serviceSuspended": "This service is temporarily suspended",
+  "checkStatusError": "Unable to check counter status",
+  "suspended": "Suspended",
+  "panel": {
+    "title": "QUEUE NUMBER SYSTEM",
+    "subtitle": "Please choose your examination type:",
+    "serviceTypes": {
+      "bhyt": {
+        "label": "Health Insurance Exam",
+        "sub": "(Health Insurance)"
+      },
+      "thuong": {
+        "label": "General Exam",
+        "sub": ""
+      },
+      "dichvu": {
+        "label": "Service Exam",
+        "sub": ""
+      }
+    }
+  }
+}

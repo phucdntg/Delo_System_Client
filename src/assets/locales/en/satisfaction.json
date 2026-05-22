@@ -1,0 +1,52 @@
+{
+  "tabs": {
+    "service": "Service evaluation",
+    "employee": "Employee evaluation"
+  },
+  "search": {
+    "serviceHint": "Search service evaluation content",
+    "employeeHint": "Search employee evaluation content"
+  },
+  "table": {
+    "content": "Content",
+    "service": "Service",
+    "area": "Area",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "alert": {
+    "message": "This evaluation content will be shown to collect feedback when customers choose Neutral or Dissatisfied."
+  },
+  "modal": {
+    "createServiceTitle": "Create service evaluation content",
+    "editServiceTitle": "Update service evaluation content",
+    "createEmployeeTitle": "Create employee evaluation content",
+    "editEmployeeTitle": "Update employee evaluation content"
+  },
+  "form": {
+    "content": "Evaluation content",
+    "contentPlaceholder": "Evaluation content",
+    "branch": "Branch",
+    "service": "Service",
+    "area": "Area",
+    "status": "Status",
+    "validation": {
+      "contentRequired": "Please enter evaluation content",
+      "branchRequired": "Please select a branch",
+      "serviceRequired": "Please select a service",
+      "areaRequired": "Please select an area"
+    }
+  },
+  "message": {
+    "createServiceSuccess": "Service evaluation content created successfully",
+    "createServiceFailed": "Failed to create service evaluation content",
+    "createEmployeeSuccess": "Employee evaluation content created successfully",
+    "createEmployeeFailed": "Failed to create employee evaluation content",
+    "updateServiceSuccess": "Service evaluation content updated successfully",
+    "updateServiceFailed": "Failed to update service evaluation content",
+    "updateEmployeeSuccess": "Employee evaluation content updated successfully",
+    "updateEmployeeFailed": "Failed to update employee evaluation content",
+    "deleteSuccess": "Content deleted successfully",
+    "deleteFailed": "Failed to delete content"
+  }
+}

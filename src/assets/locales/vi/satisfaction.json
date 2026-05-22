@@ -1,0 +1,52 @@
+{
+  "tabs": {
+    "service": "Đánh giá dịch vụ",
+    "employee": "Đánh giá nhân viên"
+  },
+  "search": {
+    "serviceHint": "Tìm nội dung đánh giá dịch vụ",
+    "employeeHint": "Tìm nội dung đánh giá nhân viên"
+  },
+  "table": {
+    "content": "Nội dung",
+    "service": "Dịch vụ",
+    "area": "Khu vực",
+    "status": "Trạng thái",
+    "actions": "Thao tác"
+  },
+  "alert": {
+    "message": "Nội dung đánh giá này sẽ hiển thị để thu thập phản hồi khi khách hàng chọn Bình thường hoặc Không hài lòng."
+  },
+  "modal": {
+    "createServiceTitle": "Tạo nội dung đánh giá dịch vụ",
+    "editServiceTitle": "Cập nhật nội dung đánh giá dịch vụ",
+    "createEmployeeTitle": "Tạo nội dung đánh giá nhân viên",
+    "editEmployeeTitle": "Cập nhật nội dung đánh giá nhân viên"
+  },
+  "form": {
+    "content": "Nội dung đánh giá",
+    "contentPlaceholder": "Nội dung đánh giá",
+    "branch": "Chi nhánh",
+    "service": "Dịch vụ",
+    "area": "Khu vực",
+    "status": "Trạng thái",
+    "validation": {
+      "contentRequired": "Vui lòng nhập nội dung đánh giá",
+      "branchRequired": "Vui lòng chọn chi nhánh",
+      "serviceRequired": "Vui lòng chọn dịch vụ",
+      "areaRequired": "Vui lòng chọn khu vực"
+    }
+  },
+  "message": {
+    "createServiceSuccess": "Tạo nội dung đánh giá dịch vụ thành công",
+    "createServiceFailed": "Tạo nội dung đánh giá dịch vụ thất bại",
+    "createEmployeeSuccess": "Tạo nội dung đánh giá nhân viên thành công",
+    "createEmployeeFailed": "Tạo nội dung đánh giá nhân viên thất bại",
+    "updateServiceSuccess": "Cập nhật nội dung đánh giá dịch vụ thành công",
+    "updateServiceFailed": "Cập nhật nội dung đánh giá dịch vụ thất bại",
+    "updateEmployeeSuccess": "Cập nhật nội dung đánh giá nhân viên thành công",
+    "updateEmployeeFailed": "Cập nhật nội dung đánh giá nhân viên thất bại",
+    "deleteSuccess": "Xóa nội dung thành công",
+    "deleteFailed": "Xóa nội dung thất bại"
+  }
+}

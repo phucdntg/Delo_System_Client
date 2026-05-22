@@ -1,0 +1,51 @@
+{
+  "feedbackRequest": "We would love to hear your feedback",
+  "label": {
+    "service": "Service",
+    "staff": "Staff",
+    "reviewType": "Type:",
+    "reviewRating": "Rating:"
+  },
+  "placeholder": {
+    "selectService": "Select service",
+    "enterStaffName": "Enter staff name"
+  },
+  "button": {
+    "submitFeedback": "Submit feedback",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirmSend": "Confirm & Send"
+  },
+  "rating": {
+    "verySatisfied": "Very satisfied",
+    "satisfied": "Satisfied",
+    "neutral": "Neutral",
+    "dissatisfied": "Dissatisfied"
+  },
+  "message": {
+    "feedbackReasonRequest": "Could you please share the reason or areas for improvement?",
+    "missingService": "Please select a service before submitting a review",
+    "missingStaff": "Please select a staff member before submitting a review",
+    "missingReason": "Please select a reason for the review",
+    "sendFailed": "Failed to send the review. Please try again later!",
+    "confirmSendReview": "Are you sure you want to submit this review?",
+    "thankYou": "Your feedback is very important to us"
+  },
+  "deviceInvalid": {
+    "title": "Invalid device ID",
+    "description": "Unable to find device information for the provided ID. Please check again or contact support."
+  },
+  "modal": {
+    "missingInfoTitle": "Missing information",
+    "confirmSendReviewTitle": "Confirm review submission",
+    "thankYouTitle": "Thank you!"
+  },
+  "preview": {
+    "noCards": "No services or counters configured yet.",
+    "noFooterImage": "No footer image configured"
+  },
+  "serviceCard": {
+    "waitingLabel": "Waiting numbers (Next)",
+    "totalWaiting": "Total waiting"
+  }
+}

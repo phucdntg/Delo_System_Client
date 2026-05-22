@@ -1,0 +1,140 @@
+{
+  "message": {
+    "deleteSuccess": "Xóa thiết bị thành công",
+    "deleteFailed": "Xóa thiết bị thất bại"
+  },
+  "table": {
+    "identifier": "Mã định danh",
+    "type": "Loại thiết bị",
+    "accessUrl": "URL truy cập",
+    "branch": "Chi nhánh",
+    "status": "Trạng thái",
+    "approvalStatus": "Tình trạng phê duyệt",
+    "searchHint": "Tìm kiếm theo mã định danh",
+    "na": "-- N/A --",
+    "copyUrl": "Sao chép URL",
+    "statusOnline": "Online",
+    "statusOffline": "Offline",
+    "activeOptions": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động"
+    },
+    "approvalStatuses": {
+      "waiting": "Chờ duyệt",
+      "approved": "Đã duyệt"
+    },
+    "placeholders": {
+      "selectBranch": "-- Chọn chi nhánh --",
+      "selectDeviceType": "-- Loại thiết bị --",
+      "selectActiveStatus": "-- Trạng thái hoạt động --",
+      "selectApprovalStatus": "-- Trạng thái phê duyệt --"
+    },
+    "message": {
+      "configNotAvailable": "Thiết bị này không có cấu hình hiển thị",
+      "copySuccess": "Đã sao chép URL thành công",
+      "copyFailed": "Không thể sao chép URL",
+      "onlyWaitingToApproved": "Chỉ được chuyển từ Chờ duyệt sang Đã duyệt",
+      "confirmStatusChangeTitle": "Xác nhận thay đổi trạng thái",
+      "confirmStatusChangeContent": "Bạn có chắc muốn đổi trạng thái của thiết bị \"{{identifier}}\" thành \"{{status}}\" không?",
+      "statusUpdateSuccess": "Cập nhật trạng thái thành công",
+      "statusUpdateFailed": "Cập nhật trạng thái thất bại"
+    }
+  },
+  "displayType": {
+    "kiosk_number": "Thiết bị bốc số",
+    "kiosk_review": "Thiết bị đánh giá",
+    "display_center": "Màn hình trung tâm",
+    "display_center_simple": "Màn hình trung tâm hiển thị theo quầy",
+    "display_counter": "Màn hình trước quầy",
+    "sound": "Thiết bị âm thanh"
+  },
+  "formModal": {
+    "createTitle": "Tạo thiết bị mới",
+    "editTitle": "Cập nhật thông tin thiết bị",
+    "createSuccess": "Tạo thiết bị thành công",
+    "createFailed": "Tạo thiết bị thất bại",
+    "updateSuccess": "Cập nhật thông tin thiết bị thành công",
+    "updateFailed": "Cập nhật thông tin thiết bị thất bại"
+  },
+  "form": {
+    "sections": {
+      "basicInfo": "Thông tin cơ bản",
+      "remoteAccessInfo": "Thông tin truy cập từ xa",
+      "detailInfo": "Thông tin chi tiết"
+    },
+    "labels": {
+      "branch": "Chi nhánh",
+      "area": "Khu vực",
+      "deviceType": "Loại thiết bị",
+      "isActive": "Hoạt động",
+      "ultraviewerId": "UltraView ID",
+      "ultraviewerPassword": "Mật khẩu",
+      "os": "Hệ điều hành",
+      "osVersion": "Phiên bản hệ điều hành",
+      "osRelease": "Bản phát hành",
+      "architecture": "Kiến trúc",
+      "hostname": "Hostname",
+      "ipAddress": "Địa chỉ IP",
+      "macAddress": "Địa chỉ MAC",
+      "model": "Model",
+      "processor": "Bộ xử lý",
+      "logicalCpus": "Số luồng",
+      "gpu": "GPU",
+      "totalDiskSpace": "Tổng dung lượng đĩa",
+      "cpuCores": "Số nhân CPU",
+      "cpuFrequency": "Xung nhịp",
+      "totalRam": "Tổng dung lượng RAM"
+    },
+    "placeholders": {
+      "selectBranch": "-- Chọn chi nhánh --",
+      "selectArea": "-- Chọn khu vực --",
+      "selectDeviceType": "-- Chọn loại thiết bị --",
+      "ultraviewerId": "Nhập ultraview id",
+      "password": "Nhập mật khẩu",
+      "os": "VD: Windows, Linux",
+      "osVersion": "VD: Windows 10",
+      "osRelease": "VD: 20H2",
+      "architecture": "VD: x64",
+      "hostname": "Nhập hostname",
+      "ipAddress": "VD: 192.168.1.1",
+      "macAddress": "VD: 00:1A:2B:3C:4D:5E",
+      "model": "Model thiết bị",
+      "processor": "VD: Intel Core I7",
+      "logicalCpus": "Nhập số luồng",
+      "gpu": "VD: NVIDIA GTX 4090",
+      "totalDiskSpace": "VD: 1T",
+      "cpuCores": "Nhập số nhân",
+      "cpuFrequency": "VD: 3.6Hz",
+      "totalRam": "VD: 32G"
+    },
+    "validation": {
+      "branchRequired": "Vui lòng chọn chi nhánh"
+    }
+  },
+  "displayConfig": {
+    "title": "Cấu hình hiển thị",
+    "message": {
+      "createRelationFailed": "Tạo liên kết thiết bị - dịch vụ thất bại",
+      "deleteRelationFailed": "Xóa liên kết thiết bị - dịch vụ thất bại",
+      "createConfigFailed": "Tạo cấu hình hiển thị thất bại",
+      "createCounterFailed": "Tạo cấu hình quầy hiển thị thất bại",
+      "deleteCounterFailed": "Xóa cấu hình quầy hiển thị thất bại",
+      "updateCounterIdFailed": "Cập nhật quầy cho thiết bị thất bại",
+      "saveSuccess": "Cấu hình hiển thị thiết bị thành công"
+    },
+    "validation": {
+      "selectCounter": "Vui lòng chọn quầy",
+      "selectService": "Vui lòng chọn dịch vụ",
+      "maxServices": "Vui lòng chọn tối đa {{max}} dịch vụ",
+      "maxCounters": "Vui lòng chọn tối đa {{max}} quầy"
+    },
+    "placeholder": {
+      "selectCounter": "-- Chọn quầy --",
+      "selectService": "-- Chọn dịch vụ --"
+    }
+  },
+  "maintenance": {
+    "altText": "Thiết bị đang bảo trì",
+    "title": "Thiết bị đang bảo trì"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "mời khách hàng có số thứ tự",
+  "nextNumber": "số tiếp theo",
+  "thankMessage": "Xin cảm ơn quý khách đã tin tưởng",
+  "counterNumberLabel": "Quầy số",
+  "closedCounterTitle": "Quầy đã đóng",
+  "closedCounterMessage": "Vui lòng quay lại sau",
+  "closedCounterHint": "Vui lòng tìm một quầy khác để được phục vụ",
+  "staffLabel": "Nhân viên tiếp nhận"
+}

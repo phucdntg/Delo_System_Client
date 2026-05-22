@@ -1,0 +1,74 @@
+{
+  "page": {
+    "table": {
+      "campaignName": "Campaign Name",
+      "branch": "Branch",
+      "content": "Content",
+      "area": "Display Area",
+      "actions": "Actions"
+    },
+    "message": {
+      "deleteSuccess": "Campaign deleted successfully",
+      "deleteFailed": "Failed to delete campaign",
+      "forceUpdateSuccess": "force update triggered successfully",
+      "forceUpdateFailed": "Failed to trigger force update"
+    },
+    "search": {
+      "hint": "Search by name"
+    }
+  },
+  "colorLogo": {
+    "title": "UI Configuration",
+    "unsaved": "Unsaved",
+    "updateUIBtn": "Force update",
+    "saveBtn": "Save",
+    "primaryColorLabel": "Primary Color",
+    "logoLabel": "Primary Logo"
+  },
+  "campaign": {
+    "modalTitle": "Campaign Information",
+    "form": {
+      "nameLabel": "Campaign Name",
+      "namePlaceholder": "Enter campaign name",
+      "nameRequired": "Please enter campaign name",
+      "branchLabel": "Branch",
+      "branchRequired": "Please select a branch"
+    },
+    "message": {
+      "updateSuccess": "Campaign updated successfully",
+      "createSuccess": "Campaign created successfully",
+      "updateFailed": "Failed to update campaign",
+      "createFailed": "Failed to create campaign",
+      "deleteAreaFailed": "Failed to remove area assignments, cannot change branch"
+    }
+  },
+  "assignArea": {
+    "unidentifiedCampaign": "Campaign not identified for assignment",
+    "noChanges": "No changes to save",
+    "partialSave": "Partially saved: added {{added}}/{{total}}, removed {{removed}}/{{totalRemoved}} areas",
+    "updateSuccess": "Area assignment updated successfully",
+    "updateFailed": "Failed to update area assignment",
+    "branchLabel": "Assigned Branch",
+    "noBranch": "No branch selected",
+    "areaLabel": "Assigned Areas",
+    "areaFallback": "Area #{{id}}",
+    "moreAreas": "+{{count}} areas"
+  },
+  "banner": {
+    "createTitle": "Add Content",
+    "editTitle": "Edit Content",
+    "contentLabel": "Content",
+    "contentRequired": "Please enter content",
+    "imageLabel": "Image",
+    "listTitle": "Content List",
+    "empty": "No content yet",
+    "previewMore": "+{{count}} more",
+    "updateSuccess": "Content updated successfully",
+    "createSuccess": "Content added successfully",
+    "error": "An error occurred"
+  },
+  "assignTabModal": {
+    "contentTab": "Content",
+    "areaTab": "Display Areas"
+  }
+}

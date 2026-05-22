@@ -1,0 +1,41 @@
+{
+  "table": {
+    "displayName": "Tên hiển thị",
+    "url": "Đường dẫn",
+    "type": "Loại",
+    "webType": "Trang web",
+    "youtubeType": "Youtube",
+    "color": "Màu sắc",
+    "branch": "Chi nhánh"
+  },
+  "modal": {
+    "createTitle": "Tạo dịch vụ công",
+    "editTitle": "Cập nhật dịch vụ công"
+  },
+  "form": {
+    "branch": "Chi nhánh",
+    "displayName": "Tên hiển thị",
+    "displayNamePlaceholder": "Dịch vụ công",
+    "url": "Đường dẫn",
+    "urlPlaceholder": "VD: http://dichvucong.xyz",
+    "type": "Loại",
+    "color": "Màu sắc",
+    "validation": {
+      "branchRequired": "Vui lòng chọn chi nhánh",
+      "displayNameRequired": "Vui lòng nhập tên hiển thị",
+      "urlRequired": "Vui lòng nhập đường dẫn",
+      "typeRequired": "Vui lòng chọn loại"
+    }
+  },
+  "search": {
+    "placeholder": "Tìm kiếm theo tên dịch vụ"
+  },
+  "message": {
+    "createSuccess": "Tạo thành công",
+    "createFailed": "Tạo mới thất bại",
+    "updateSuccess": "Cập nhật thành công",
+    "updateFailed": "Cập nhật thất bại",
+    "deleteSuccess": "Xóa thành công",
+    "deleteFailed": "Xóa thất bại"
+  }
+}

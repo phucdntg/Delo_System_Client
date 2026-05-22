@@ -1,0 +1,33 @@
+﻿{
+  "form": {
+    "isActive": "Active status",
+    "name": "Name",
+    "nameError": "Please enter the organization name",
+    "namePlaceholder": "Enter organization name",
+    "subdomain": "Subdomain",
+    "subdomainError": "Please enter the subdomain",
+    "subdomainPlaceholder": "Enter subdomain"
+  },
+  "message": {
+    "createFailed": "Failed to create organization",
+    "createSuccess": "Organization created successfully",
+    "updateFailed": "Failed to update organization",
+    "updateSuccess": "Organization updated successfully"
+  },
+  "modal": {
+    "createTitle": "Create organization",
+    "updateTitle": "Update organization"
+  },
+  "search": {
+    "placeholder": "Search organizations"
+  },
+  "table": {
+    "action": "Action",
+    "createdAt": "Created At",
+    "id": "ID",
+    "isActive": "Active Status",
+    "name": "Organization Name",
+    "subdomain": "Subdomain",
+    "updatedAt": "Updated At"
+  }
+}

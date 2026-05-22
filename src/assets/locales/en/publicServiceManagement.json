@@ -1,0 +1,41 @@
+{
+  "table": {
+    "displayName": "Display name",
+    "url": "URL",
+    "type": "Type",
+    "webType": "Web",
+    "youtubeType": "Youtube",
+    "color": "Color",
+    "branch": "Branch"
+  },
+  "modal": {
+    "createTitle": "Create public service",
+    "editTitle": "Update public service"
+  },
+  "form": {
+    "branch": "Branch",
+    "displayName": "Display name",
+    "displayNamePlaceholder": "Public service",
+    "url": "URL",
+    "urlPlaceholder": "Ex: http://publicservice.xyz",
+    "type": "Type",
+    "color": "Color",
+    "validation": {
+      "branchRequired": "Please select a branch",
+      "displayNameRequired": "Please enter display name",
+      "urlRequired": "Please enter URL",
+      "typeRequired": "Please select type"
+    }
+  },
+  "search": {
+    "placeholder": "Search by service name"
+  },
+  "message": {
+    "createSuccess": "Created successfully",
+    "createFailed": "Create failed",
+    "updateSuccess": "Updated successfully",
+    "updateFailed": "Update failed",
+    "deleteSuccess": "Deleted successfully",
+    "deleteFailed": "Delete failed"
+  }
+}

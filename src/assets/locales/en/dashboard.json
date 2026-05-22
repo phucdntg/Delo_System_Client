@@ -1,0 +1,29 @@
+﻿{
+  "charts": {
+    "byHour": "Issued \u0026 served by hour",
+    "canceled": "Missed",
+    "served": "Served"
+  },
+  "reload": "Reload data",
+  "satisfaction": {
+    "employeeTitle": "Employee satisfaction",
+    "serviceTitle": "Service satisfaction"
+  },
+  "stats": {
+    "avgWaiting": "Waiting time",
+    "cancelledTickets": "Cancelled",
+    "completedTickets": "Completed",
+    "totalTickets": "Issued tickets"
+  },
+  "table": {
+    "count": "Count",
+    "service": "Service"
+  },
+  "topServicesTitle": "Top services today",
+  "units": {
+    "minute": "minute"
+  },
+  "warning": {
+    "reloading": "Data is loading, please wait"
+  }
+}

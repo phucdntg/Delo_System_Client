@@ -1,0 +1,74 @@
+{
+  "page": {
+    "table": {
+      "campaignName": "Tên chiến dịch tuyên truyền",
+      "branch": "Chi nhánh",
+      "content": "Nội dung tuyên truyền",
+      "area": "Vị trí tuyên truyền",
+      "actions": "Hành động"
+    },
+    "message": {
+      "deleteSuccess": "Xóa tuyên truyền thành công",
+      "deleteFailed": "Xóa tuyên truyền thất bại",
+      "forceUpdateSuccess": "Kích hoạt cập nhật giao diện thành công",
+      "forceUpdateFailed": "Kích hoạt cập nhật giao diện thất bại"
+    },
+    "search": {
+      "hint": "Tìm kiếm theo tên"
+    }
+  },
+  "colorLogo": {
+    "title": "Cấu hình giao diện",
+    "unsaved": "Chưa lưu",
+    "updateUIBtn": "Cập nhật giao diện",
+    "saveBtn": "Lưu cấu hình",
+    "primaryColorLabel": "Màu chính",
+    "logoLabel": "Logo"
+  },
+  "campaign": {
+    "modalTitle": "Thông tin chiến dịch tuyên truyền",
+    "form": {
+      "nameLabel": "Tên chiến dịch tuyên truyền",
+      "namePlaceholder": "Nhập tên chiến dịch tuyên truyền",
+      "nameRequired": "Vui lòng nhập tên chiến dịch tuyên truyền",
+      "branchLabel": "Chi nhánh",
+      "branchRequired": "Vui lòng chọn chi nhánh"
+    },
+    "message": {
+      "updateSuccess": "Cập nhật tuyên truyền thành công",
+      "createSuccess": "Tạo tuyên truyền thành công",
+      "updateFailed": "Cập nhật tuyên truyền thất bại",
+      "createFailed": "Tạo tuyên truyền thất bại",
+      "deleteAreaFailed": "Xóa phân bổ khu vực thất bại, chưa thể đổi chi nhánh"
+    }
+  },
+  "assignArea": {
+    "unidentifiedCampaign": "Chưa xác định chiến dịch để phân bổ",
+    "noChanges": "Không có thay đổi để lưu",
+    "partialSave": "Đã lưu một phần: thêm {{added}}/{{total}}, gỡ {{removed}}/{{totalRemoved}} khu vực",
+    "updateSuccess": "Cập nhật phân bổ khu vực thành công",
+    "updateFailed": "Cập nhật phân bổ khu vực thất bại",
+    "branchLabel": "Chi nhánh được phân bổ",
+    "noBranch": "Chưa chọn chi nhánh",
+    "areaLabel": "Khu vực được phân bổ",
+    "areaFallback": "Khu vực #{{id}}",
+    "moreAreas": "+{{count}} khu vực"
+  },
+  "banner": {
+    "createTitle": "Thêm nội dung tuyên truyền",
+    "editTitle": "Chỉnh sửa nội dung tuyên truyền",
+    "contentLabel": "Nội dung",
+    "contentRequired": "Vui lòng nhập nội dung",
+    "imageLabel": "Ảnh",
+    "listTitle": "Danh sách nội dung",
+    "empty": "Chưa có nội dung tuyên truyền nào",
+    "previewMore": "+{{count}} câu khác",
+    "updateSuccess": "Cập nhật nội dung tuyên truyền thành công",
+    "createSuccess": "Thêm nội dung tuyên truyền thành công",
+    "error": "Có lỗi xảy ra"
+  },
+  "assignTabModal": {
+    "contentTab": "Thông tin tuyên truyền",
+    "areaTab": "Vị trí tuyên truyền"
+  }
+}

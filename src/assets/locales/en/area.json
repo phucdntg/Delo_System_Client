@@ -1,0 +1,37 @@
+{
+  "table": {
+    "name": "Area name",
+    "branch": "Branch",
+    "description": "Description",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "form": {
+    "addTitle": "Create area",
+    "editTitle": "Update area",
+    "name": "Area name",
+    "nameRequired": "Please enter area name",
+    "nameMinLength": "Area name must be at least 5 characters",
+    "namePlaceholder": "Enter area name",
+    "branch": "Branch",
+    "branchRequired": "Please select a branch",
+    "branchPlaceholder": "Select branch",
+    "description": "Description",
+    "descriptionRequired": "Please enter description",
+    "descriptionPlaceholder": "Enter area description",
+    "audioTemplate": "Audio template",
+    "audioTemplatePlaceholder": "Select audio template",
+    "status": "Status",
+    "statusRequired": "Please select status",
+    "statusPlaceholder": "Select status"
+  },
+  "message": {
+    "createSuccess": "Area created successfully",
+    "createFailed": "Failed to create area",
+    "updateSuccess": "Area updated successfully",
+    "updateFailed": "Failed to update area"
+  },
+  "search": {
+    "placeholder": "Search by area name"
+  }
+}

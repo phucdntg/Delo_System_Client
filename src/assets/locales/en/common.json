@@ -1,0 +1,69 @@
+﻿{
+  "button": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "update": "Update",
+    "reset": "Reset",
+    "ok": "OK"
+  },
+  "confirm": {
+    "delete": "Are you sure you want to delete?"
+  },
+  "message": {
+    "deleteSuccess": "Delete successful",
+    "deleteFailed": "Delete failed",
+    "saveSuccess": "Save successful",
+    "saveFailed": "Save failed"
+  },
+  "rangePickerPlaceholder": {
+    "endDate": "End date",
+    "startDate": "Start date"
+  },
+  "status": {
+    "statusLabel": "Status",
+    "total": "Total",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "pagination": {
+    "page": "page"
+  },
+  "chooseOrgRequired": "Please choose an organization",
+  "table": {
+    "actions": "Actions",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "noData": "No data"
+  },
+  "label": {
+    "user": "User",
+    "superadmin": "Superadmin",
+    "image": "Image"
+  },
+  "placeholder": {
+    "selectOrganization": "Select organization",
+    "selectBranch": "-- Select branch --",
+    "selectArea": "-- Select area --",
+    "selectStatus": "-- Select status --",
+    "selectService": "-- Select service --"
+  },
+  "forbidden": {
+    "title": "Access Denied",
+    "description": "You do not have permission to access this page.",
+    "contact": "Please contact your system administrator",
+    "backBtn": "Go Back",
+    "navigateBtn": "Go to accessible page"
+  },
+  "deviceInvalid": {
+    "title": "Invalid Device",
+    "description": "Unable to find device information for the provided ID. Please check again or contact support."
+  },
+  "uploadImage": {
+    "maxSizeError": "Image must not exceed {{maxSizeMB}}MB",
+    "deleteImage": "Delete image"
+  }
+}

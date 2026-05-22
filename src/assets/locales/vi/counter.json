@@ -1,0 +1,200 @@
+{
+  "page": {
+    "modalCreateTitle": "Thêm quầy mới",
+    "modalEditTitle": "Cập nhật quầy",
+    "searchPlaceholder": "Tìm kiếm theo tên quầy"
+  },
+  "table": {
+    "name": "Tên quầy/bàn",
+    "number": "Số thứ tự quầy/bàn",
+    "branch": "Chi nhánh",
+    "area": "Khu vực",
+    "services": "Dịch vụ",
+    "status": "Trạng thái",
+    "description": "Mô tả",
+    "actions": "Thao tác",
+    "active": "Hoạt động",
+    "inactive": "Ngưng",
+    "notAssigned": "Không gán",
+    "moreServices": "+{{count}} dịch vụ khác",
+    "confirmDelete": "Xác nhận xóa?",
+    "showTotal": "Tổng cộng {{total}} quầy / bàn",
+    "edit": "Sửa",
+    "delete": "Xóa"
+  },
+  "form": {
+    "addTitle": "Thêm quầy",
+    "editTitle": "Cập nhật quầy",
+    "name": "Tên quầy/bàn",
+    "nameRequired": "Vui lòng nhập tên quầy/bàn",
+    "namePlaceholder": "Nhập tên quầy/bàn",
+    "counterNumber": "Số quầy",
+    "counterNumberRequired": "Vui lòng nhập số quầy",
+    "counterNumberInvalid": "Số quầy phải là số nguyên dương",
+    "counterNumberPlaceholder": "Nhập số quầy",
+    "branch": "Chi nhánh",
+    "branchRequired": "Vui lòng chọn chi nhánh",
+    "branchPlaceholder": "Chọn chi nhánh",
+    "area": "Khu vực",
+    "areaRequired": "Vui lòng chọn khu vực",
+    "areaPlaceholder": "Chọn khu vực",
+    "staff": "Người dùng",
+    "staffRequired": "Vui lòng chọn nhân viên",
+    "staffPlaceholder": "Chọn nhân viên",
+    "description": "Mô tả",
+    "descriptionPlaceholder": "Nhập mô tả",
+    "status": "Trạng thái"
+  },
+  "message": {
+    "createSuccess": "Tạo quầy thành công",
+    "createFailed": "Tạo quầy thất bại",
+    "updateSuccess": "Cập nhật quầy thành công",
+    "updateFailed": "Cập nhật quầy thất bại",
+    "deleteSuccess": "Xóa quầy thành công",
+    "deleteFailed": "Xóa quầy thất bại"
+  },
+  "placeholder": {
+    "selectBranch": "-- Chọn chi nhánh --",
+    "selectArea": "-- Chọn khu vực --",
+    "selectUser": "-- Chọn người dùng --"
+  },
+  "stats": {
+    "total": "Tổng",
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "filter": {
+    "areaPlaceholder": "Chọn khu vực",
+    "servicePlaceholder": "Chọn dịch vụ",
+    "statusPlaceholder": "Trạng thái",
+    "allAreas": "Tất cả khu vực",
+    "allServices": "Tất cả dịch vụ",
+    "allStatus": "Tất cả trạng thái",
+    "active": "Hoạt động",
+    "inactive": "Ngừng"
+  },
+  "card": {
+    "currentNumber": "Số hiện tại"
+  },
+  "staff": {
+    "loading": "Đang tải dữ liệu giao diện...",
+    "header": {
+      "counterName": "Quầy"
+    },
+    "currentNumber": "Số hiện tại",
+    "recalledTime": "Số lần gọi lại",
+    "served": "Đã phục vụ",
+    "averageProcessingTime": "Thời gian xử lý trung bình",
+    "actions": {
+      "callNext": "Gọi tiếp",
+      "recall": "Gọi lại",
+      "skip": "Bỏ qua",
+      "callSkipped": "Gọi số bỏ qua",
+      "callPriority": "Gọi ưu tiên",
+      "transfer": "Chuyển quầy",
+      "newNumber": "Lấy số mới",
+      "complete": "Hoàn tất"
+    },
+    "menu": {
+      "pause": "Tạm dừng",
+      "logout": "Đăng xuất"
+    },
+    "transferModal": {
+      "title": "Chuyển dịch vụ",
+      "currentNumber": "Số hiện tại",
+      "searchDepartmentOrService": "Tìm khoa/phòng hoặc dịch vụ",
+      "enterDepartmentOrServiceName": "Nhập tên khoa/phòng hoặc dịch vụ",
+      "confirm": "Xác nhận",
+      "cancel": "Hủy",
+      "transfering": "Đang chuyển",
+      "transferCompleted": "Chuyển dịch vụ thành công",
+      "noti": "Thông báo",
+      "notiMessage": "Vui lòng chọn dịch vụ cần chuyển"
+    },
+    "takeNumberModal": {
+      "title": "Lấy số thứ tự mới cho khách hàng",
+      "selectServiceNewNumber": "Chọn dịch vụ để lấy số mới",
+      "selectService": "Chọn dịch vụ",
+      "confirm": "Xác nhận & In phiếu",
+      "cancel": "Hủy",
+      "noti": "Thông báo",
+      "notiMessage": "Vui lòng chọn loại dịch vụ"
+    },
+    "completeModal": {
+      "title": "Hoàn tất phục vụ",
+      "workingStatus": "Đang phục vụ",
+      "noCurrentNumber": "Hiện không có số đang phục vụ",
+      "completeServiceNumber": "Hoàn tất số đang phục vụ",
+      "confirm": "Hoàn tất",
+      "cancel": "Hủy"
+    },
+    "pauseReasonModal": {
+      "title": "Lý do tạm dừng phục vụ",
+      "selectPauseReason": "Chọn lý do tạm dừng",
+      "noti": "Thông báo",
+      "notiMessage": "Vui lòng chọn lý do tạm dừng",
+      "confirm": "Xác nhận"
+    },
+    "pauseModal": {
+      "title": "Tiếp tục làm việc",
+      "subtitle": "Phiên làm việc của bạn hiện đang tạm dừng",
+      "paused": "Tạm dừng",
+      "continueButton": "Tiếp tục làm việc",
+      "continueHint": "Nhấn để quay lại phục vụ khách hàng"
+    },
+    "pauseReasonLabels": [
+      {
+        "value": "1",
+        "label": "Họp"
+      },
+      {
+        "value": "2",
+        "label": "Ăn trưa"
+      },
+      {
+        "value": "3",
+        "label": "Xử lý công việc"
+      },
+      {
+        "value": "4",
+        "label": "Xử lý ticket"
+      },
+      {
+        "value": "5",
+        "label": "Đi tập huấn"
+      },
+      {
+        "value": "6",
+        "label": "Đi vệ sinh"
+      }
+    ],
+    "queueList": {
+      "nextNumber": "Số tiếp theo",
+      "totalWaiting": "Tổng số đang chờ",
+      "priorityWaiting": "Ưu tiên đang chờ",
+      "skippedNumber": "Số bỏ qua",
+      "searchSkipped": "Tìm kiếm số bỏ qua",
+      "clearAll": "Xóa tất cả",
+      "loading": "Đang tải..."
+    },
+    "notify": {
+      "title": "Thông báo",
+      "recallLimitReached": "Đã đạt số lần gọi lại tối đa",
+      "noNumberToRecall": "Không có số hiện tại để gọi lại",
+      "queueEmpty": "Không còn số chờ",
+      "noSkippedNumbersToRecall": "Không có số bỏ qua để gọi",
+      "noSkippedNumbersInList": "Danh sách số bỏ qua trống",
+      "calling": "Đang gọi số, vui lòng đợi !",
+      "noNumberServing": "Không có số nào đang phục vụ!"
+    },
+    "pauseSuccess": "Tạm dừng phục vụ thành công",
+    "pauseError": "Cập nhật trạng thái tạm dừng thất bại",
+    "continueError": "Cập nhật trạng thái tiếp tục thất bại",
+    "confirmModal": {
+      "skipNumber": "Bạn có chắc muốn bỏ qua số hiện tại?",
+      "callSpecificNumber": "Bạn có chắc muốn gọi số này?",
+      "clearAllSkippedNumbers": "Bạn có chắc muốn xóa toàn bộ số đã bỏ qua?",
+      "removeSkippedNumber": "Bạn có chắc muốn xóa số đã bỏ qua này?"
+    }
+  }
+}

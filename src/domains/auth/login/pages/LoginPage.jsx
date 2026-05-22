@@ -1,21 +1,34 @@
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginBackground from "../../../../assets/images/bg-auth.jpg";
 import LogoDefault from "../../../../assets/images/logo-default.png";
+import { useAuth } from "../../../../core/providers/AuthProvider";
 import { PATH } from "../../../../shared/constants/systemConstants";
+import {
+  useLazyGetCurrentUserQuery,
+  useLoginMutation,
+} from "../services/authService";
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const auth = useAuth();
+  const [login, { isLoading }] = useLoginMutation();
+  const [getCurrentUser] = useLazyGetCurrentUserQuery();
 
-  const handleLogin = (values) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+  const handleLogin = async (values) => {
+    try {
+      const token = await login(values).unwrap();
+      if (token?.accessToken && token?.refreshToken) {
+        auth.setToken(token);
+        const user = await getCurrentUser().unwrap();
+        auth.setUser(user);
+      }
+
       navigate(`/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ORG_MANAGEMENT}`);
-    }, 500);
+    } catch (err) {
+      console.error("Login error:", err);
+    }
   };
 
   return (
@@ -23,6 +36,7 @@ export default function LoginPage() {
       style={{
         backgroundImage: `url(${LoginBackground})`,
         backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
       }}
       className="min-h-screen flex items-center justify-center px-4"
@@ -93,7 +107,7 @@ export default function LoginPage() {
               <Button
                 type="primary"
                 htmlType="submit"
-                loading={loading}
+                loading={isLoading}
                 block
                 className="h-10 rounded-lg font-medium"
                 size="large"
@@ -105,14 +119,14 @@ export default function LoginPage() {
           </Form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
+          {/* <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-100" />
             <span className="text-xs text-gray-400">hoặc tiếp tục với</span>
             <div className="flex-1 h-px bg-gray-100" />
-          </div>
+          </div> */}
 
           {/* Google */}
-          <Button
+          {/* <Button
             size="large"
             block
             className="h-10 rounded-lg flex items-center justify-center gap-2.5"
@@ -138,7 +152,7 @@ export default function LoginPage() {
             }
           >
             Đăng nhập với Google
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

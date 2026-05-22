@@ -1,0 +1,9 @@
+{
+  "title": "Đăng nhập",
+  "username": "Tên đăng nhập",
+  "password": "Mật khẩu",
+  "loginBtn": "Đăng nhập",
+  "loading": "Đang đăng nhập...",
+  "error": "Đăng nhập thất bại",
+  "missingToken": "Đăng nhập thất bại: thiếu token"
+}

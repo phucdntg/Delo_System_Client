@@ -1,0 +1,85 @@
+﻿{
+  "allReviewsEmpty": "No reviews in the selected date range",
+  "allReviewsTitleEmployee": "All employee reviews",
+  "allReviewsTitleService": "All service reviews",
+  "button": {
+    "viewReport": "View report"
+  },
+  "permission": {
+    "noViewDetailed": "You do not have permission to view detailed satisfaction reports"
+  },
+  "buttons": {
+    "exportCsv": "Export CSV",
+    "viewAll": "View all detailed reviews"
+  },
+  "suggestions": {
+    "titleEmployee": "Employee feedback suggestions",
+    "titleService": "Service feedback suggestions",
+    "empty": "No suggestions available"
+  },
+  "detail": {
+    "titleEmployee": "Detailed report by employee",
+    "titleService": "Detailed report by service"
+  },
+  "distribution": {
+    "empty": "No statistical data",
+    "titleEmployee": "Satisfaction distribution by employee (%)",
+    "titleService": "Satisfaction distribution by service (%)",
+    "tooltipLevelCount": "customers rated this level"
+  },
+  "filter": {
+    "selectBranch": "Select branch",
+    "selectTime": "Select time"
+  },
+  "improvement": {
+    "empty": "No low ratings",
+    "titleEmployee": "Low-rated employee feedback items",
+    "titleService": "Service items that need improvement"
+  },
+  "labels": {
+    "employee": "Employee",
+    "feedback": "Feedback",
+    "noFeedback": "No feedback.",
+    "score": "Score",
+    "service": "Service"
+  },
+  "overall": {
+    "average": "Average 😐",
+    "excellent": "Excellent 🌟",
+    "good": "Good 👍",
+    "needsImprovement": "Needs improvement 😞"
+  },
+  "overview": {
+    "averageTitleEmployee": "Average satisfaction score (Employee)",
+    "averageTitleService": "Average satisfaction score (Service)",
+    "overallLabel": "Overall assessment"
+  },
+  "placeholder": {
+    "branch": "Select branch"
+  },
+  "range": {
+    "custom": "Custom",
+    "last30Days": "Last 30 days",
+    "last7Days": "Last 7 days",
+    "last90Days": "Last 90 days"
+  },
+  "selectOptions": {
+    "employee": "Satisfaction report by employee",
+    "service": "Satisfaction report by service"
+  },
+  "table": {
+    "avgScore": "Average score",
+    "bad": "Dissatisfied",
+    "branch": "Branch",
+    "employee": "Employee",
+    "excellent": "Very satisfied",
+    "good": "Satisfied",
+    "normal": "Neutral",
+    "service": "Service",
+    "total": "Total reviews"
+  },
+  "warning": {
+    "noDate": "Please select a date range",
+    "over90Days": "Maximum 90 days allowed"
+  }
+}

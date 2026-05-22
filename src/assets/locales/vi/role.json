@@ -1,0 +1,40 @@
+{
+  "message": {
+    "createSuccess": "Tạo vai trò mới thành công",
+    "createFail": "Tạo vai trò mới không thành công",
+    "updateSuccess": "Cập nhật vai trò thành công",
+    "updateFail": "Cập nhật vai trò không thành công",
+    "deleteSuccess": "Xóa vai trò thành công",
+    "deleteFail": "Xóa thất bại!",
+    "confirmDelete": "Bạn có chắc muốn xóa ?"
+  },
+  "modal": {
+    "titleBasicInfo": "Thông tin cơ bản",
+    "titlePermissions": "Phân quyền",
+    "roleLabel": "Vai trò",
+    "branchLabel": "Chi nhánh",
+    "organizationLabel": "Tổ chức",
+    "selectRole": "Chọn vai trò",
+    "selectBranch": "Chọn chi nhánh",
+    "pleaseSelectRole": "Vui lòng chọn vai trò!",
+    "pleaseSelectBranch": "Vui lòng chọn chi nhánh!"
+  },
+  "roleType": {
+    "admin": "Quản trị viên",
+    "supervisor": "Người giám sát",
+    "user": "Nhân viên"
+  },
+  "table": {
+    "role": "Vai trò",
+    "organization": "Tổ chức",
+    "branch": "Chi nhánh",
+    "createdAt": "Ngày tạo",
+    "actions": "Thao tác"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm theo tên vai trò"
+  },
+  "labels": {
+    "supadmin": "Supadmin"
+  }
+}

@@ -1,0 +1,29 @@
+﻿{
+  "charts": {
+    "byHour": "Lượt cấp số \u0026 phục vụ theo giờ",
+    "canceled": "Lượt bỏ lỡ",
+    "served": "Lượt phục vụ"
+  },
+  "reload": "Tải lại dữ liệu",
+  "satisfaction": {
+    "employeeTitle": "Đánh giá nhân viên",
+    "serviceTitle": "Đánh giá dịch vụ"
+  },
+  "stats": {
+    "avgWaiting": "Thời gian chờ",
+    "cancelledTickets": "Hủy bỏ",
+    "completedTickets": "Hoàn thành",
+    "totalTickets": "Lượt cấp số"
+  },
+  "table": {
+    "count": "Số lượt",
+    "service": "Dịch vụ"
+  },
+  "topServicesTitle": "Top dịch vụ hôm nay",
+  "units": {
+    "minute": "phút"
+  },
+  "warning": {
+    "reloading": "Đang tải dữ liệu, vui lòng chờ"
+  }
+}

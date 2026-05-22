@@ -1,0 +1,85 @@
+﻿{
+  "allReviewsEmpty": "Không có đánh giá nào trong khoảng thời gian đã chọn",
+  "allReviewsTitleEmployee": "Tất cả đánh giá nhân viên",
+  "allReviewsTitleService": "Tất cả đánh giá dịch vụ",
+  "button": {
+    "viewReport": "Xem báo cáo"
+  },
+  "permission": {
+    "noViewDetailed": "Bạn không có quyền xem báo cáo đánh giá chi tiết"
+  },
+  "buttons": {
+    "exportCsv": "Xuất CSV",
+    "viewAll": "Xem tất cả đánh giá chi tiết"
+  },
+  "suggestions": {
+    "titleEmployee": "Góp ý về nhân viên",
+    "titleService": "Góp ý về dịch vụ",
+    "empty": "Không có góp ý nào được ghi nhận"
+  },
+  "detail": {
+    "titleEmployee": "Báo cáo chi tiết theo nhân viên",
+    "titleService": "Báo cáo chi tiết theo dịch vụ"
+  },
+  "distribution": {
+    "empty": "Không có dữ liệu thống kê",
+    "titleEmployee": "Phân tích mức độ hài lòng của nhân viên (%)",
+    "titleService": "Phân tích mức độ hài lòng của dịch vụ (%)",
+    "tooltipLevelCount": "khách hàng đánh giá mức này"
+  },
+  "filter": {
+    "selectBranch": "Chọn chi nhánh",
+    "selectTime": "Chọn thời gian"
+  },
+  "improvement": {
+    "empty": "Không có đánh giá thấp",
+    "titleEmployee": "Các nội dung nhân viên bị đánh giá thấp",
+    "titleService": "Các hạng mục dịch vụ cần cải thiện"
+  },
+  "labels": {
+    "employee": "Nhân viên",
+    "feedback": "Góp ý",
+    "noFeedback": "Không có góp ý.",
+    "score": "Điểm",
+    "service": "Dịch vụ"
+  },
+  "overall": {
+    "average": "Trung bình 😐",
+    "excellent": "Xuất sắc 🌟",
+    "good": "Tốt 👍",
+    "needsImprovement": "Cần cải thiện 😞"
+  },
+  "overview": {
+    "averageTitleEmployee": "Điểm hài lòng trung bình (Nhân viên)",
+    "averageTitleService": "Điểm hài lòng trung bình (Dịch vụ)",
+    "overallLabel": "Nhận định chung"
+  },
+  "placeholder": {
+    "branch": "Chọn chi nhánh"
+  },
+  "range": {
+    "custom": "Tùy chọn",
+    "last30Days": "30 ngày gần nhất",
+    "last7Days": "7 ngày gần nhất",
+    "last90Days": "90 ngày gần nhất"
+  },
+  "selectOptions": {
+    "employee": "Báo cáo đánh giá theo nhân viên",
+    "service": "Báo cáo đánh giá theo dịch vụ"
+  },
+  "table": {
+    "avgScore": "Điểm trung bình",
+    "bad": "Không hài lòng",
+    "branch": "Chi nhánh",
+    "employee": "Nhân viên",
+    "excellent": "Rất hài lòng",
+    "good": "Hài lòng",
+    "normal": "Bình thường",
+    "service": "Dịch vụ",
+    "total": "Tổng đánh giá"
+  },
+  "warning": {
+    "noDate": "Vui lòng chọn khoảng thời gian",
+    "over90Days": "Chỉ được chọn tối đa 90 ngày"
+  }
+}

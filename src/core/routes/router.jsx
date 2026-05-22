@@ -1,9 +1,15 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import LoginPage from "../../domains/auth/login/pages/LoginPage";
+import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { systemRoutes } from "../../domains/system/routes";
 import { PATH } from "../../shared/constants/systemConstants";
 import MainLayout from "../layouts/MainLayout";
 import RouteTitleSync from "./RouteTitleSync";
+import ProtectedRoute from "./guards/ProtectedRoute";
+
+const LoginPage = lazy(
+  () => import("../../domains/auth/login/pages/LoginPage"),
+);
 
 function RootRouteLayout() {
   return (
@@ -19,18 +25,46 @@ const routes = [
     element: <RootRouteLayout />,
     children: [
       {
+        index: true,
+        element: (
+          <Navigate
+            to={`/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ORG_MANAGEMENT}`}
+            replace
+          />
+        ),
+      },
+      {
         path: PATH.AUTH,
         handle: { title: "Đăng nhập" },
         element: <LoginPage />,
       },
       {
-        path: "*",
+        path: "",
         element: <MainLayout />,
         children: [
           {
-            path: PATH.SYSTEM.BASE,
-            handle: { title: "Hệ thống" },
-            children: systemRoutes,
+            index: true,
+            element: (
+              <Navigate
+                to={`/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ORG_MANAGEMENT}`}
+                replace
+              />
+            ),
+          },
+          {
+            path: `/${PATH.SYSTEM.BASE}`,
+            children: [
+              ...systemRoutes.map((route) => ({
+                ...route,
+                element: (
+                  <ErrorBoundary>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <ProtectedRoute>{route.element}</ProtectedRoute>
+                    </Suspense>
+                  </ErrorBoundary>
+                ),
+              })),
+            ],
           },
         ],
       },

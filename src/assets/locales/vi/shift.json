@@ -1,0 +1,37 @@
+{
+  "labels": {
+    "name": "Tên ca",
+    "branch": "Chi nhánh",
+    "startTime": "Giờ bắt đầu",
+    "endTime": "Giờ kết thúc",
+    "description": "Mô tả"
+  },
+  "placeholder": {
+    "name": "Nhập tên ca",
+    "startTime": "Chọn giờ bắt đầu",
+    "endTime": "Chọn giờ kết thúc",
+    "description": "Nhập mô tả"
+  },
+  "validation": {
+    "nameRequired": "Vui lòng nhập tên ca",
+    "branchRequired": "Vui lòng chọn chi nhánh",
+    "startTimeRequired": "Vui lòng chọn giờ bắt đầu",
+    "endTimeRequired": "Vui lòng chọn giờ kết thúc",
+    "endTimeGreaterThanStartTime": "Giờ kết thúc phải lớn hơn giờ bắt đầu"
+  },
+  "table": {
+    "name": "Tên ca",
+    "branch": "Chi nhánh",
+    "startTime": "Giờ bắt đầu",
+    "endTime": "Giờ kết thúc",
+    "actions": "Hành động"
+  },
+  "message": {
+    "createSuccess": "Tạo ca thành công",
+    "updateSuccess": "Cập nhật ca thành công",
+    "deleteSuccess": "Xóa ca thành công"
+  },
+  "search": {
+    "placeholder": "Tìm theo tên ca..."
+  }
+}

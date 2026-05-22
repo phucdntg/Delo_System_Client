@@ -1,0 +1,40 @@
+{
+  "message": {
+    "createSuccess": "Successfully created new role",
+    "createFail": "Failed to create new role",
+    "updateSuccess": "Role updated successfully",
+    "updateFail": "Failed to update role",
+    "deleteSuccess": "Role deleted successfully",
+    "deleteFail": "Delete failed!",
+    "confirmDelete": "Are you sure you want to delete?"
+  },
+  "modal": {
+    "titleBasicInfo": "Basic information",
+    "titlePermissions": "Permissions",
+    "roleLabel": "Role",
+    "branchLabel": "Branch",
+    "organizationLabel": "Organization",
+    "selectRole": "Select role",
+    "selectBranch": "Select branch",
+    "pleaseSelectRole": "Please select a role!",
+    "pleaseSelectBranch": "Please select a branch!"
+  },
+  "roleType": {
+    "admin": "Administrator",
+    "supervisor": "Supervisor",
+    "user": "Employee"
+  },
+  "table": {
+    "role": "Role",
+    "organization": "Organization",
+    "branch": "Branch",
+    "createdAt": "Created at",
+    "actions": "Actions"
+  },
+  "search": {
+    "placeholder": "Search by role name"
+  },
+  "labels": {
+    "supadmin": "Supadmin"
+  }
+}

@@ -1,0 +1,20 @@
+﻿{
+  "area": "Quản lý khu vực",
+  "branch": "Quản lý chi nhánh",
+  "counter": "Quản lý quầy",
+  "dashboard": "Tổng quan",
+  "device": "Quản lý thiết bị",
+  "org": "Quản lý tổ chức",
+  "permission": "Quản lý quyền",
+  "public_service_management": "Quản lý dịch vụ công",
+  "report_queue": "Báo cáo cấp số",
+  "report_satisfaction": "Báo cáo đánh giá",
+  "role": "Quản lý vai trò",
+  "satisfaction": "Quản lý đánh giá",
+  "service": "Quản lý dịch vụ",
+  "setting": "Cài đặt hệ thống",
+  "config_ui": "Cài đặt giao diện",
+  "user": "Quản lý người dùng",
+  "shift": "Quản lý ca làm việc",
+  "logout": "Đăng xuất"
+}

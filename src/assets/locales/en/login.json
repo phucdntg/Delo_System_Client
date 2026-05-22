@@ -1,0 +1,9 @@
+{
+  "title": "Login",
+  "username": "Username",
+  "password": "Password",
+  "loginBtn": "Sign in",
+  "loading": "Signing in...",
+  "error": "Login failed",
+  "missingToken": "Login failed: missing token"
+}

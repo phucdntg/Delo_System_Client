@@ -1,0 +1,140 @@
+{
+  "message": {
+    "deleteSuccess": "Delete device successfully",
+    "deleteFailed": "Delete device failed"
+  },
+  "table": {
+    "identifier": "Identifier",
+    "type": "Device type",
+    "accessUrl": "Access URL",
+    "branch": "Branch",
+    "status": "Status",
+    "approvalStatus": "Approval status",
+    "searchHint": "Search by identifier",
+    "na": "-- N/A --",
+    "copyUrl": "Copy URL",
+    "statusOnline": "Online",
+    "statusOffline": "Offline",
+    "activeOptions": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "approvalStatuses": {
+      "waiting": "Waiting",
+      "approved": "Approved"
+    },
+    "placeholders": {
+      "selectBranch": "-- Select branch --",
+      "selectDeviceType": "-- Device type --",
+      "selectActiveStatus": "-- Activity status --",
+      "selectApprovalStatus": "-- Approval status --"
+    },
+    "message": {
+      "configNotAvailable": "This device does not support display configuration",
+      "copySuccess": "URL copied successfully",
+      "copyFailed": "Unable to copy URL",
+      "onlyWaitingToApproved": "Only transition from Waiting for approval to Approved is allowed",
+      "confirmStatusChangeTitle": "Confirm status change",
+      "confirmStatusChangeContent": "Are you sure you want to change the status of device \"{{identifier}}\" to \"{{status}}\"?",
+      "statusUpdateSuccess": "Status updated successfully",
+      "statusUpdateFailed": "Status update failed"
+    }
+  },
+  "displayType": {
+    "kiosk_number": "Take number kiosk",
+    "kiosk_review": "Review kiosk",
+    "display_center": "Display center",
+    "display_center_simple": "Display center by counter",
+    "display_counter": "Display counter",
+    "sound": "Sound"
+  },
+  "formModal": {
+    "createTitle": "Create new device",
+    "editTitle": "Update device information",
+    "createSuccess": "Create device successfully",
+    "createFailed": "Create device failed",
+    "updateSuccess": "Update device information successfully",
+    "updateFailed": "Update device information failed"
+  },
+  "form": {
+    "sections": {
+      "basicInfo": "Basic information",
+      "remoteAccessInfo": "Remote access information",
+      "detailInfo": "Detailed information"
+    },
+    "labels": {
+      "branch": "Branch",
+      "area": "Area",
+      "deviceType": "Device type",
+      "isActive": "Active",
+      "ultraviewerId": "UltraViewer ID",
+      "ultraviewerPassword": "Password",
+      "os": "Operating system",
+      "osVersion": "OS version",
+      "osRelease": "OS release",
+      "architecture": "Architecture",
+      "hostname": "Hostname",
+      "ipAddress": "IP address",
+      "macAddress": "MAC address",
+      "model": "Model",
+      "processor": "Processor",
+      "logicalCpus": "Logical CPUs",
+      "gpu": "GPU",
+      "totalDiskSpace": "Total disk space",
+      "cpuCores": "CPU cores",
+      "cpuFrequency": "CPU frequency",
+      "totalRam": "Total RAM"
+    },
+    "placeholders": {
+      "selectBranch": "-- Select branch --",
+      "selectArea": "-- Select area --",
+      "selectDeviceType": "-- Select device type --",
+      "ultraviewerId": "Enter UltraViewer ID",
+      "password": "Enter password",
+      "os": "Ex: Windows, Linux",
+      "osVersion": "Ex: Windows 10",
+      "osRelease": "Ex: 20H2",
+      "architecture": "Ex: x64",
+      "hostname": "Enter hostname",
+      "ipAddress": "Ex: 192.168.1.1",
+      "macAddress": "Ex: 00:1A:2B:3C:4D:5E",
+      "model": "Device model",
+      "processor": "Ex: Intel Core I7",
+      "logicalCpus": "Enter logical CPU count",
+      "gpu": "Ex: NVIDIA GTX 4090",
+      "totalDiskSpace": "Ex: 1TB",
+      "cpuCores": "Enter CPU core count",
+      "cpuFrequency": "Ex: 3.6GHz",
+      "totalRam": "Ex: 32GB"
+    },
+    "validation": {
+      "branchRequired": "Please select a branch"
+    }
+  },
+  "displayConfig": {
+    "title": "Display configuration",
+    "message": {
+      "createRelationFailed": "Failed to create device-service relation",
+      "deleteRelationFailed": "Failed to delete device-service relation",
+      "createConfigFailed": "Failed to create display configuration",
+      "createCounterFailed": "Failed to create display counter configuration",
+      "deleteCounterFailed": "Failed to delete display counter configuration",
+      "updateCounterIdFailed": "Failed to update device counter",
+      "saveSuccess": "Device display configuration saved successfully"
+    },
+    "validation": {
+      "selectCounter": "Please select a counter",
+      "selectService": "Please select a service",
+      "maxServices": "Please select at most {{max}} services",
+      "maxCounters": "Please select at most {{max}} counters"
+    },
+    "placeholder": {
+      "selectCounter": "-- Select counter --",
+      "selectService": "-- Select service --"
+    }
+  },
+  "maintenance": {
+    "altText": "Device under maintenance",
+    "title": "Device is under maintenance"
+  }
+}

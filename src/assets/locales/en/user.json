@@ -1,0 +1,96 @@
+{
+  "page": {
+    "searchPlaceholder": "Search by name, email",
+    "roles": {
+      "superadmin": "Super Admin",
+      "supadmin": "Super Admin",
+      "admin": "Admin",
+      "supervisor": "Supervisor",
+      "user": "User"
+    },
+    "labels": {
+      "supadmin": "Supadmin",
+      "systemSuffix": " (System)"
+    },
+    "messages": {
+      "deleteSuccess": "User deleted successfully!",
+      "deleteFailed": "Failed to delete user!",
+      "createSuccess": "User created successfully!",
+      "createFailed": "Failed to create user!",
+      "updateSuccess": "User updated successfully!",
+      "updateFailed": "Failed to update user!"
+    }
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "username": "Username",
+    "role": "Role",
+    "organization": "Organization",
+    "branch": "Branch",
+    "status": "Status",
+    "actions": "Actions",
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "quit": "Resigned"
+    }
+  },
+  "form": {
+    "username": "Username",
+    "usernamePlaceholder": "Enter username",
+    "name": "Name",
+    "namePlaceholder": "Enter user name",
+    "email": "Email",
+    "emailPlaceholder": "Enter email address",
+    "password": "Password",
+    "passwordPlaceholder": "Enter password",
+    "role": "Role",
+    "rolePlaceholder": "Select a role",
+    "organization": "Organization",
+    "organizationPlaceholder": "Select organization",
+    "branch": "Branch",
+    "branchPlaceholder": "Select branch",
+    "area": "Area",
+    "areaPlaceholder": "Select area",
+    "status": "Status",
+    "statusPlaceholder": "Select status",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-enter password",
+    "sections": {
+      "basicInfo": "Basic information",
+      "permissions": "Permissions"
+    },
+    "errors": {
+      "nameRequired": "Please enter full name",
+      "usernameRequired": "Please enter username",
+      "usernameFormat": "Username must contain only letters and numbers, no spaces or special characters",
+      "emailRequired": "Please enter email",
+      "passwordRequired": "Please enter password",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "roleRequired": "Please select a role",
+      "organizationRequired": "Please select organization",
+      "branchRequired": "Please select branch",
+      "areaRequired": "Please select area",
+      "confirmPasswordRequired": "Please confirm your password",
+      "confirmPasswordNotMatch": "Passwords do not match"
+    }
+  },
+  "stats": {
+    "roles": {
+      "supadmin": "Super Admin",
+      "admin": "Admin",
+      "supervisor": "Supervisor",
+      "user": "Employee"
+    },
+    "active": "Active",
+    "inactiveQuit": "Inactive / Quit",
+    "employees": "Employees"
+  },
+  "modal": {
+    "createTitle": "Create user",
+    "editTitle": "Update user",
+    "submitSuccess": "User saved successfully",
+    "submitFailed": "Failed to save user"
+  }
+}

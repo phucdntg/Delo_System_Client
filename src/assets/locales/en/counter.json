@@ -1,0 +1,200 @@
+{
+  "page": {
+    "modalCreateTitle": "Create counter",
+    "modalEditTitle": "Update counter",
+    "searchPlaceholder": "Search by counter name"
+  },
+  "table": {
+    "name": "Counter/desk name",
+    "number": "Counter/desk number",
+    "branch": "Branch",
+    "area": "Area",
+    "services": "Services",
+    "status": "Status",
+    "description": "Description",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "notAssigned": "Not assigned",
+    "moreServices": "+{{count}} more services",
+    "confirmDelete": "Confirm deletion?",
+    "showTotal": "Total {{total}} counters / desks",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "form": {
+    "addTitle": "Create counter",
+    "editTitle": "Update counter",
+    "name": "Counter/desk name",
+    "nameRequired": "Please enter counter/desk name",
+    "namePlaceholder": "Enter counter/desk name",
+    "counterNumber": "Counter number",
+    "counterNumberRequired": "Please enter counter number",
+    "counterNumberInvalid": "Counter number must be a positive integer",
+    "counterNumberPlaceholder": "Enter counter number",
+    "branch": "Branch",
+    "branchRequired": "Please select a branch",
+    "branchPlaceholder": "Select branch",
+    "area": "Area",
+    "areaRequired": "Please select an area",
+    "areaPlaceholder": "Select area",
+    "staff": "User",
+    "staffRequired": "Please select a staff",
+    "staffPlaceholder": "Select staff",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter description",
+    "status": "Status"
+  },
+  "message": {
+    "createSuccess": "Counter created successfully",
+    "createFailed": "Failed to create counter",
+    "updateSuccess": "Counter updated successfully",
+    "updateFailed": "Failed to update counter",
+    "deleteSuccess": "Counter deleted successfully",
+    "deleteFailed": "Failed to delete counter"
+  },
+  "placeholder": {
+    "selectBranch": "-- Select branch --",
+    "selectArea": "-- Select area --",
+    "selectUser": "-- Select user --"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "filter": {
+    "areaPlaceholder": "Select area",
+    "servicePlaceholder": "Select service",
+    "statusPlaceholder": "Status",
+    "allAreas": "All areas",
+    "allServices": "All services",
+    "allStatus": "All statuses",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "card": {
+    "currentNumber": "Current number"
+  },
+  "staff": {
+    "loading": "Loading interface data...",
+    "header": {
+      "counterName": "Counter"
+    },
+    "currentNumber": "Current number",
+    "recalledTime": "Recall count",
+    "served": "Served",
+    "averageProcessingTime": "Average processing time",
+    "actions": {
+      "callNext": "Call next",
+      "recall": "Recall",
+      "skip": "Skip",
+      "callSkipped": "Call skipped",
+      "callPriority": "Call priority",
+      "transfer": "Transfer",
+      "newNumber": "Get new number",
+      "complete": "Complete"
+    },
+    "menu": {
+      "pause": "Pause",
+      "logout": "Logout"
+    },
+    "transferModal": {
+      "title": "Transfer service",
+      "currentNumber": "Current number",
+      "searchDepartmentOrService": "Search department or service",
+      "enterDepartmentOrServiceName": "Enter department or service name",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "transfering": "Transferring",
+      "transferCompleted": "Service transferred successfully",
+      "noti": "Notification",
+      "notiMessage": "Please select a service to transfer"
+    },
+    "takeNumberModal": {
+      "title": "Get a new queue number for customer",
+      "selectServiceNewNumber": "Select a service to get a new number",
+      "selectService": "Select service",
+      "confirm": "Confirm & Print",
+      "cancel": "Cancel",
+      "noti": "Notification",
+      "notiMessage": "Please select a service type"
+    },
+    "completeModal": {
+      "title": "Complete service",
+      "workingStatus": "Serving",
+      "noCurrentNumber": "There is no number currently being served",
+      "completeServiceNumber": "Complete serving number",
+      "confirm": "Complete",
+      "cancel": "Cancel"
+    },
+    "pauseReasonModal": {
+      "title": "Pause service reason",
+      "selectPauseReason": "Select a pause reason",
+      "noti": "Notification",
+      "notiMessage": "Please select a pause reason",
+      "confirm": "Confirm"
+    },
+    "pauseModal": {
+      "title": "Continue working",
+      "subtitle": "Your session is currently paused",
+      "paused": "Paused",
+      "continueButton": "Resume work",
+      "continueHint": "Click to return to serving customers"
+    },
+    "pauseReasonLabels": [
+      {
+        "value": "1",
+        "label": "Meeting"
+      },
+      {
+        "value": "2",
+        "label": "Lunch"
+      },
+      {
+        "value": "3",
+        "label": "Handling work"
+      },
+      {
+        "value": "4",
+        "label": "Handling tickets"
+      },
+      {
+        "value": "5",
+        "label": "Training"
+      },
+      {
+        "value": "6",
+        "label": "Restroom"
+      }
+    ],
+    "queueList": {
+      "nextNumber": "Next number",
+      "totalWaiting": "Total waiting",
+      "priorityWaiting": "Priority waiting",
+      "skippedNumber": "Skipped number",
+      "searchSkipped": "Search skipped number",
+      "clearAll": "Clear all",
+      "loading": "Loading..."
+    },
+    "notify": {
+      "title": "Notification",
+      "recallLimitReached": "Recall limit reached",
+      "noNumberToRecall": "No current number to recall",
+      "queueEmpty": "Queue is empty",
+      "noSkippedNumbersToRecall": "No skipped numbers to recall",
+      "noSkippedNumbersInList": "No skipped numbers in list",
+      "calling": "Currently calling, please wait !",
+      "noNumberServing": "No current number to serve!"
+    },
+    "pauseSuccess": "Paused serving successfully",
+    "pauseError": "Failed to update pause status",
+    "continueError": "Failed to update continue status",
+    "confirmModal": {
+      "skipNumber": "Are you sure you want to skip the current number?",
+      "callSpecificNumber": "Are you sure you want to call this number?",
+      "clearAllSkippedNumbers": "Are you sure you want to clear all skipped numbers?",
+      "removeSkippedNumber": "Are you sure you want to remove this skipped number?"
+    }
+  }
+}

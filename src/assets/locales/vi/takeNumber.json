@@ -1,0 +1,34 @@
+{
+  "title": "hệ thống lấy số tự động",
+  "loadingText": "Đang lấy số thứ tự vui lòng đợi trong giây lát",
+  "service": "Dịch vụ",
+  "queueNumber": "Số thứ tự của quý khách",
+  "triageArea": "Khu vực phân loại",
+  "triageCounter": "QUẦY PHÂN LOẠI KHÁM",
+  "triageCounterName": "QUẦY PHÂN LOẠI DỊCH VỤ",
+  "waitMessage": "Vui lòng chờ đến lượt gọi số của quý khách",
+  "wishHealth": "Chúc quý khách sức khỏe",
+  "patientInstructions": "Quý khách vui lòng nhanh chóng đến quầy",
+  "serviceClosed": "Dịch vụ này hiện không có quầy tiếp thị",
+  "serviceSuspended": "Dịch vụ này tạm ngừng hoạt động",
+  "checkStatusError": "Không thể kiểm tra trạng thái quầy",
+  "suspended": "Tạm ngừng",
+  "panel": {
+    "title": "HỆ THỐNG LẤY SỐ THỨ TỰ",
+    "subtitle": "Vui lòng chọn loại hình khám bệnh của quý khách:",
+    "serviceTypes": {
+      "bhyt": {
+        "label": "Khám BHYT",
+        "sub": "(Bảo hiểm y tế)"
+      },
+      "thuong": {
+        "label": "Khám thường",
+        "sub": ""
+      },
+      "dichvu": {
+        "label": "Khám dịch vụ",
+        "sub": ""
+      }
+    }
+  }
+}

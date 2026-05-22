@@ -1,10 +1,15 @@
 import axios from "axios";
-import { SYSTEM_CONSTANTS } from "../constants/system.constant";
-
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import {
+  ACCESS_TOKEN,
+  ORG_ID,
+  PATH,
+  REFRESH_TOKEN,
+  USER_INFO,
+} from "../../shared/constants/systemConstants";
+import { config } from "../config";
 
 const instance = axios.create({
-  baseURL,
+  baseURL: config.baseUrl,
   timeout: 15000,
 });
 
@@ -25,7 +30,7 @@ const processQueue = (error, token = null) => {
 
 instance.interceptors.request.use(
   (cfg) => {
-    const token = localStorage.getItem(SYSTEM_CONSTANTS.ACCESS_TOKEN);
+    const token = localStorage.getItem(ACCESS_TOKEN);
     if (token) cfg.headers.Authorization = `Bearer ${token}`;
     return cfg;
   },
@@ -40,11 +45,11 @@ instance.interceptors.response.use(
 
     if (status === 401 && preReq && !preReq._retry) {
       if (preReq.url?.includes("/auth/refresh-token")) {
-        localStorage.removeItem(SYSTEM_CONSTANTS.ACCESS_TOKEN);
-        localStorage.removeItem(SYSTEM_CONSTANTS.REFRESH_TOKEN);
-        localStorage.removeItem(SYSTEM_CONSTANTS.QMS_USER);
-        localStorage.removeItem(SYSTEM_CONSTANTS.ORG_ID);
-        window.location.href = "/";
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        localStorage.removeItem(USER_INFO);
+        localStorage.removeItem(ORG_ID);
+        window.location.href = PATH.AUTH;
         return Promise.reject(error);
       }
 
@@ -62,26 +67,28 @@ instance.interceptors.response.use(
       preReq._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem(SYSTEM_CONSTANTS.REFRESH_TOKEN);
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN);
 
       if (!refreshToken) {
-        localStorage.removeItem(SYSTEM_CONSTANTS.ACCESS_TOKEN);
-        localStorage.removeItem(SYSTEM_CONSTANTS.QMS_USER);
-        localStorage.removeItem(SYSTEM_CONSTANTS.ORG_ID);
-        window.location.href = "/";
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(USER_INFO);
+        localStorage.removeItem(ORG_ID);
+        window.location.href = PATH.AUTH;
         return Promise.reject(error);
       }
 
       try {
-        const response = await axios.post(`${baseURL}/auth/refresh-token`, {
-          refreshToken: refreshToken,
-        });
+        const response = await axios.post(
+          `${config.baseUrl}/auth/refresh-token`,
+          {
+            refreshToken: refreshToken,
+          },
+        );
 
         const { access_token } = response.data?.data;
-        localStorage.setItem(SYSTEM_CONSTANTS.ACCESS_TOKEN, access_token);
+        localStorage.setItem(ACCESS_TOKEN, access_token);
         preReq.headers.Authorization = `Bearer ${access_token}`;
-        preReq.headers[SYSTEM_CONSTANTS.HEADER_ORG_ID] =
-          localStorage.getItem(SYSTEM_CONSTANTS.ORG_ID) || "0";
+        preReq.headers[HEADER_ORG_ID] = localStorage.getItem(ORG_ID) || "0";
         processQueue(null, access_token);
 
         isRefreshing = false;
@@ -90,11 +97,11 @@ instance.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         isRefreshing = false;
-        localStorage.removeItem(SYSTEM_CONSTANTS.ACCESS_TOKEN);
-        localStorage.removeItem(SYSTEM_CONSTANTS.REFRESH_TOKEN);
-        localStorage.removeItem(SYSTEM_CONSTANTS.QMS_USER);
-        localStorage.removeItem(SYSTEM_CONSTANTS.ORG_ID);
-        window.location.href = "/";
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        localStorage.removeItem(USER_INFO);
+        localStorage.removeItem(ORG_ID);
+        window.location.href = PATH.AUTH;
 
         return Promise.reject(err);
       }

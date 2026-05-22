@@ -1,0 +1,214 @@
+﻿{
+  "modal": {
+    "addTitle": "Create Branch",
+    "editTitle": "Update Branch",
+    "audioConfigTitle": "Audio Configuration",
+    "audioConfigTitleWithName": "Audio Configuration - {name}"
+  },
+  "search": {
+    "placeholder": "Search by branch name and address"
+  },
+  "table": {
+    "id": "ID",
+    "name": "Branch Name",
+    "address": "Address",
+    "phoneNumber": "Phone Number",
+    "status": "Status",
+    "actions": "Actions",
+    "configAudioTooltip": "Configure audio"
+  },
+  "form": {
+    "name": "Branch Name",
+    "address": "Address",
+    "phoneNumber": "Phone Number",
+    "status": "Status",
+    "useAudioDefault": "Use audio default",
+    "useAudioDefaultTooltip": "If enabled, this branch will use the system default audio set.",
+    "placeholder": {
+      "name": "Example: VinMec Saigon",
+      "address": "Example: 123 ABC Street, District 1, HCMC",
+      "phoneNumber": "Example: +8428xxxxxxx",
+      "notification": "Message displayed on the central screen..."
+    },
+    "validation": {
+      "nameRequired": "Please enter branch name!",
+      "addressRequired": "Please enter address",
+      "phoneRequired": "Please enter phone number"
+    }
+  },
+  "message": {
+    "createSuccess": "Branch created successfully",
+    "updateSuccess": "Branch updated successfully",
+    "createFailed": "Failed to create branch",
+    "updateFailed": "Failed to update branch information",
+    "deleteSuccess": "Branch deleted successfully",
+    "deleteFailed": "Failed to delete branch",
+    "saveFailed": "Failed to save branch"
+  },
+  "confirm": {
+    "deleteBranch": "Are you sure you want to delete this branch?"
+  },
+  "audio": {
+    "sortableItem": {
+      "removeTooltip": "Remove this item",
+      "typeFixed": "Fixed",
+      "typeKey": "Key",
+      "typeParam": "Param",
+      "delayPrefix": "Delay"
+    },
+    "misc": {
+      "withFileUpload": " and upload file",
+      "fieldNameMap": {
+        "key": "Key",
+        "label": "Label",
+        "readingType": "Reading Type",
+        "delayTime": "Delay",
+        "filename": "Filename"
+      }
+    },
+    "tabs": {
+      "templates": "Templates",
+      "fixedAudios": "Fixed Vocabulary",
+      "keyAudios": "Template Keys",
+      "paramAudios": "Dynamic Parameters"
+    },
+    "actions": {
+      "createFixedAudio": "Create Fixed Audio",
+      "createKeyAudio": "Create Key Audio",
+      "createParamAudio": "Create Param Audio",
+      "uploadAudio": "Upload Audio",
+      "playTest": "Play (Test)",
+      "previewTemplate": "Preview Template",
+      "addKey": "Add key",
+      "createTemplate": "Create New Template",
+      "createKey": "Create new key",
+      "createParam": "Create new param"
+    },
+    "manager": {
+      "columns": {
+        "key": "Key",
+        "label": "Label",
+        "readingType": "Reading Type",
+        "delay": "Delay (ms)",
+        "filename": "Filename",
+        "template": "Template",
+        "listen": "Listen",
+        "delete": "Delete"
+      },
+      "readingOptions": {
+        "seamlessly": "Seamlessly",
+        "separately": "Separately"
+      },
+      "fileStatus": {
+        "missingFile": "-- Missing File --",
+        "none": "-- None --",
+        "invalidId": "Invalid ID",
+        "templateIdTooltip": "Template ID: {id}",
+        "protectionTooltip": "Fixed audio or audio currently used in a Template cannot be deleted"
+      }
+    },
+    "templateBuilder": {
+      "buttons": {
+        "createTemplate": "Create New Template",
+        "playTest": "Play (Test)",
+        "createKey": "Create New Key",
+        "createParam": "Create New Param"
+      },
+      "table": {
+        "id": "ID",
+        "description": "Description",
+        "items": "Items",
+        "actions": "Actions"
+      },
+      "modal": {
+        "editTitle": "Edit Template: ",
+        "createTitle": "Create New Template",
+        "descriptionLabel": "Template Description:",
+        "descriptionPlaceholder": "Enter template description",
+        "previewTitle": "Preview:",
+        "emptyTemplate": "No items have been added yet.",
+        "templateNameMissing": "Please enter a description.",
+        "audioKeyMissingId": "ID not found for Key: ",
+        "saveConfirmTitleUpdate": "Update Template",
+        "saveConfirmTitleSave": "Save Template",
+        "saveConfirmContentUpdate": "Are you sure you want to update template \"{{name}}\" with the current configuration?",
+        "saveConfirmContentSave": "Are you sure you want to save template \"{{name}}\" with the current configuration?"
+      },
+      "card": {
+        "searchPlaceholder": "Search key",
+        "templateItemsTitle": "Template Items (Drag and drop to reorder)",
+        "emptyList": "-- Empty --",
+        "availableKeysParams": "Available Keys/Params"
+      },
+      "messages": {
+        "quickCreateSuccess": "Successfully created Audio Key/Param: ",
+        "noAudioFound": "No playable audio files found in the template.",
+        "playingInfo": "Playing {{count}} file(s)...",
+        "playComplete": "Template playback complete.",
+        "playError": "Audio playback error: "
+      }
+    },
+    "quickCreateModal": {
+      "titleKey": "Quick Create New Audio Key",
+      "titleParam": "Quick Create New Audio Param",
+      "labelKey": "Key (e.g., 'welcome')",
+      "labelLabel": "Label",
+      "labelReadingType": "Reading Type",
+      "labelDelayTime": "Delay (ms)",
+      "labelAudioFile": "Audio File (.wav)",
+      "selectFileButton": "Select File",
+      "validation": {
+        "keyRequired": "Please enter the Key!",
+        "labelRequired": "Please enter the Label!",
+        "readingTypeRequired": "Please select Reading Type!",
+        "audioFileRequired": "Please upload an audio file for the Key!",
+        "onlyOneFileAllowed": "Only 1 file can be selected.",
+        "formInvalid": "Please check required fields."
+      }
+    },
+    "createAudioModal": {
+      "title": "Create New Audio",
+      "keyLabel": "Key (e.g., \u0027welcome\u0027, \u00270\u0027, \u0027{number}\u0027)",
+      "descriptionLabel": "Description",
+      "readingTypeLabel": "Reading Type",
+      "delayLabel": "Delay (ms)",
+      "uploadLabel": "Optional: Upload Audio File (.wav)",
+      "selectFileButton": "Select File",
+      "validation": {
+        "keyRequired": "Please enter the Key!",
+        "labelRequired": "Please enter the Label!",
+        "readingTypeRequired": "Please select reading type!",
+        "onlyOneFileAllowed": "Only 1 file can be selected."
+      }
+    },
+    "notifications": {
+      "updateMetadataSuccess": "Metadata updated successfully!",
+      "updateMetadataError": "Failed to update metadata",
+      "uploadAudioSuccess": "Audio uploaded/overwritten for key: {key}",
+      "uploadAudioError": "Failed to upload audio",
+      "deleteAudioSuccess": "Audio deleted successfully",
+      "deleteAudioError": "Failed to delete audio",
+      "createAudioSuccess": "Audio Key \"{key}\" created successfully.",
+      "createAudioError": "Failed to create Audio Key.",
+      "quickCreateAudioError": "Quick create failed for Audio {type} Key: {key}",
+      "deleteTemplateSuccess": "Template deleted successfully",
+      "deleteTemplateError": "Failed to delete template",
+      "saveTemplateSuccess": "Template saved successfully!",
+      "saveTemplateError": "Failed to save template"
+    },
+    "confirm": {
+      "createAudioTitle": "Confirm creating Audio {type}",
+      "createAudioContent": "Are you sure you want to create Audio Key \"{key}\" of type {type}{uploadStatus}?",
+      "quickCreateTitle": "Confirm quick create {type}",
+      "quickCreateContent": "Are you sure you want to quick create Audio {type} Key \"{key}\"?",
+      "updateMetadataTitle": "Confirm update {fieldName}",
+      "updateMetadataContent": "Do you want to change {fieldName} to \"{value}\" (ID: {id})?",
+      "overwriteAudioTitle": "Confirm overwrite audio",
+      "overwriteAudioContent": "Are you sure you want to upload and overwrite audio file for key \"{key}\"?",
+      "deleteAudioTitle": "Confirm delete audio",
+      "deleteAudioContent": "Are you sure you want to delete audio key ID: {id}?",
+      "deleteTemplateTitle": "Confirm delete template",
+      "deleteTemplateContent": "Are you sure you want to delete template ID: {id}?"
+    }
+  }
+}

@@ -1,0 +1,214 @@
+﻿{
+  "modal": {
+    "addTitle": "Thêm chi nhánh mới",
+    "editTitle": "Chỉnh sửa chi nhánh",
+    "audioConfigTitle": "Cấu hình âm thanh",
+    "audioConfigTitleWithName": "Cấu hình âm thanh - {name}"
+  },
+  "search": {
+    "placeholder": "Tìm theo tên chi nhánh hoặc địa chỉ"
+  },
+  "table": {
+    "id": "ID",
+    "name": "Tên chi nhánh",
+    "address": "Địa chỉ",
+    "phoneNumber": "Số điện thoại",
+    "status": "Trạng thái",
+    "actions": "Thao tác",
+    "configAudioTooltip": "Cấu hình âm thanh"
+  },
+  "form": {
+    "name": "Tên chi nhánh",
+    "address": "Địa chỉ",
+    "phoneNumber": "Số điện thoại",
+    "status": "Trạng thái",
+    "useAudioDefault": "Sử dụng âm thanh mặc định",
+    "useAudioDefaultTooltip": "Nếu bật, chi nhánh này sẽ sử dụng bộ âm thanh mặc định của hệ thống.",
+    "placeholder": {
+      "name": "Ví dụ: Vinmec Sài Gòn",
+      "address": "Ví dụ: Số 123 đường ABC, Quận 1, TP.HCM",
+      "phoneNumber": "Ví dụ: 028xxxxxxx",
+      "notification": "Thông báo hiển thị trên màn hình trung tâm..."
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên chi nhánh!",
+      "addressRequired": "Vui lòng nhập địa chỉ!",
+      "phoneRequired": "Vui lòng nhập số điện thoại!"
+    }
+  },
+  "message": {
+    "createSuccess": "Thêm chi nhánh mới thành công",
+    "updateSuccess": "Cập nhật chi nhánh thành công",
+    "createFailed": "Thêm chi nhánh mới thất bại",
+    "updateFailed": "Cập nhật thông tin chi nhánh thất bại",
+    "deleteSuccess": "Xóa chi nhánh thành công",
+    "deleteFailed": "Xóa chi nhánh thất bại",
+    "saveFailed": "Lưu chi nhánh thất bại"
+  },
+  "confirm": {
+    "deleteBranch": "Bạn có chắc chắn muốn xóa chi nhánh này không?"
+  },
+  "audio": {
+    "sortableItem": {
+      "removeTooltip": "Xóa mục này",
+      "typeFixed": "Cố định",
+      "typeKey": "Từ khóa",
+      "typeParam": "Tham số",
+      "delayPrefix": "Độ trễ"
+    },
+    "misc": {
+      "withFileUpload": " và tải tệp lên",
+      "fieldNameMap": {
+        "key": "Từ khóa",
+        "label": "Nhãn",
+        "readingType": "Cách đọc",
+        "delayTime": "Độ trễ",
+        "filename": "Tên tệp"
+      }
+    },
+    "tabs": {
+      "templates": "Mẫu câu",
+      "fixedAudios": "Âm thanh cố định",
+      "keyAudios": "Từ khóa",
+      "paramAudios": "Tham số động"
+    },
+    "actions": {
+      "createFixedAudio": "Tạo âm thanh cố định",
+      "createKeyAudio": "Tạo âm thanh theo từ khóa",
+      "createParamAudio": "Tạo âm thanh theo tham số",
+      "uploadAudio": "Tải lên âm thanh",
+      "playTest": "Phát thử",
+      "previewTemplate": "Nghe thử mẫu",
+      "addKey": "Thêm từ khóa",
+      "createTemplate": "Tạo mẫu câu mới",
+      "createKey": "Tạo từ khóa mới",
+      "createParam": "Tạo tham số mới"
+    },
+    "manager": {
+      "columns": {
+        "key": "Từ khóa",
+        "label": "Nhãn",
+        "readingType": "Cách đọc",
+        "delay": "Độ trễ (ms)",
+        "filename": "Tên tệp",
+        "template": "Mẫu câu",
+        "listen": "Nghe",
+        "delete": "Xóa"
+      },
+      "readingOptions": {
+        "seamlessly": "Đọc liền mạch",
+        "separately": "Đọc riêng"
+      },
+      "fileStatus": {
+        "missingFile": "-- Thiếu tệp --",
+        "none": "-- Không có --",
+        "invalidId": "ID không hợp lệ",
+        "templateIdTooltip": "ID mẫu câu: {id}",
+        "protectionTooltip": "Âm thanh cố định hoặc đang được sử dụng trong mẫu câu không thể xóa"
+      }
+    },
+    "templateBuilder": {
+      "buttons": {
+        "createTemplate": "Tạo mẫu câu mới",
+        "playTest": "Phát (kiểm tra)",
+        "createKey": "Tạo từ khóa mới",
+        "createParam": "Tạo tham số mới"
+      },
+      "table": {
+        "id": "ID",
+        "description": "Mô tả",
+        "items": "Thành phần",
+        "actions": "Thao tác"
+      },
+      "modal": {
+        "editTitle": "Chỉnh sửa mẫu câu:",
+        "createTitle": "Tạo mẫu câu mới",
+        "descriptionLabel": "Mô tả mẫu câu:",
+        "descriptionPlaceholder": "Nhập mô tả mẫu câu",
+        "previewTitle": "Xem trước:",
+        "emptyTemplate": "Chưa có thành phần nào được thêm.",
+        "templateNameMissing": "Vui lòng nhập mô tả.",
+        "audioKeyMissingId": "Không tìm thấy ID cho từ khóa:",
+        "saveConfirmTitleUpdate": "Cập nhật mẫu câu",
+        "saveConfirmTitleSave": "Lưu mẫu câu",
+        "saveConfirmContentUpdate": "Bạn có chắc chắn muốn cập nhật mẫu câu \"{{name}}\" với cấu hình hiện tại không?",
+        "saveConfirmContentSave": "Bạn có chắc chắn muốn lưu mẫu câu \"{{name}}\" với cấu hình hiện tại không?"
+      },
+      "card": {
+        "searchPlaceholder": "Tìm kiếm từ khóa",
+        "templateItemsTitle": "Các từ trong câu (kéo thả để sắp xếp)",
+        "emptyList": "-- Không có --",
+        "availableKeysParams": "Các từ / tham số có thể dùng (kéo thả vào mẫu câu)"
+      },
+      "messages": {
+        "quickCreateSuccess": "Đã tạo âm thanh từ khóa/tham số:",
+        "noAudioFound": "Không tìm thấy tệp âm thanh nào có thể phát trong mẫu câu.",
+        "playingInfo": "Đang phát {{count}} tệp...",
+        "playComplete": "Phát mẫu câu hoàn tất.",
+        "playError": "Lỗi khi phát âm thanh:"
+      }
+    },
+    "quickCreateModal": {
+      "titleKey": "Tạo nhanh âm thanh từ khóa mới",
+      "titleParam": "Tạo nhanh âm thanh tham số mới",
+      "labelKey": "Từ khóa (ví dụ: 'welcome')",
+      "labelLabel": "Nhãn",
+      "labelReadingType": "Cách đọc",
+      "labelDelayTime": "Độ trễ (ms)",
+      "labelAudioFile": "Tệp âm thanh (.wav)",
+      "selectFileButton": "Chọn tệp",
+      "validation": {
+        "keyRequired": "Vui lòng nhập từ khóa!",
+        "labelRequired": "Vui lòng nhập nhãn!",
+        "readingTypeRequired": "Vui lòng chọn cách đọc!",
+        "audioFileRequired": "Vui lòng tải lên tệp âm thanh cho từ khóa!",
+        "onlyOneFileAllowed": "Chỉ được chọn 1 tệp.",
+        "formInvalid": "Vui lòng kiểm tra lại các trường bắt buộc."
+      }
+    },
+    "createAudioModal": {
+      "title": "Tạo âm thanh mới",
+      "keyLabel": "Từ khóa (ví dụ: 'welcome', '0', '{number}')",
+      "descriptionLabel": "Mô tả",
+      "readingTypeLabel": "Cách đọc",
+      "delayLabel": "Độ trễ (ms)",
+      "uploadLabel": "Tùy chọn: Tải lên tệp âm thanh (.wav)",
+      "selectFileButton": "Chọn tệp",
+      "validation": {
+        "keyRequired": "Vui lòng nhập từ khóa!",
+        "labelRequired": "Vui lòng nhập nhãn!",
+        "readingTypeRequired": "Vui lòng chọn cách đọc!",
+        "onlyOneFileAllowed": "Chỉ được chọn 1 tệp."
+      }
+    },
+    "notifications": {
+      "updateMetadataSuccess": "Cập nhật thông tin thành công!",
+      "updateMetadataError": "Lỗi khi cập nhật thông tin",
+      "uploadAudioSuccess": "Đã tải lên/ghi đè âm thanh cho từ khóa: {key}",
+      "uploadAudioError": "Lỗi khi tải lên âm thanh",
+      "deleteAudioSuccess": "Đã xóa âm thanh thành công",
+      "deleteAudioError": "Lỗi khi xóa âm thanh",
+      "createAudioSuccess": "Đã tạo âm thanh cho từ khóa \"{key}\" thành công.",
+      "createAudioError": "Lỗi khi tạo âm thanh cho từ khóa.",
+      "quickCreateAudioError": "Lỗi khi tạo nhanh âm thanh {type} cho từ khóa: {key}",
+      "deleteTemplateSuccess": "Đã xóa mẫu câu thành công",
+      "deleteTemplateError": "Lỗi khi xóa mẫu câu",
+      "saveTemplateSuccess": "Lưu mẫu câu thành công!",
+      "saveTemplateError": "Lỗi khi lưu mẫu câu"
+    },
+    "confirm": {
+      "createAudioTitle": "Xác nhận tạo âm thanh {type}",
+      "createAudioContent": "Bạn có chắc chắn muốn tạo âm thanh cho từ khóa \"{key}\" thuộc loại {type}{uploadStatus} không?",
+      "quickCreateTitle": "Xác nhận tạo nhanh {type}",
+      "quickCreateContent": "Bạn có chắc chắn muốn tạo nhanh âm thanh {type} cho từ khóa \"{key}\" không?",
+      "updateMetadataTitle": "Xác nhận cập nhật {fieldName}",
+      "updateMetadataContent": "Bạn có muốn thay đổi {fieldName} thành \"{value}\" (ID: {id}) không?",
+      "overwriteAudioTitle": "Xác nhận ghi đè âm thanh",
+      "overwriteAudioContent": "Bạn có chắc chắn muốn tải lên và ghi đè tệp âm thanh mới cho từ khóa \"{key}\" không?",
+      "deleteAudioTitle": "Xác nhận xóa âm thanh",
+      "deleteAudioContent": "Bạn có chắc chắn muốn xóa âm thanh có ID: {id} này không?",
+      "deleteTemplateTitle": "Xác nhận xóa mẫu câu",
+      "deleteTemplateContent": "Bạn có chắc chắn muốn xóa mẫu câu có ID: {id} này không?"
+    }
+  }
+}
