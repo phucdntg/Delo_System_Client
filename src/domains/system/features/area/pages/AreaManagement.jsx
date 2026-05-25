@@ -1,13 +1,12 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, message, Popconfirm, Space, Tag } from "antd";
-import { useForm } from "antd/es/form/Form";
-import { useMemo } from "react";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
-import { useTranslate } from "@core/providers/TranslateProvider";
 import { useAuth } from "@core/providers/AuthProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
 import ModalShared from "@shared/components/ModalShared";
 import TableShared from "@shared/components/TableShared";
+import { Button, message, Popconfirm, Space, Tag } from "antd";
+import { useForm } from "antd/es/form/Form";
 import AreaForm from "../components/AreaForm";
 import {
   useCreateAreaMutation,
@@ -36,12 +35,6 @@ export default function AreaManagement() {
     search: searchTerm.length > 0 ? "name" : null,
     keyword: searchTerm,
     pagination,
-  });
-
-  const { data: inactiveAreas } = useFetchAreasQuery({
-    filter: {
-      isActive: false,
-    },
   });
 
   const [createArea, { isLoading: isCreating }] = useCreateAreaMutation();

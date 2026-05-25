@@ -27,7 +27,7 @@ export const buildParams = ({
   search,
   sort,
   order,
-  filter,
+  filters,
   pagination,
 } = {}) => {
   const params = {};
@@ -40,8 +40,8 @@ export const buildParams = ({
 
   if (keyword != null && keyword !== "") params.keyword = keyword;
   if (search != null && search !== "") params.search = search;
-  if (filter) {
-    Object.assign(params, objectToDotQuery(filter));
+  if (filters) {
+    Object.assign(params, objectToDotQuery(filters));
   }
   if (sort) params.sort = sort;
   if (order) params.order = order;

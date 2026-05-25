@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@domains/system": ["src/domains/system/index.js"],
+      "@domains/qms": ["src/domains/qms/index.js"],
+      "@domains/auth": ["src/domains/auth/index.js"],
+      "@assets/*": ["src/assets/*"],
+      "@core/*": ["src/core/*"]
+    }
+  },
+  "include": ["src/**/*"]
+}

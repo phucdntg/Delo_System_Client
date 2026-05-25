@@ -1,11 +1,12 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, message, Popconfirm, Space, Tag } from "antd";
-import { useForm } from "antd/es/form/Form";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
+import { useAuth } from "@core/providers/AuthProvider";
 import { useTranslate } from "@core/providers/TranslateProvider";
 import ModalShared from "@shared/components/ModalShared";
 import TableShared from "@shared/components/TableShared";
+import { Button, message, Popconfirm, Space, Tag } from "antd";
+import { useForm } from "antd/es/form/Form";
 import BranchForm from "../components/BranchForm";
 import {
   useCreateBranchMutation,
@@ -13,7 +14,6 @@ import {
   useFetchBranchesQuery,
   useUpdateBranchMutation,
 } from "../services/branchService";
-import { useAuth } from "@core/providers/AuthProvider";
 
 export default function BranchManagement() {
   const { selectedOrg } = useAuth();
@@ -37,7 +37,7 @@ export default function BranchManagement() {
   const [deleteBranch] = useDeleteBranchMutation();
 
   const columns = [
-    { key: "id", title: "ID", dataIndex: "id", width: 100 },
+    // { key: "id", title: "ID", dataIndex: "id", width: 100 },
     {
       key: "name",
       title: translateBranchPage?.table?.name,

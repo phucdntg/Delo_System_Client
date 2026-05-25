@@ -1,8 +1,9 @@
 import { authService } from "@domains/auth";
 import {
-  branchService,
   areaService,
+  branchService,
   orgService,
+  permissionService,
   roleService,
 } from "@domains/system";
 
@@ -12,4 +13,5 @@ export const allRTKServices = {
   areaService,
   orgService,
   roleService,
+  permissionService,
 };
