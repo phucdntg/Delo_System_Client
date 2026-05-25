@@ -111,7 +111,10 @@ export function AuthProvider({ children }) {
 
     Object.values(allRTKServices).forEach((service) => {
       store.dispatch(
-        service.util.invalidateTags([{ type: "Branch", id: "LIST" }]),
+        service.util.invalidateTags([
+          { type: "Branch", id: "LIST" },
+          { type: "Area", id: "LIST" },
+        ]),
       );
     });
   }, []);

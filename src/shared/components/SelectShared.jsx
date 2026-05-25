@@ -119,7 +119,9 @@ const SelectShared = ({
   };
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div
+      style={{ position: "relative", display: "inline-block", width: "100%" }}
+    >
       <Select
         placeholder={labelReady ? placeholder : "Đang tải..."}
         showSearch={searchable}

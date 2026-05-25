@@ -77,6 +77,8 @@ export const branchService = createApi({
 
 export const {
   useFetchBranchesQuery,
+  useLazyFetchBranchesQuery,
+  useLazyFetchBranchByIdQuery,
   useFetchBranchByIdQuery,
   useCreateBranchMutation,
   useUpdateBranchMutation,

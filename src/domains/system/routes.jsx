@@ -9,6 +9,10 @@ const BranchManagement = lazy(
   () => import("./features/branch/pages/BranchManagement"),
 );
 
+const AreaManagement = lazy(
+  () => import("./features/area/pages/AreaManagement"),
+);
+
 export const systemRoutes = [
   {
     path: PATH.SYSTEM.ORG_MANAGEMENT,
@@ -19,5 +23,10 @@ export const systemRoutes = [
     path: PATH.SYSTEM.BRANCH_MANAGEMENT,
     handle: { title: "Quản lý chi nhánh" },
     element: <BranchManagement />,
+  },
+  {
+    path: PATH.SYSTEM.AREA_MANAGEMENT,
+    handle: { title: "Quản lý khu vực" },
+    element: <AreaManagement />,
   },
 ];
