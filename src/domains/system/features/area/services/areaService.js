@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../../../../core/services/axiosBaseQuery";
-import { buildParams } from "../../../../../shared/utils/queryHelper";
-import { branchService } from "../../branch/services/branchService";
+import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
+import { buildParams } from "@shared/utils/queryHelper";
+import { branchService } from "../../branch";
 
 const AREA_TAG = "Area";
 
@@ -23,20 +23,25 @@ export const areaService = createApi({
 
           if (areas.length === 0) return;
 
-          const branchIds = [...new Set(areas.map((a) => a?.branchId).filter(Boolean))];
+          const branchIds = [
+            ...new Set(areas.map((a) => a?.branchId).filter(Boolean)),
+          ];
 
           const branchPromises = branchIds.map((id) =>
             dispatch(branchService.endpoints.fetchBranchById.initiate(id)),
           );
 
-          await Promise.allSettled(branchPromises.map((promise) => promise.unwrap()));
+          await Promise.allSettled(
+            branchPromises.map((promise) => promise.unwrap()),
+          );
 
           const state = getState();
 
           const branchMap = {};
 
           branchIds.forEach((id) => {
-            const branchQuery = branchService.endpoints.fetchBranchById.select(id)(state);
+            const branchQuery =
+              branchService.endpoints.fetchBranchById.select(id)(state);
             if (branchQuery) branchMap[id] = branchQuery.data;
           });
 
@@ -49,7 +54,10 @@ export const areaService = createApi({
             }),
           );
         } catch (error) {
-          console.error("Fetching branches based on area failed with error:", error);
+          console.error(
+            "Fetching branches based on area failed with error:",
+            error,
+          );
         }
       },
       providesTags: (result) => {
@@ -69,7 +77,8 @@ export const areaService = createApi({
         url: `/areas/${id}`,
         method: "get",
       }),
-      transformResponse: (response) => (response?.success ? response?.data : {}),
+      transformResponse: (response) =>
+        response?.success ? response?.data : {},
       providesTags: (result, error, id) => [{ type: AREA_TAG, id }],
     }),
 

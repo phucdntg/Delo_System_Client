@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { useTranslate } from "../../core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
 
 const ModalShared = ({
   title,

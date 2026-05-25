@@ -14,6 +14,7 @@ const SelectShared = ({
   getLabel,
   getValue,
   value,
+  extraOptions = [],
   ...restProps
 }) => {
   const [options, setOptions] = useState([]);
@@ -56,8 +57,13 @@ const SelectShared = ({
         const existingIds = new Set(currentOptions.map((o) => getValue(o)));
         const newItems = res.data.filter((o) => !existingIds.has(getValue(o)));
         const merged = [...currentOptions, ...newItems];
-        optionsRef.current = merged;
-        setOptions(merged);
+
+        const extraIds = new Set(extraOptions.map((o) => getValue(o)));
+        const filteredMerged = merged.filter((o) => !extraIds.has(getValue(o)));
+        const final = [...extraOptions, ...filteredMerged];
+
+        optionsRef.current = final;
+        setOptions(final);
         hasMoreRef.current = currentPage < res.meta.totalPages;
         pageRef.current = currentPage + 1;
         initializedRef.current = true;
@@ -66,19 +72,30 @@ const SelectShared = ({
         setLoading(false);
       }
     },
-    [fetchFn, pageSize, getValue],
+    [fetchFn, pageSize, getValue, extraOptions],
   );
 
   const reset = useCallback(() => {
-    const seed = defaultValueItem ? [defaultValueItem] : [];
-    optionsRef.current = seed;
+    const seed = [
+      ...extraOptions,
+      ...(defaultValueItem ? [defaultValueItem] : []),
+    ];
+
+    const seen = new Set();
+    const dedupedSeed = seed.filter((o) => {
+      const v = getValue(o);
+      if (seen.has(v)) return false;
+      seen.add(v);
+      return true;
+    });
+    optionsRef.current = dedupedSeed;
     pageRef.current = 1;
     hasMoreRef.current = true;
     loadingRef.current = false;
     initializedRef.current = false;
-    setOptions(seed);
+    setOptions(dedupedSeed);
     setQuery("");
-  }, [resetKey, defaultValueItem]);
+  }, [resetKey, defaultValueItem, extraOptions]);
 
   useEffect(() => {
     reset();

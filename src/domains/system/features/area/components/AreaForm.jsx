@@ -1,12 +1,12 @@
 import { Form, Input, Switch } from "antd";
 import { useLayoutEffect } from "react";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
-import { useAuth } from "../../../../../core/providers/AuthProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
+import { useAuth } from "@core/providers/AuthProvider";
 import {
   useLazyFetchBranchesQuery,
   useLazyFetchBranchByIdQuery,
-} from "../../branch/services/branchService";
-import SelectShared from "../../../../../shared/components/SelectShared";
+} from "../../branch";
+import SelectShared from "@shared/components/SelectShared";
 
 const AreaForm = ({ form, initialValue }) => {
   const { translate } = useTranslate();
@@ -51,6 +51,10 @@ const AreaForm = ({ form, initialValue }) => {
       form.setFieldsValue({
         isActive: true,
         ...initialValue,
+      });
+    } else {
+      form.setFieldsValue({
+        isActive: true,
       });
     }
 

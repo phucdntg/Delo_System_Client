@@ -1,6 +1,6 @@
 import { Form, Input, Switch } from "antd";
 import { useLayoutEffect } from "react";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
 
 const OrganizationForm = ({ form, initialValue }) => {
   const { translate } = useTranslate();

@@ -1,6 +1,6 @@
 import { Empty, Input, Table } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslate } from "../../core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
 import "../../styles/table-shared.css";
 
 const TableShared = ({

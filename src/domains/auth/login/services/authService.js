@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../../../core/services/axiosBaseQuery";
+import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 
 export const authService = createApi({
   reducerPath: "authApi",

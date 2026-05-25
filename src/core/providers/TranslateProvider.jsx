@@ -1,13 +1,13 @@
 import { createContext, useContext, useState } from "react";
-import { LANGUAGE } from "../../shared/constants/systemConstants";
-import { toNamespaceObject } from "../../shared/utils/translateHelper";
+import { LANGUAGE } from "@shared/constants/systemConstants";
+import { toNamespaceObject } from "@shared/utils/translateHelper";
 
 const TranslateContext = createContext();
 
-const viNamespaceModules = import.meta.glob("../../assets/locales/vi/*.json", {
+const viNamespaceModules = import.meta.glob("@assets/locales/vi/*.json", {
   eager: true,
 });
-const enNamespaceModules = import.meta.glob("../../assets/locales/en/*.json", {
+const enNamespaceModules = import.meta.glob("@assets/locales/en/*.json", {
   eager: true,
 });
 

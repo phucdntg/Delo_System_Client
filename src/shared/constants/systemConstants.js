@@ -22,6 +22,7 @@ export const PATH = {
     ORG_MANAGEMENT: "organizations",
     BRANCH_MANAGEMENT: "branches",
     AREA_MANAGEMENT: "areas",
+    ROLE_MANAGEMENT: "roles",
   },
   QMS: {
     BASE: "/qms",

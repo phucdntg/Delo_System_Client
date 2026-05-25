@@ -23,6 +23,16 @@ const Header = () => {
 
   const { user, selectedOrg, saveSelectedOrg, logout } = useAuth();
 
+  const isSuperUser = useMemo(
+    () => user?.roleId === 0 || user?.organizationId === 0,
+    [user],
+  );
+
+  const extraOptions = useMemo(
+    () => (user ? [{ id: 0, name: user.username }] : []),
+    [user],
+  );
+
   const fetchFn = async (page, pageSize, query) => {
     try {
       const res = await fetchOrg({
@@ -101,22 +111,25 @@ const Header = () => {
           </button>
 
           <div className="flex items-center gap-2">
-            <SelectShared
-              value={selectedOrg}
-              style={{ width: 200 }}
-              placeholder="-- Chọn tổ chức --"
-              fetchFn={fetchFn}
-              fetchItemById={fetchOrgDetail}
-              defaultId={selectedOrg}
-              pageSize={10}
-              searchable={true}
-              getLabel={(item) => item.name}
-              getValue={(item) => item.id}
-              onChange={(item) => {
-                saveSelectedOrg(item);
-              }}
-              resetKey={defaultOrgItem?.id}
-            />
+            {isSuperUser && user && extraOptions && (
+              <SelectShared
+                value={selectedOrg}
+                style={{ width: 200 }}
+                placeholder="-- Chọn tổ chức --"
+                fetchFn={fetchFn}
+                fetchItemById={fetchOrgDetail}
+                defaultId={selectedOrg}
+                pageSize={10}
+                searchable={true}
+                getLabel={(item) => item.name}
+                getValue={(item) => item.id}
+                onChange={(item) => {
+                  saveSelectedOrg(item);
+                }}
+                resetKey={defaultOrgItem?.id}
+                extraOptions={extraOptions}
+              />
+            )}
 
             <Select
               style={{ width: 60 }}

@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../../../../core/services/axiosBaseQuery";
-import { buildParams } from "../../../../../shared/utils/queryHelper";
+import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
+import { buildParams } from "@shared/utils/queryHelper";
 
 const ORG_TAG = "Org";
 

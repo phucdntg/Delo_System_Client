@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { PATH } from "../../../shared/constants/systemConstants";
+import { PATH } from "@shared/constants/systemConstants";
 import { useAuth } from "../../providers/AuthProvider";
 
 export default function ProtectedRoute({ children }) {

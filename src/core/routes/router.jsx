@@ -2,10 +2,11 @@ import { lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { systemRoutes } from "../../domains/system/routes";
-import { PATH } from "../../shared/constants/systemConstants";
+import { PATH } from "@shared/constants/systemConstants";
 import MainLayout from "../layouts/MainLayout";
 import RouteTitleSync from "./RouteTitleSync";
 import ProtectedRoute from "./guards/ProtectedRoute";
+import RequireOrgGuard from "./guards/RequireOrgGuard";
 
 const LoginPage = lazy(
   () => import("../../domains/auth/login/pages/LoginPage"),
@@ -59,7 +60,11 @@ const routes = [
                 element: (
                   <ErrorBoundary>
                     <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>{route.element}</ProtectedRoute>
+                      <ProtectedRoute>
+                        <RequireOrgGuard required={route.requireOrg}>
+                          {route.element}
+                        </RequireOrgGuard>
+                      </ProtectedRoute>
                     </Suspense>
                   </ErrorBoundary>
                 ),

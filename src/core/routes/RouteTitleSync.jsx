@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMatches } from "react-router-dom";
-import { APP_NAME } from "../../shared/constants/systemConstants";
+import { APP_NAME } from "@shared/constants/systemConstants";
 
 export default function RouteTitleSync() {
   const matches = useMatches();

@@ -1,10 +1,10 @@
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import LoginBackground from "../../../../assets/images/bg-auth.jpg";
-import LogoDefault from "../../../../assets/images/logo-default.png";
-import { useAuth } from "../../../../core/providers/AuthProvider";
-import { PATH } from "../../../../shared/constants/systemConstants";
+import LoginBackground from "@assets/images/bg-auth.jpg";
+import LogoDefault from "@assets/images/logo-default.png";
+import { useAuth } from "@core/providers/AuthProvider";
+import { PATH } from "@shared/constants/systemConstants";
 import {
   useLazyGetCurrentUserQuery,
   useLoginMutation,

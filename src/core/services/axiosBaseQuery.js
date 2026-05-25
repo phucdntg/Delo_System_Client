@@ -1,4 +1,4 @@
-import { DEVICE_ID, ORG_ID } from "../../shared/constants/systemConstants";
+import { DEVICE_ID, ORG_ID } from "@shared/constants/systemConstants";
 import axios from "./axios";
 
 export const axiosBaseQuery =

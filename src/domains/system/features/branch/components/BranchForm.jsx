@@ -1,6 +1,6 @@
 import { Form, Input, Switch } from "antd";
 import { useLayoutEffect } from "react";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/TranslateProvider";
 
 const BranchForm = ({ form, initialValue }) => {
   const { translate } = useTranslate();
@@ -9,8 +9,11 @@ const BranchForm = ({ form, initialValue }) => {
   useLayoutEffect(() => {
     if (initialValue) {
       form.setFieldsValue({
-        isActive: true,
         ...initialValue,
+      });
+    } else {
+      form.setFieldsValue({
+        isActive: true,
       });
     }
 
@@ -57,6 +60,10 @@ const BranchForm = ({ form, initialValue }) => {
           {
             required: true,
             message: translateBranch?.form?.validation?.phoneRequired,
+          },
+          {
+            pattern: /^(\+84|0)(3[2-9]|5[6-9]|7[06-9]|8[0-9]|9[0-9])\d{7}$/,
+            message: translateBranch?.form?.validation?.phoneInvalid,
           },
         ]}
       >

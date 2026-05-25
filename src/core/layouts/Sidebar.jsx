@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { PiBuilding, PiBuildingApartment } from "react-icons/pi";
 import { SlOrganization } from "react-icons/sl";
 import { Link, NavLink } from "react-router";
-import LogoDefault from "../../assets/images/logo-default.png";
-import { PATH } from "../../shared/constants/systemConstants";
+import LogoDefault from "@assets/images/logo-default.png";
+import { PATH } from "@shared/constants/systemConstants";
 import { useAuth } from "../providers/AuthProvider";
 import { useSidebar } from "../providers/SidebarProvider";
+import { GoShieldCheck } from "react-icons/go";
 
 const MENU_ITEMS = [
   {
@@ -22,6 +23,11 @@ const MENU_ITEMS = [
     label: "Quản lý khu vực",
     path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.AREA_MANAGEMENT}`,
     icon: <PiBuilding />,
+  },
+  {
+    label: "Quản lý vai trò",
+    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ROLE_MANAGEMENT}`,
+    icon: <GoShieldCheck />,
   },
 ];
 

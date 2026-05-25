@@ -17,5 +17,24 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@domains/system/features/*", "@domains/qms/features/*"],
+              message:
+                "❌ Không được import thẳng vào internal. Chỉ dùng Public API.",
+            },
+            {
+              group: ["../*/services/*", "../*/hooks/*", "../*/store/*"],
+              message:
+                "❌ Không được import thẳng vào internal của feature khác. Dùng Public API.",
+            },
+          ],
+        },
+      ],
+    },
   },
 ]);

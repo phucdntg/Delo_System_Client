@@ -25,7 +25,7 @@
     "useAudioDefault": "Sử dụng âm thanh mặc định",
     "useAudioDefaultTooltip": "Nếu bật, chi nhánh này sẽ sử dụng bộ âm thanh mặc định của hệ thống.",
     "placeholder": {
-      "name": "Ví dụ: Vinmec Sài Gòn",
+      "name": "Ví dụ: Chi nhánh TP.HCM",
       "address": "Ví dụ: Số 123 đường ABC, Quận 1, TP.HCM",
       "phoneNumber": "Ví dụ: 028xxxxxxx",
       "notification": "Thông báo hiển thị trên màn hình trung tâm..."
@@ -33,7 +33,8 @@
     "validation": {
       "nameRequired": "Vui lòng nhập tên chi nhánh!",
       "addressRequired": "Vui lòng nhập địa chỉ!",
-      "phoneRequired": "Vui lòng nhập số điện thoại!"
+      "phoneRequired": "Vui lòng nhập số điện thoại!",
+      "phoneInvalid": "Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại hợp lệ."
     }
   },
   "message": {

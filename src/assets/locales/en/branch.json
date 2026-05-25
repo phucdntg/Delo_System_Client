@@ -33,7 +33,8 @@
     "validation": {
       "nameRequired": "Please enter branch name!",
       "addressRequired": "Please enter address",
-      "phoneRequired": "Please enter phone number"
+      "phoneRequired": "Please enter phone number",
+      "phoneInvalid": "Invalid phone number! Please enter a valid phone number."
     }
   },
   "message": {

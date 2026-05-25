@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, message, Popconfirm, Space, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
-import useModal from "../../../../../core/hooks/useModal";
-import useTable from "../../../../../core/hooks/useTable";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
-import ModalShared from "../../../../../shared/components/ModalShared";
-import TableShared from "../../../../../shared/components/TableShared";
-import { toVNTime } from "../../../../../shared/utils/formatTime";
+import useModal from "@core/hooks/useModal";
+import useTable from "@core/hooks/useTable";
+import { useTranslate } from "@core/providers/TranslateProvider";
+import ModalShared from "@shared/components/ModalShared";
+import TableShared from "@shared/components/TableShared";
+import { toVNTime } from "@shared/utils/formatTime";
 import OrganizationForm from "../components/OrganizationForm";
 import {
   useCreateOrgMutation,

@@ -5,12 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useLazyGetCurrentUserQuery } from "../../domains/auth/login/services/authService";
+import { useLazyGetCurrentUserQuery } from "@domains/auth";
 import {
   ACCESS_TOKEN,
   ORG_ID,
   REFRESH_TOKEN,
-} from "../../shared/constants/systemConstants";
+} from "@shared/constants/systemConstants";
 import { allRTKServices } from "../services/allRTKServices";
 import { store } from "../store";
 
@@ -20,9 +20,10 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedOrg, setSelectedOrg] = useState(
-    Number(localStorage.getItem(ORG_ID) || 0) || null,
-  );
+  const [selectedOrg, setSelectedOrg] = useState(() => {
+    const stored = localStorage.getItem(ORG_ID);
+    return stored ? Number(stored) : 0;
+  });
   const [triggerGetCurrentUser] = useLazyGetCurrentUserQuery();
 
   useEffect(() => {
@@ -96,6 +97,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     saveToken(null);
     saveUser(null);
+    saveSelectedOrg(null);
   }, [saveToken, saveUser]);
 
   const updateUser = useCallback((patch) => {
@@ -106,18 +108,32 @@ export function AuthProvider({ children }) {
   }, []);
 
   const saveSelectedOrg = useCallback((org) => {
-    setSelectedOrg(org?.id);
-    localStorage.setItem(ORG_ID, org?.id || "");
+    if (org === null) {
+      setSelectedOrg(null);
+      localStorage.removeItem(ORG_ID);
+      return;
+    }
+
+    const orgId = org?.id ?? 0;
+    setSelectedOrg(orgId);
+    localStorage.setItem(ORG_ID, String(orgId));
 
     Object.values(allRTKServices).forEach((service) => {
       store.dispatch(
         service.util.invalidateTags([
-          { type: "Branch", id: "LIST" },
           { type: "Area", id: "LIST" },
+          { type: "Branch", id: "LIST" },
+          { type: "Role", id: "LIST" },
         ]),
       );
     });
   }, []);
+
+  useEffect(() => {
+    if (!selectedOrg && user) {
+      saveSelectedOrg(0);
+    }
+  }, [user]);
 
   const value = {
     token,

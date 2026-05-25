@@ -2,12 +2,12 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, message, Popconfirm, Space, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useMemo } from "react";
-import useModal from "../../../../../core/hooks/useModal";
-import useTable from "../../../../../core/hooks/useTable";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
-import { useAuth } from "../../../../../core/providers/AuthProvider";
-import ModalShared from "../../../../../shared/components/ModalShared";
-import TableShared from "../../../../../shared/components/TableShared";
+import useModal from "@core/hooks/useModal";
+import useTable from "@core/hooks/useTable";
+import { useTranslate } from "@core/providers/TranslateProvider";
+import { useAuth } from "@core/providers/AuthProvider";
+import ModalShared from "@shared/components/ModalShared";
+import TableShared from "@shared/components/TableShared";
 import AreaForm from "../components/AreaForm";
 import {
   useCreateAreaMutation,
@@ -28,7 +28,11 @@ export default function AreaManagement() {
     resetKey: selectedOrg,
   });
 
-  const { data: areas, isLoading, isFetching } = useFetchAreasQuery({
+  const {
+    data: areas,
+    isLoading,
+    isFetching,
+  } = useFetchAreasQuery({
     search: searchTerm.length > 0 ? "name" : null,
     keyword: searchTerm,
     pagination,
@@ -130,7 +134,9 @@ export default function AreaManagement() {
   return (
     <div>
       <ModalShared
-        title={dataEditing?.id ? areaText?.form?.editTitle : areaText?.form?.addTitle}
+        title={
+          dataEditing?.id ? areaText?.form?.editTitle : areaText?.form?.addTitle
+        }
         open={open}
         confirmLoading={isCreating || isUpdating}
         onOk={handleSubmit}
@@ -148,7 +154,8 @@ export default function AreaManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: areas?.meta?.totalItems || 0,
-          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) =>
+            handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,

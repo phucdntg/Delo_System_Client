@@ -1,11 +1,11 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, message, Popconfirm, Space, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
-import useModal from "../../../../../core/hooks/useModal";
-import useTable from "../../../../../core/hooks/useTable";
-import { useTranslate } from "../../../../../core/providers/TranslateProvider";
-import ModalShared from "../../../../../shared/components/ModalShared";
-import TableShared from "../../../../../shared/components/TableShared";
+import useModal from "@core/hooks/useModal";
+import useTable from "@core/hooks/useTable";
+import { useTranslate } from "@core/providers/TranslateProvider";
+import ModalShared from "@shared/components/ModalShared";
+import TableShared from "@shared/components/TableShared";
 import BranchForm from "../components/BranchForm";
 import {
   useCreateBranchMutation,
@@ -13,7 +13,7 @@ import {
   useFetchBranchesQuery,
   useUpdateBranchMutation,
 } from "../services/branchService";
-import { useAuth } from "../../../../../core/providers/AuthProvider";
+import { useAuth } from "@core/providers/AuthProvider";
 
 export default function BranchManagement() {
   const { selectedOrg } = useAuth();

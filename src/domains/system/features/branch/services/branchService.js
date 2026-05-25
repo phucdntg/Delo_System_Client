@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { axiosBaseQuery } from "../../../../../core/services/axiosBaseQuery";
-import { buildParams } from "../../../../../shared/utils/queryHelper";
+import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
+import { buildParams } from "@shared/utils/queryHelper";
 
 const BRANCH_TAG = "Branch";
 
@@ -11,7 +11,7 @@ export const branchService = createApi({
   endpoints: (builder) => ({
     fetchBranches: builder.query({
       query: (args) => ({
-        url: "/branchs",
+        url: "/branches",
         method: "get",
         params: buildParams(args),
       }),
@@ -29,7 +29,7 @@ export const branchService = createApi({
 
     fetchBranchById: builder.query({
       query: (id) => ({
-        url: `/branchs/${id}`,
+        url: `/branches/${id}`,
         method: "get",
       }),
       transformResponse: (response) =>
@@ -39,7 +39,7 @@ export const branchService = createApi({
 
     createBranch: builder.mutation({
       query: (body) => ({
-        url: "/branchs",
+        url: "/branches",
         method: "post",
         data: body,
       }),
@@ -53,7 +53,7 @@ export const branchService = createApi({
 
     updateBranch: builder.mutation({
       query: ({ id, ...body }) => ({
-        url: `/branchs/${id}`,
+        url: `/branches/${id}`,
         method: "patch",
         data: body,
       }),
@@ -64,7 +64,7 @@ export const branchService = createApi({
 
     deleteBranch: builder.mutation({
       query: (id) => ({
-        url: `/branchs/${id}`,
+        url: `/branches/${id}`,
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [

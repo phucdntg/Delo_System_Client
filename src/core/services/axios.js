@@ -5,7 +5,7 @@ import {
   PATH,
   REFRESH_TOKEN,
   USER_INFO,
-} from "../../shared/constants/systemConstants";
+} from "@shared/constants/systemConstants";
 import { config } from "../config";
 
 const instance = axios.create({
