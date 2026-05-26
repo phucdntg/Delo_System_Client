@@ -1,11 +1,13 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
 import { useAuth } from "@core/providers/AuthProvider";
 import { useTranslate } from "@core/providers/TranslateProvider";
+import DeleteButton from "@shared/components/DeleteButton";
+import EditButton from "@shared/components/EditButton";
 import ModalShared from "@shared/components/ModalShared";
 import TableShared from "@shared/components/TableShared";
-import { Button, message, Popconfirm, Space, Tag } from "antd";
+import { Button, message, Space, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
 import AreaForm from "../components/AreaForm";
 import {
@@ -80,24 +82,8 @@ export default function AreaManagement() {
       fixed: "right",
       render: (_, record) => (
         <Space style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            shape="circle"
-            icon={<EditOutlined />}
-            onClick={() => openModal(record)}
-          />
-          <Popconfirm
-            title={commonText?.confirm?.delete}
-            okText={commonText?.button?.ok}
-            cancelText={commonText?.button?.cancel}
-            onConfirm={() => deleteArea(record.id)}
-          >
-            <Button
-              type="default"
-              shape="circle"
-              danger
-              icon={<DeleteOutlined />}
-            />
-          </Popconfirm>
+          <EditButton onEdit={() => openModal(record)} />
+          <DeleteButton onDelete={() => deleteArea(record.id)} />
         </Space>
       ),
     },

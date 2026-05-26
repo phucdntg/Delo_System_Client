@@ -11,13 +11,24 @@
   "modal": {
     "titleBasicInfo": "Thông tin cơ bản",
     "titlePermissions": "Phân quyền",
+    "baseRoleLabel": "Vai trò gốc",
+    "selectBaseRole": "Chọn vai trò gốc",
+    "pleaseSelectBaseRole": "Vui lòng chọn vai trò gốc!",
     "roleLabel": "Vai trò",
+    "nameLabel": "Tên vai trò",
+    "namePlaceholder": "Nhập tên vai trò",
+    "nameRequired": "Vui lòng nhập tên vai trò!",
+    "descriptionLabel": "Mô tả",
+    "descriptionPlaceholder": "Nhập mô tả",
     "branchLabel": "Chi nhánh",
     "organizationLabel": "Tổ chức",
     "selectRole": "Chọn vai trò",
     "selectBranch": "Chọn chi nhánh",
     "pleaseSelectRole": "Vui lòng chọn vai trò!",
-    "pleaseSelectBranch": "Vui lòng chọn chi nhánh!"
+    "pleaseSelectBranch": "Vui lòng chọn chi nhánh!",
+    "selectPermissions": "Chọn quyền",
+    "noPermissions": "Chưa có quyền",
+    "permissionsSelected": "đã chọn"
   },
   "roleType": {
     "admin": "Quản trị viên",

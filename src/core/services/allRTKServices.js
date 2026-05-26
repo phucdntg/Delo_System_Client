@@ -5,6 +5,7 @@ import {
   orgService,
   permissionService,
   roleService,
+  userService,
 } from "@domains/system";
 
 export const allRTKServices = {
@@ -14,4 +15,5 @@ export const allRTKServices = {
   orgService,
   roleService,
   permissionService,
+  userService,
 };

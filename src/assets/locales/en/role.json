@@ -11,13 +11,24 @@
   "modal": {
     "titleBasicInfo": "Basic information",
     "titlePermissions": "Permissions",
+    "baseRoleLabel": "Base role",
+    "selectBaseRole": "Select base role",
+    "pleaseSelectBaseRole": "Please select base role!",
     "roleLabel": "Role",
+    "nameLabel": "Role name",
+    "namePlaceholder": "Enter role name",
+    "nameRequired": "Please enter role name!",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter description",
     "branchLabel": "Branch",
     "organizationLabel": "Organization",
     "selectRole": "Select role",
     "selectBranch": "Select branch",
     "pleaseSelectRole": "Please select a role!",
-    "pleaseSelectBranch": "Please select a branch!"
+    "pleaseSelectBranch": "Please select a branch!",
+    "selectPermissions": "Select permissions",
+    "noPermissions": "No permissions",
+    "permissionsSelected": "selected"
   },
   "roleType": {
     "admin": "Administrator",

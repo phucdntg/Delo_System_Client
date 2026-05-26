@@ -43,7 +43,33 @@ export const permissionService = createApi({
         return grouped;
       },
     }),
+
+    fetchPermissionsByRole: builder.query({
+      query: (roleId) => ({
+        url: `/roles/${roleId}/permissions`,
+        method: "get",
+      }),
+      transformResponse: (response) => response?.data || [],
+      providesTags: (_, __, roleId) => [
+        { type: "Permission", id: `ROLE_${roleId}` },
+      ],
+    }),
+
+    fetchPermissionsByUser: builder.query({
+      query: (userId) => ({
+        url: `/users/${userId}/permissions`,
+        method: "get",
+      }),
+      transformResponse: (response) => response?.data || [],
+      providesTags: (_, __, userId) => [
+        { type: "Permission", id: `USER_${userId}` },
+      ],
+    }),
   }),
 });
 
-export const { useFetchPermissionsQuery } = permissionService;
+export const {
+  useFetchPermissionsQuery,
+  useFetchPermissionsByRoleQuery,
+  useFetchPermissionsByUserQuery,
+} = permissionService;

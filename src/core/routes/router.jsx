@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import ErrorBoundary from "./guards/ErrorBoundary";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { systemRoutes } from "../../domains/system/routes";
 import { PATH } from "@shared/constants/systemConstants";

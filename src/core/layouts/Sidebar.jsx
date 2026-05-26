@@ -4,9 +4,9 @@ import { SlOrganization } from "react-icons/sl";
 import { Link, NavLink } from "react-router";
 import LogoDefault from "@assets/images/logo-default.png";
 import { PATH } from "@shared/constants/systemConstants";
-import { useAuth } from "../providers/AuthProvider";
 import { useSidebar } from "../providers/SidebarProvider";
 import { GoShieldCheck } from "react-icons/go";
+import { LuUsers } from "react-icons/lu";
 
 const MENU_ITEMS = [
   {
@@ -29,10 +29,14 @@ const MENU_ITEMS = [
     path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ROLE_MANAGEMENT}`,
     icon: <GoShieldCheck />,
   },
+  {
+    label: "Quản lý người dùng",
+    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.USER_MANAGEMENT}`,
+    icon: <LuUsers />,
+  },
 ];
 
 const Sidebar = () => {
-  const { logout } = useAuth();
   const { isExpanded, isMobileOpen, isHovered, closeSidebar } = useSidebar();
   const isSidebarOpen = isExpanded || isHovered || isMobileOpen;
   const sidebarRef = useRef(null);

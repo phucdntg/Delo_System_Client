@@ -17,6 +17,10 @@ const RoleManagement = lazy(
   () => import("./features/role/pages/RoleManagement"),
 );
 
+const UserManagement = lazy(
+  () => import("./features/user/pages/UserManagement"),
+);
+
 export const systemRoutes = [
   {
     path: PATH.SYSTEM.ORG_MANAGEMENT,
@@ -40,6 +44,12 @@ export const systemRoutes = [
     path: PATH.SYSTEM.ROLE_MANAGEMENT,
     handle: { title: "Quản lý vai trò" },
     element: <RoleManagement />,
-    requireOrg: false,
+    requireOrg: true,
+  },
+  {
+    path: PATH.SYSTEM.USER_MANAGEMENT,
+    handle: { title: "Quản lý người dùng" },
+    element: <UserManagement />,
+    requireOrg: true,
   },
 ];
