@@ -50,6 +50,6 @@ export const systemRoutes = [
     path: PATH.SYSTEM.USER_MANAGEMENT,
     handle: { title: "Quản lý người dùng" },
     element: <UserManagement />,
-    requireOrg: true,
+    requireOrg: false,
   },
 ];

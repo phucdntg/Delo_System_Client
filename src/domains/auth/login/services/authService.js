@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
+import { ACCESS_TOKEN } from "@shared/constants/systemConstants";
 
 export const authService = createApi({
   reducerPath: "authApi",
@@ -40,13 +41,10 @@ export const authService = createApi({
         },
       }),
       transformResponse: (response) => {
-        // if (response?.data?.access_token) {
-        //   localStorage.setItem(
-        //     ACCESS_TOKEN,
-        //     response.data.access_token,
-        //   );
-        //   return { accessToken: response?.data?.access_token };
-        // }
+        if (response?.data?.access_token) {
+          localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
+          return { accessToken: response?.data?.access_token };
+        }
       },
       transformErrorResponse: (error) => {
         console.error("Refresh token failed: ", error);

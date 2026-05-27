@@ -1,340 +1,481 @@
-import { SafetyOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, Input, Select, Switch } from "antd";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import useSelect from "@core/hooks/useSelect";
-import { useAuth } from "@core/providers/AuthProvider";
 import { useTranslate } from "@core/providers/TranslateProvider";
 import SelectShared from "@shared/components/SelectShared";
-import {
-  useFetchAreasQuery,
-  useFetchPermissionsByRoleQuery,
-  useFetchPermissionsByUserQuery,
-  useFetchRolesQuery,
-} from "@domains/system";
-import PermissionSelector from "./PermissionSelector";
+import { Form, Input, Select, Switch, Tag } from "antd";
+import { useEffect, useMemo, useState } from "react";
+import { useLazyFetchAreaByIdQuery, useLazyFetchAreasQuery } from "../../area";
+import { useFetchPermissionsByRoleQuery } from "../../permission";
+import PermissionSelector from "../../permission/components/PermissionSelector";
+import { ACTION_LABELS, MODULE_LABELS } from "../../permission/constants";
+import { useFetchRolesQuery } from "../../role";
+import { useFetchUserPermissionsQuery } from "../services/userService";
 
-const roleHierarchy = {
-  superadmin: ["supadmin", "admin", "supervisor", "user"],
-  supadmin: ["admin", "supervisor", "user"],
-  admin: ["supervisor", "user"],
-  supervisor: ["user"],
-};
-
-function UserForm({ form, initialValues }) {
-  const { translate } = useTranslate();
-  const { user, selectedOrg } = useAuth();
+export default function UserForm({ form, initialValues = {}, onFinish }) {
+  const { translate, language } = useTranslate();
   const userText = translate("user") || {};
-  const userLanguage = userText?.form || {};
-  const commonText = translate("common") || {};
-  const roleOrder = ["supadmin", "admin", "supervisor", "user"];
-
-  const [selectedPermissions, setSelectedPermissions] = useState({});
-  const [selectedRole, setSelectedRole] = useState(null);
-  const [currentAreaPage, setCurrentAreaPage] = useState(1);
+  const common = translate("common") || {};
+  const userForm = userText?.form || {};
 
   const { data: roleRes } = useFetchRolesQuery({});
+  const roles = roleRes?.data || [];
 
-  const {
-    data: rolePermissions,
-    isLoading: loadingRolePermissions,
-    isFetching: fetchingRolePermissions,
-  } = useFetchPermissionsByRoleQuery(selectedRole?.id, {
-    skip: !selectedRole?.id,
-  });
+  const [selectedRoleName, setSelectedRoleName] = useState(null);
+  const [selectedBranchRoleId, setSelectedBranchRoleId] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
-  const { data: userPermissions } = useFetchPermissionsByUserQuery(
+  const [selectedPermissionIds, setSelectedPermissionIds] = useState([]);
+  const [rolePermissions, setRolePermissions] = useState({});
+
+  const ACTION_ORDER = ["view", "create", "edit", "delete"];
+
+  // Fetch role permissions when selectedRole changes
+  const { data: rolePermsData } = useFetchPermissionsByRoleQuery(
+    selectedRole?.id,
+    { skip: !selectedRole?.id },
+  );
+
+  // Fetch user permissions when editing
+  const { data: userPermsData } = useFetchUserPermissionsQuery(
     initialValues?.id,
-    {
-      skip: !initialValues?.id,
-    },
+    { skip: !initialValues?.id },
   );
 
-  const isUserRole = selectedRole?.name === "user";
-
-  const { data: areaRes, isFetching: areaLoading } = useFetchAreasQuery(
-    {
-      search: null,
-      keyword: "",
-      filters: {
-        branchId: selectedRole?.branchId,
-      },
-      pagination: {
-        current: currentAreaPage,
-        pageSize: 10,
-      },
-    },
-    {
-      skip: !isUserRole,
-    },
-  );
-
-  const { options: areaOptions, onLoadMore: loadMoreAreas } = useSelect({
-    data: areaRes,
-    setCurrentPage: setCurrentAreaPage,
-    resetKey: selectedRole?.branchId,
-  });
-
-  const roleSystem = useMemo(() => {
-    return (
-      roleRes?.data
-        .filter((r) => r?.isSystem)
-        .sort((a, b) => {
-          return roleOrder.indexOf(a.name) - roleOrder.indexOf(b.name);
-        }) ?? []
-    );
-  }, [roleRes]);
-
-  const roleIsNotSystem = useMemo(() => {
-    return (
-      roleRes?.data
-        .filter((r) => !r?.isSystem)
-        .sort((a, b) => {
-          return roleOrder.indexOf(a.name) - roleOrder.indexOf(b.name);
-        }) ?? []
-    );
-  }, [roleRes]);
-
-  const roleChilds = useMemo(() => {
-    if (selectedOrg === 0) {
-      return roleSystem.filter((r) => r.name === "supadmin");
-    }
-
-    if (user?.roleId === 0 && user?.username === "superadmin") {
-      return [...roleIsNotSystem];
-    }
-
-    if (user?.roleName) {
-      const childs = roleHierarchy[user?.roleName] || [];
-      return roleIsNotSystem.filter((r) => childs.includes(r.name));
-    }
-
-    return [];
-  }, [user, roleSystem, roleIsNotSystem, selectedOrg]);
-
-  const permissionGrouped = useMemo(() => {
-    const permissionList = Array.isArray(rolePermissions)
-      ? rolePermissions
-      : rolePermissions?.data || [];
-
-    if (permissionList.length === 0) return {};
-
-    return permissionList.reduce((group, item) => {
-      const [module, action] = item.name.split(".");
-      if (!group[module]) group[module] = [];
-
-      group[module].push({
-        ...item,
-        checked: false,
-        action,
-      });
-
-      return group;
+  const roleGroups = useMemo(() => {
+    const groups = (roles || []).reduce((acc, r) => {
+      const key = r.name || "";
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(r);
+      return acc;
     }, {});
-  }, [rolePermissions]);
+    Object.keys(groups).forEach((k) => {
+      groups[k].sort((a, b) => (a.level ?? Infinity) - (b.level ?? Infinity));
+    });
+    return groups;
+  }, [roles]);
 
-  const toUserPermissionsPayload = (permissions = {}) =>
-    Object.entries(permissions).flatMap(([_, permIds]) =>
-      permIds.map((permissionId) => ({ permissionId })),
+  const roleNameOptions = useMemo(() => {
+    return Object.keys(roleGroups)
+      .sort(
+        (a, b) =>
+          (roleGroups[a][0]?.level ?? Infinity) -
+          (roleGroups[b][0]?.level ?? Infinity),
+      )
+      .map((name) => ({
+        label: userText?.page?.roles?.[name] || name,
+        value: name,
+      }));
+  }, [roleGroups, userText]);
+
+  // Transform role permissions to grouped format
+  useEffect(() => {
+    if (!rolePermsData) {
+      setRolePermissions({});
+      setSelectedPermissionIds([]);
+      return;
+    }
+
+    const permArray = (rolePermsData?.rolePermissions || [])
+      .map((rp) => rp.permission)
+      .filter(Boolean);
+
+    const grouped = permArray
+      .filter(
+        (permission) => permission?.name && typeof permission.name === "string",
+      )
+      .reduce((acc, permission) => {
+        const [module, action] = permission.name.split(".");
+        if (!module || !action) return acc;
+        if (!acc[module]) acc[module] = { name: module, actions: [] };
+        acc[module].actions.push({ id: permission.id, name: action });
+        return acc;
+      }, {});
+
+    Object.values(grouped).forEach((module) => {
+      module.actions.sort((a, b) => {
+        const posA = ACTION_ORDER.indexOf(a.name);
+        const posB = ACTION_ORDER.indexOf(b.name);
+        return (
+          (posA === -1 ? Infinity : posA) - (posB === -1 ? Infinity : posB)
+        );
+      });
+    });
+
+    setRolePermissions(grouped);
+    // Clear selected permissions when role permissions change
+    setSelectedPermissionIds([]);
+  }, [rolePermsData]);
+
+  // Pre-fill permissions when editing user
+  useEffect(() => {
+    if (!initialValues?.id || !userPermsData) return;
+
+    const userPermIds = (Array.isArray(userPermsData) ? userPermsData : []).map(
+      (p) => p?.id,
     );
+    setSelectedPermissionIds(userPermIds);
+    form.setFieldValue(
+      "userPermissions",
+      userPermIds.map((id) => ({ permissionId: id })),
+    );
+  }, [userPermsData, initialValues?.id, form]);
 
-  const handleCheckedPermissions = () => {
-    const checkedPerms = {};
-
-    for (const checkedPermission of userPermissions || []) {
-      const [module] = checkedPermission?.name.split(".");
-      if (!checkedPerms[module]) checkedPerms[module] = [];
-      if (!checkedPerms[module].includes(checkedPermission.id)) {
-        checkedPerms[module] = [...checkedPerms[module], checkedPermission.id];
-      }
-    }
-
-    setSelectedPermissions(checkedPerms);
-    form.setFieldsValue({
-      userPermissions: toUserPermissionsPayload(checkedPerms),
-    });
-  };
-
+  // Init state khi edit user (roles phải load xong mới chạy)
   useEffect(() => {
-    if (userPermissions && userPermissions?.length > 0) {
-      handleCheckedPermissions();
-    }
-  }, [userPermissions]);
+    if (!form || !roles.length) return;
 
-  useEffect(() => {
-    form.setFieldsValue({
-      userPermissions: toUserPermissionsPayload(selectedPermissions),
-    });
-  }, [selectedPermissions, form]);
-
-  useLayoutEffect(() => {
-    if (form && initialValues) {
+    if (initialValues?.id) {
       form.setFieldsValue(initialValues);
+
+      if (initialValues?.roleId) {
+        const matched = roles.find((r) => r.id === initialValues.roleId);
+        if (matched) {
+          setSelectedRole(matched);
+          setSelectedRoleName(matched.name);
+          form.setFieldValue("_roleDisplay", matched.name);
+          const group = roleGroups[matched.name] || [];
+          if (group.length > 1) {
+            setSelectedBranchRoleId(matched.id);
+            form.setFieldValue("_branchDisplay", matched.id);
+          }
+        }
+      }
+    } else {
+      form.setFieldsValue({
+        ...(initialValues || {}),
+        isActive: initialValues?.isActive ?? true,
+      });
     }
 
     return () => {
-      form.resetFields();
+      form?.resetFields?.();
     };
-  }, [form, initialValues]);
+  }, [form, initialValues, roles, roleGroups]);
 
-  useEffect(() => {
-    if (!initialValues?.roleId || !roleChilds?.length) return;
-    const matched = roleChilds.find((r) => r?.id === initialValues.roleId);
-    if (matched) setSelectedRole(matched);
-  }, [initialValues?.roleId, roleChilds]);
+  const handleRoleNameChange = (roleName) => {
+    setSelectedRoleName(roleName);
+    setSelectedBranchRoleId(null);
+    setSelectedRole(null);
 
-  const handleRoleChange = (value) => {
-    const role = roleChilds?.find((r) => r?.id === value);
-    setSelectedRole(role);
-    setSelectedPermissions({});
-    form.setFieldsValue({ userPermissions: [] });
-    form.setFieldsValue({
-      branchId: role?.branchId,
-      organizationId: role?.organizationId,
-      areaId: undefined,
-    });
+    // Sync field ảo để clear error
+    form.setFieldValue("_roleDisplay", roleName);
+    form.setFieldValue("_branchDisplay", null);
+    form.setFieldValue("areaId", null);
+
+    const group = roleGroups[roleName] || [];
+    if (group.length === 1) {
+      const role = group[0];
+      setSelectedRole(role);
+      form.setFieldsValue({
+        roleId: role.id,
+        branchId: role?.branchId ?? null,
+        organizationId: role?.organizationId ?? null,
+        areaId: null,
+      });
+      // Clear role-related validation after auto-select
+      form.validateFields(["_roleDisplay"]).catch(() => {});
+    } else {
+      form.setFieldsValue({
+        roleId: null,
+        branchId: null,
+        areaId: null,
+        organizationId: null,
+      });
+    }
   };
 
+  const handleBranchChange = (roleId) => {
+    setSelectedBranchRoleId(roleId);
+
+    // Sync field ảo để clear error
+    form.setFieldValue("_branchDisplay", roleId);
+
+    const role = roles.find((r) => r.id === roleId) || null;
+    setSelectedRole(role);
+    form.setFieldsValue({
+      roleId: role?.id ?? null,
+      branchId: role?.branchId ?? null,
+      organizationId: role?.organizationId ?? null,
+      areaId: null,
+    });
+    // Re-validate role display to hide branch-required error
+    form.validateFields(["_roleDisplay"]).catch(() => {});
+  };
+
+  // Area select: paginated fetch using SelectShared
+  const [fetchAreas] = useLazyFetchAreasQuery();
+  const [fetchAreaById] = useLazyFetchAreaByIdQuery();
+
+  const fetchAreasFn = async (page, pageSize, query) => {
+    try {
+      const branchId = selectedRole?.branchId || form.getFieldValue("branchId");
+      return await fetchAreas({
+        filters: branchId ? { branchId } : undefined,
+        pagination: { current: page, pageSize },
+        search: query ? "name" : null,
+        keyword: query,
+      }).unwrap();
+    } catch (err) {
+      console.error("fetchAreasFn failed", err);
+      return { data: [], meta: { totalPages: 0 } };
+    }
+  };
+
+  const fetchAreaByIdFn = async (id) => {
+    try {
+      return await fetchAreaById(id).unwrap();
+    } catch (err) {
+      console.error("fetchAreaById failed", err);
+      return null;
+    }
+  };
+
+  const handlePermissionsChange = (ids) => {
+    setSelectedPermissionIds(ids);
+    form.setFieldValue(
+      "userPermissions",
+      (ids || []).map((id) => ({ permissionId: id })),
+    );
+  };
+
+  const selectedPermissionList = useMemo(() => {
+    const modules = Object.values(rolePermissions || {});
+
+    const permissionMap = new Map(
+      modules.flatMap((module) =>
+        (module?.actions || []).map((action) => [
+          action?.id,
+          { module: module?.name, action: action?.name },
+        ]),
+      ),
+    );
+
+    const grouped = new Map();
+    selectedPermissionIds.forEach((id) => {
+      const data = permissionMap.get(id);
+      if (!data) return;
+      const moduleLabel = MODULE_LABELS[data.module]?.[language] || data.module;
+      const actionLabel = ACTION_LABELS[data.action]?.[language] || data.action;
+      if (!grouped.has(moduleLabel)) grouped.set(moduleLabel, new Map());
+      grouped.get(moduleLabel).set(data.action, actionLabel);
+    });
+
+    return Array.from(grouped.entries()).map(([moduleLabel, actionsMap]) => ({
+      moduleLabel,
+      actionsLabel: ACTION_ORDER.filter((a) => actionsMap.has(a))
+        .map((a) => actionsMap.get(a))
+        .join(", "),
+    }));
+  }, [rolePermissions, selectedPermissionIds, language]);
+
+  const showBranchSelect =
+    selectedRoleName && (roleGroups[selectedRoleName] || []).length > 1;
+
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      autoComplete="off"
-      initialValues={{ isActive: false }}
-    >
-      <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 10 }}>
-        <UserOutlined /> {userLanguage?.sections?.basicInfo}
-      </div>
+    <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
+      <Form.Item
+        label={userForm?.name || "Full name"}
+        name="fullName"
+        rules={[
+          {
+            required: true,
+            message: userForm?.errors?.nameRequired || "Full name is required",
+          },
+        ]}
+      >
+        <Input placeholder={userForm?.namePlaceholder || ""} />
+      </Form.Item>
 
       <Form.Item
-        label={userLanguage?.username}
+        label={userForm?.username || "Username"}
         name="username"
         rules={[
-          { required: true, message: userLanguage?.errors?.usernameRequired },
           {
-            pattern: /^[a-zA-Z0-9]+$/,
-            message: userLanguage?.errors?.usernameFormat,
+            required: true,
+            message:
+              userForm?.errors?.usernameRequired || "Username is required",
           },
         ]}
       >
-        <Input placeholder={userLanguage?.usernamePlaceholder} />
+        <Input placeholder={userForm?.usernamePlaceholder || ""} />
       </Form.Item>
 
       <Form.Item
-        name="fullName"
-        label={userLanguage?.name}
-        rules={[
-          { required: true, message: userLanguage?.errors?.nameRequired },
-        ]}
-      >
-        <Input placeholder={userLanguage?.namePlaceholder} />
-      </Form.Item>
-
-      <Form.Item
+        label={userForm?.email || "Email"}
         name="email"
-        label={userLanguage?.email}
         rules={[
-          { required: true, message: userLanguage?.errors?.emailRequired },
+          {
+            required: true,
+            message: userForm?.errors?.emailRequired || "Email is required",
+          },
         ]}
       >
-        <Input placeholder={userLanguage?.emailPlaceholder} />
+        <Input placeholder={userForm?.emailPlaceholder || ""} />
       </Form.Item>
 
       <Form.Item
+        label={userForm?.password || "Password"}
         name="password"
-        label={userLanguage?.password}
         rules={[
           {
-            required: initialValues ? false : true,
-            message: userLanguage?.errors?.passwordRequired,
-          },
-          {
-            min: 8,
-            message: userLanguage?.errors?.passwordMinLength,
+            required: !initialValues?.id,
+            message:
+              userForm?.errors?.passwordRequired || "Password is required",
           },
         ]}
       >
-        <Input.Password />
+        <Input.Password placeholder={userForm?.passwordPlaceholder || ""} />
       </Form.Item>
 
       <Form.Item
-        name="roleId"
-        label={userLanguage?.role}
-        rules={[
-          { required: true, message: userLanguage?.errors?.roleRequired },
-        ]}
-      >
-        <Select
-          placeholder={userLanguage?.rolePlaceholder}
-          options={roleChilds.map((role) => ({
-            value: role.id,
-            label:
-              role.name === "supadmin"
-                ? userText?.page?.labels?.supadmin || "Supadmin"
-                : (userText?.page?.roles?.[role.name] || role.name) +
-                  `${role?.branchName ? ` - ${role.branchName}` : ""}`,
-          }))}
-          onChange={handleRoleChange}
-        />
-      </Form.Item>
-
-      {isUserRole && (
-        <Form.Item
-          name="areaId"
-          label={userLanguage?.area}
-          rules={[
-            {
-              required: true,
-              message: userLanguage?.errors?.areaRequired,
-            },
-          ]}
-        >
-          <SelectShared
-            placeholder={commonText?.placeholder?.selectArea}
-            options={areaOptions}
-            loading={areaLoading}
-            hasMore={areaOptions.length < (areaRes?.meta?.totalItems || 0)}
-            onLoadMore={loadMoreAreas}
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
-      )}
-
-      <Form.Item
+        label={userForm?.status || "Active"}
         name="isActive"
-        label={userLanguage?.status}
         valuePropName="checked"
       >
         <Switch />
       </Form.Item>
 
-      <Form.Item name="userPermissions" hidden>
-        <Input />
+      {/* Role name selector */}
+      <Form.Item
+        required
+        label={userForm?.role || "Role"}
+        name="_roleDisplay" // tên ảo, không gửi lên server
+        rules={[
+          {
+            validator: () => {
+              if (!selectedRoleName) {
+                return Promise.reject(
+                  userForm?.errors?.roleRequired || "Vui lòng chọn vai trò",
+                );
+              }
+              if (showBranchSelect && !selectedBranchRoleId) {
+                return Promise.reject(
+                  userForm?.errors?.branchRequired || "Vui lòng chọn chi nhánh",
+                );
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
+        <Select
+          placeholder={userForm?.rolePlaceholder || "Select a role"}
+          options={roleNameOptions}
+          value={selectedRoleName}
+          onChange={handleRoleNameChange}
+          allowClear
+          onClear={() => {
+            setSelectedRoleName(null);
+            setSelectedBranchRoleId(null);
+            setSelectedRole(null);
+            form.setFieldsValue({
+              roleId: null,
+              branchId: null,
+              organizationId: null,
+              _roleDisplay: null,
+            });
+          }}
+        />
       </Form.Item>
 
+      {/* Branch select */}
+      {showBranchSelect && (
+        <Form.Item
+          // label={common?.placeholder?.selectBranch || "Chi nhánh"}
+          name="_branchDisplay" // tên ảo
+          rules={[
+            {
+              validator: () => {
+                if (!selectedBranchRoleId) {
+                  return Promise.reject(
+                    userForm?.errors?.branchRequired ||
+                      "Vui lòng chọn chi nhánh",
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
+          ]}
+        >
+          <Select
+            placeholder={
+              common?.placeholder?.selectBranch || "-- Chọn chi nhánh --"
+            }
+            options={(roleGroups[selectedRoleName] || []).map((r) => ({
+              label: r.branch?.name || "(No branch)",
+              value: r.id,
+            }))}
+            value={selectedBranchRoleId}
+            onChange={handleBranchChange}
+          />
+        </Form.Item>
+      )}
+
+      {/* Area select (depends on selected branch) */}
+      {(selectedRole?.branchId || form.getFieldValue("branchId")) && (
+        <Form.Item label={userForm?.area || "Khu vực"} name="areaId" rules={[]}>
+          <SelectShared
+            allowClear
+            style={{ width: "100%" }}
+            fetchFn={fetchAreasFn}
+            fetchItemById={fetchAreaByIdFn}
+            defaultId={initialValues?.areaId}
+            value={form.getFieldValue("areaId")}
+            pageSize={10}
+            searchable
+            placeholder={userForm?.areaPlaceholder || "-- Chọn khu vực --"}
+            getLabel={(item) => item.name}
+            getValue={(item) => item.id}
+            onChange={(area) => form.setFieldValue("areaId", area?.id || null)}
+            resetKey={selectedRole?.branchId || form.getFieldValue("branchId")}
+          />
+        </Form.Item>
+      )}
+
+      {/* Permission Selector - show only if role is selected */}
+      {selectedRole && Object.keys(rolePermissions).length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontWeight: 600, marginBottom: 12 }}>
+            {userForm?.permissions || "Permissions"}
+          </div>
+          <PermissionSelector
+            permissions={rolePermissions}
+            selected={selectedPermissionIds}
+            onChange={handlePermissionsChange}
+          />
+        </div>
+      )}
+
+      {/* Display selected permissions as tags */}
+      {selectedPermissionList.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+            marginBottom: 16,
+          }}
+        >
+          {selectedPermissionList.map((item) => (
+            <Tag key={item.moduleLabel} color="blue">
+              {item.moduleLabel} ({item.actionsLabel})
+            </Tag>
+          ))}
+        </div>
+      )}
+
+      {/* Hidden fields — giá trị thực gửi lên server */}
+      <Form.Item name="roleId" hidden>
+        <Input />
+      </Form.Item>
+      <Form.Item name="organizationId" hidden>
+        <Input />
+      </Form.Item>
       <Form.Item name="branchId" hidden>
         <Input />
       </Form.Item>
 
-      <Form.Item name="organizationId" hidden>
+      <Form.Item name="userPermissions" hidden>
         <Input />
       </Form.Item>
-
-      {selectedRole && selectedRole?.name !== "supadmin" && (
-        <>
-          <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 10 }}>
-            <SafetyOutlined /> {userLanguage?.sections?.permissions}
-          </div>
-
-          <PermissionSelector
-            permissionGrouped={permissionGrouped}
-            selectedPermissions={selectedPermissions}
-            setSelectedPermissions={setSelectedPermissions}
-            isLoading={loadingRolePermissions || fetchingRolePermissions}
-          />
-        </>
-      )}
     </Form>
   );
 }
-
-export default UserForm;

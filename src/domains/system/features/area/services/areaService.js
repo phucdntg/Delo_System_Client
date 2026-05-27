@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 import { branchService } from "../../branch";
 
@@ -122,6 +122,8 @@ export const areaService = createApi({
 
 export const {
   useFetchAreasQuery,
+  useLazyFetchAreasQuery,
+  useLazyFetchAreaByIdQuery,
   useFetchAreaByIdQuery,
   useCreateAreaMutation,
   useUpdateAreaMutation,

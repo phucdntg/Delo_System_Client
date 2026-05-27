@@ -1,8 +1,10 @@
 export {
-  useFetchAreasQuery,
-  useFetchAreaByIdQuery,
-  useCreateAreaMutation,
-  useUpdateAreaMutation,
-  useDeleteAreaMutation,
   areaService,
+  useCreateAreaMutation,
+  useDeleteAreaMutation,
+  useFetchAreaByIdQuery,
+  useFetchAreasQuery,
+  useLazyFetchAreaByIdQuery,
+  useLazyFetchAreasQuery,
+  useUpdateAreaMutation,
 } from "./services/areaService";

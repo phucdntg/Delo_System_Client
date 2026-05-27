@@ -56,14 +56,17 @@ export const permissionService = createApi({
     }),
 
     fetchPermissionsByUser: builder.query({
-      query: (userId) => ({
-        url: `/users/${userId}/permissions`,
+      query: (id) => ({
+        url: `/permissions?userPermissions.userId=${id}`, // thắc mắc thì hỏi Backend
         method: "get",
       }),
-      transformResponse: (response) => response?.data || [],
-      providesTags: (_, __, userId) => [
-        { type: "Permission", id: `USER_${userId}` },
-      ],
+      transformResponse: (response) =>
+        response?.success ? response?.data : [],
+      transformErrorResponse: (err) => {
+        console.error("Fetch user permissions error:", err);
+        return [];
+      },
+      providesTags: (result, error, id) => [{ type: "Permission", id }],
     }),
   }),
 });

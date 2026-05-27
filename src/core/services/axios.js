@@ -1,11 +1,11 @@
-import axios from "axios";
 import {
   ACCESS_TOKEN,
+  HEADER_ORG_ID,
   ORG_ID,
-  PATH,
   REFRESH_TOKEN,
   USER_INFO,
 } from "@shared/constants/systemConstants";
+import axios from "axios";
 import { config } from "../config";
 
 const instance = axios.create({
