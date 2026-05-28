@@ -1,13 +1,12 @@
 import { useTranslate } from "@core/providers/TranslateProvider";
 import SelectShared from "@shared/components/SelectShared";
-import { Form, Input, Select, Switch, Tag } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import { useLazyFetchAreaByIdQuery, useLazyFetchAreasQuery } from "../../area";
-import { useFetchPermissionsByRoleQuery } from "../../permission";
+import { Form, Input, Select, Switch } from "antd";
 import PermissionSelector from "../../permission/components/PermissionSelector";
-import { ACTION_LABELS, MODULE_LABELS } from "../../permission/constants";
 import { useFetchRolesQuery } from "../../role";
-import { useFetchUserPermissionsQuery } from "../services/userService";
+import { useAreaFetch } from "../hooks/useAreaFetch";
+import { usePermissionSync } from "../hooks/usePermissionSync";
+import { useRoleSelect } from "../hooks/useRoleSelect";
+import { useSelectedPermissionList } from "../hooks/useSelectedPermissionList";
 
 export default function UserForm({ form, initialValues = {}, onFinish }) {
   const { translate, language } = useTranslate();
@@ -18,256 +17,34 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
   const { data: roleRes } = useFetchRolesQuery({});
   const roles = roleRes?.data || [];
 
-  const [selectedRoleName, setSelectedRoleName] = useState(null);
-  const [selectedBranchRoleId, setSelectedBranchRoleId] = useState(null);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const {
+    selectedRoleName,
+    selectedBranchRoleId,
+    selectedRole,
+    roleGroups,
+    roleNameOptions,
+    showBranchSelect,
+    handleRoleNameChange,
+    handleBranchChange,
+    handleRoleClear,
+  } = useRoleSelect({ form, roles, initialValues, userText });
 
-  const [selectedPermissionIds, setSelectedPermissionIds] = useState([]);
-  const [rolePermissions, setRolePermissions] = useState({});
+  const { selectedPermissionIds, rolePermissions, handlePermissionsChange } = usePermissionSync({
+    form,
+    selectedRoleId: selectedRole?.id ?? null,
+    initialUserId: initialValues?.id ?? null,
+  });
 
-  const ACTION_ORDER = ["view", "create", "edit", "delete"];
+  const { fetchAreasFn, fetchAreaByIdFn } = useAreaFetch({
+    selectedRole,
+    form,
+  });
 
-  // Fetch role permissions when selectedRole changes
-  const { data: rolePermsData } = useFetchPermissionsByRoleQuery(
-    selectedRole?.id,
-    { skip: !selectedRole?.id },
-  );
-
-  // Fetch user permissions when editing
-  const { data: userPermsData } = useFetchUserPermissionsQuery(
-    initialValues?.id,
-    { skip: !initialValues?.id },
-  );
-
-  const roleGroups = useMemo(() => {
-    const groups = (roles || []).reduce((acc, r) => {
-      const key = r.name || "";
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(r);
-      return acc;
-    }, {});
-    Object.keys(groups).forEach((k) => {
-      groups[k].sort((a, b) => (a.level ?? Infinity) - (b.level ?? Infinity));
-    });
-    return groups;
-  }, [roles]);
-
-  const roleNameOptions = useMemo(() => {
-    return Object.keys(roleGroups)
-      .sort(
-        (a, b) =>
-          (roleGroups[a][0]?.level ?? Infinity) -
-          (roleGroups[b][0]?.level ?? Infinity),
-      )
-      .map((name) => ({
-        label: userText?.page?.roles?.[name] || name,
-        value: name,
-      }));
-  }, [roleGroups, userText]);
-
-  // Transform role permissions to grouped format
-  useEffect(() => {
-    if (!rolePermsData) {
-      setRolePermissions({});
-      setSelectedPermissionIds([]);
-      return;
-    }
-
-    const permArray = (rolePermsData?.rolePermissions || [])
-      .map((rp) => rp.permission)
-      .filter(Boolean);
-
-    const grouped = permArray
-      .filter(
-        (permission) => permission?.name && typeof permission.name === "string",
-      )
-      .reduce((acc, permission) => {
-        const [module, action] = permission.name.split(".");
-        if (!module || !action) return acc;
-        if (!acc[module]) acc[module] = { name: module, actions: [] };
-        acc[module].actions.push({ id: permission.id, name: action });
-        return acc;
-      }, {});
-
-    Object.values(grouped).forEach((module) => {
-      module.actions.sort((a, b) => {
-        const posA = ACTION_ORDER.indexOf(a.name);
-        const posB = ACTION_ORDER.indexOf(b.name);
-        return (
-          (posA === -1 ? Infinity : posA) - (posB === -1 ? Infinity : posB)
-        );
-      });
-    });
-
-    setRolePermissions(grouped);
-    // Clear selected permissions when role permissions change
-    setSelectedPermissionIds([]);
-  }, [rolePermsData]);
-
-  // Pre-fill permissions when editing user
-  useEffect(() => {
-    if (!initialValues?.id || !userPermsData) return;
-
-    const userPermIds = (Array.isArray(userPermsData) ? userPermsData : []).map(
-      (p) => p?.id,
-    );
-    setSelectedPermissionIds(userPermIds);
-    form.setFieldValue(
-      "userPermissions",
-      userPermIds.map((id) => ({ permissionId: id })),
-    );
-  }, [userPermsData, initialValues?.id, form]);
-
-  // Init state khi edit user (roles phải load xong mới chạy)
-  useEffect(() => {
-    if (!form || !roles.length) return;
-
-    if (initialValues?.id) {
-      form.setFieldsValue(initialValues);
-
-      if (initialValues?.roleId) {
-        const matched = roles.find((r) => r.id === initialValues.roleId);
-        if (matched) {
-          setSelectedRole(matched);
-          setSelectedRoleName(matched.name);
-          form.setFieldValue("_roleDisplay", matched.name);
-          const group = roleGroups[matched.name] || [];
-          if (group.length > 1) {
-            setSelectedBranchRoleId(matched.id);
-            form.setFieldValue("_branchDisplay", matched.id);
-          }
-        }
-      }
-    } else {
-      form.setFieldsValue({
-        ...(initialValues || {}),
-        isActive: initialValues?.isActive ?? true,
-      });
-    }
-
-    return () => {
-      form?.resetFields?.();
-    };
-  }, [form, initialValues, roles, roleGroups]);
-
-  const handleRoleNameChange = (roleName) => {
-    setSelectedRoleName(roleName);
-    setSelectedBranchRoleId(null);
-    setSelectedRole(null);
-
-    // Sync field ảo để clear error
-    form.setFieldValue("_roleDisplay", roleName);
-    form.setFieldValue("_branchDisplay", null);
-    form.setFieldValue("areaId", null);
-
-    const group = roleGroups[roleName] || [];
-    if (group.length === 1) {
-      const role = group[0];
-      setSelectedRole(role);
-      form.setFieldsValue({
-        roleId: role.id,
-        branchId: role?.branchId ?? null,
-        organizationId: role?.organizationId ?? null,
-        areaId: null,
-      });
-      // Clear role-related validation after auto-select
-      form.validateFields(["_roleDisplay"]).catch(() => {});
-    } else {
-      form.setFieldsValue({
-        roleId: null,
-        branchId: null,
-        areaId: null,
-        organizationId: null,
-      });
-    }
-  };
-
-  const handleBranchChange = (roleId) => {
-    setSelectedBranchRoleId(roleId);
-
-    // Sync field ảo để clear error
-    form.setFieldValue("_branchDisplay", roleId);
-
-    const role = roles.find((r) => r.id === roleId) || null;
-    setSelectedRole(role);
-    form.setFieldsValue({
-      roleId: role?.id ?? null,
-      branchId: role?.branchId ?? null,
-      organizationId: role?.organizationId ?? null,
-      areaId: null,
-    });
-    // Re-validate role display to hide branch-required error
-    form.validateFields(["_roleDisplay"]).catch(() => {});
-  };
-
-  // Area select: paginated fetch using SelectShared
-  const [fetchAreas] = useLazyFetchAreasQuery();
-  const [fetchAreaById] = useLazyFetchAreaByIdQuery();
-
-  const fetchAreasFn = async (page, pageSize, query) => {
-    try {
-      const branchId = selectedRole?.branchId || form.getFieldValue("branchId");
-      return await fetchAreas({
-        filters: branchId ? { branchId } : undefined,
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-        keyword: query,
-      }).unwrap();
-    } catch (err) {
-      console.error("fetchAreasFn failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchAreaByIdFn = async (id) => {
-    try {
-      return await fetchAreaById(id).unwrap();
-    } catch (err) {
-      console.error("fetchAreaById failed", err);
-      return null;
-    }
-  };
-
-  const handlePermissionsChange = (ids) => {
-    setSelectedPermissionIds(ids);
-    form.setFieldValue(
-      "userPermissions",
-      (ids || []).map((id) => ({ permissionId: id })),
-    );
-  };
-
-  const selectedPermissionList = useMemo(() => {
-    const modules = Object.values(rolePermissions || {});
-
-    const permissionMap = new Map(
-      modules.flatMap((module) =>
-        (module?.actions || []).map((action) => [
-          action?.id,
-          { module: module?.name, action: action?.name },
-        ]),
-      ),
-    );
-
-    const grouped = new Map();
-    selectedPermissionIds.forEach((id) => {
-      const data = permissionMap.get(id);
-      if (!data) return;
-      const moduleLabel = MODULE_LABELS[data.module]?.[language] || data.module;
-      const actionLabel = ACTION_LABELS[data.action]?.[language] || data.action;
-      if (!grouped.has(moduleLabel)) grouped.set(moduleLabel, new Map());
-      grouped.get(moduleLabel).set(data.action, actionLabel);
-    });
-
-    return Array.from(grouped.entries()).map(([moduleLabel, actionsMap]) => ({
-      moduleLabel,
-      actionsLabel: ACTION_ORDER.filter((a) => actionsMap.has(a))
-        .map((a) => actionsMap.get(a))
-        .join(", "),
-    }));
-  }, [rolePermissions, selectedPermissionIds, language]);
-
-  const showBranchSelect =
-    selectedRoleName && (roleGroups[selectedRoleName] || []).length > 1;
+  const selectedPermissionList = useSelectedPermissionList({
+    rolePermissions,
+    selectedPermissionIds,
+    language,
+  });
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
@@ -290,8 +67,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
         rules={[
           {
             required: true,
-            message:
-              userForm?.errors?.usernameRequired || "Username is required",
+            message: userForm?.errors?.usernameRequired || "Username is required",
           },
         ]}
       >
@@ -317,19 +93,14 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
         rules={[
           {
             required: !initialValues?.id,
-            message:
-              userForm?.errors?.passwordRequired || "Password is required",
+            message: userForm?.errors?.passwordRequired || "Password is required",
           },
         ]}
       >
         <Input.Password placeholder={userForm?.passwordPlaceholder || ""} />
       </Form.Item>
 
-      <Form.Item
-        label={userForm?.status || "Active"}
-        name="isActive"
-        valuePropName="checked"
-      >
+      <Form.Item label={userForm?.status || "Active"} name="isActive" valuePropName="checked">
         <Switch />
       </Form.Item>
 
@@ -342,9 +113,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           {
             validator: () => {
               if (!selectedRoleName) {
-                return Promise.reject(
-                  userForm?.errors?.roleRequired || "Vui lòng chọn vai trò",
-                );
+                return Promise.reject(userForm?.errors?.roleRequired || "Vui lòng chọn vai trò");
               }
               if (showBranchSelect && !selectedBranchRoleId) {
                 return Promise.reject(
@@ -362,17 +131,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           value={selectedRoleName}
           onChange={handleRoleNameChange}
           allowClear
-          onClear={() => {
-            setSelectedRoleName(null);
-            setSelectedBranchRoleId(null);
-            setSelectedRole(null);
-            form.setFieldsValue({
-              roleId: null,
-              branchId: null,
-              organizationId: null,
-              _roleDisplay: null,
-            });
-          }}
+          onClear={handleRoleClear}
         />
       </Form.Item>
 
@@ -386,8 +145,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
               validator: () => {
                 if (!selectedBranchRoleId) {
                   return Promise.reject(
-                    userForm?.errors?.branchRequired ||
-                      "Vui lòng chọn chi nhánh",
+                    userForm?.errors?.branchRequired || "Vui lòng chọn chi nhánh",
                   );
                 }
                 return Promise.resolve();
@@ -396,9 +154,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           ]}
         >
           <Select
-            placeholder={
-              common?.placeholder?.selectBranch || "-- Chọn chi nhánh --"
-            }
+            placeholder={common?.placeholder?.selectBranch || "-- Chọn chi nhánh --"}
             options={(roleGroups[selectedRoleName] || []).map((r) => ({
               label: r.branch?.name || "(No branch)",
               value: r.id,
@@ -430,6 +186,10 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
         </Form.Item>
       )}
 
+      {!showBranchSelect && selectedRole?.branchId && (
+        <span className="text-gray-500">Chi nhánh: {selectedRole.branch?.name}</span>
+      )}
+
       {/* Permission Selector - show only if role is selected */}
       {selectedRole && Object.keys(rolePermissions).length > 0 && (
         <div style={{ marginBottom: 24 }}>
@@ -445,7 +205,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
       )}
 
       {/* Display selected permissions as tags */}
-      {selectedPermissionList.length > 0 && (
+      {/* {selectedPermissionList.length > 0 && (
         <div
           style={{
             display: "flex",
@@ -460,7 +220,7 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
             </Tag>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* Hidden fields — giá trị thực gửi lên server */}
       <Form.Item name="roleId" hidden>

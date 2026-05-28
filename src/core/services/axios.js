@@ -2,6 +2,7 @@ import {
   ACCESS_TOKEN,
   HEADER_ORG_ID,
   ORG_ID,
+  PATH,
   REFRESH_TOKEN,
   USER_INFO,
 } from "@shared/constants/systemConstants";
@@ -78,12 +79,9 @@ instance.interceptors.response.use(
       }
 
       try {
-        const response = await axios.post(
-          `${config.baseUrl}/auth/refresh-token`,
-          {
-            refreshToken: refreshToken,
-          },
-        );
+        const response = await axios.post(`${config.baseUrl}/auth/refresh-token`, {
+          refreshToken: refreshToken,
+        });
 
         const { access_token } = response.data?.data;
         localStorage.setItem(ACCESS_TOKEN, access_token);

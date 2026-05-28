@@ -11,6 +11,7 @@ import UserForm from "../components/UserForm";
 import UserTabContent from "../components/UserTabContent";
 import {
   useCreateUserMutation,
+  useDeleteUserMutation,
   useUpdateUserMutation,
 } from "../services/userService";
 
@@ -31,14 +32,13 @@ export default function UserManagement() {
     filters: { isSystem: selectedOrg === 0 },
   });
 
-  const [createUser] = useCreateUserMutation();
-  const [updateUser] = useUpdateUserMutation();
+  const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
+  const [updateUser, { isLoading: isUpdatingUser }] = useUpdateUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
 
   const roleGroups = useMemo(() => {
     const minLevel = user?.role?.level ?? null;
-    const filtered = (roleRes?.data || []).filter(
-      (r) => minLevel === null || r.level >= minLevel,
-    );
+    const filtered = (roleRes?.data || []).filter((r) => minLevel === null || r.level >= minLevel);
 
     const groupMap = filtered.reduce((acc, r) => {
       const key = r.name || "";
@@ -49,14 +49,9 @@ export default function UserManagement() {
     return Object.values(groupMap)
       .map((roles) => ({
         name: roles[0].name,
-        roles: roles.sort(
-          (a, b) => (a.level ?? Infinity) - (b.level ?? Infinity),
-        ),
+        roles: roles.sort((a, b) => (a.level ?? Infinity) - (b.level ?? Infinity)),
       }))
-      .sort(
-        (a, b) =>
-          (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity),
-      );
+      .sort((a, b) => (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity));
   }, [roleRes?.data, user?.role?.level]);
 
   const onSelectBranchRole = useCallback((roleName, roleId) => {
@@ -67,9 +62,7 @@ export default function UserManagement() {
     () =>
       roleGroups.map((group) => ({
         key: group.name,
-        label: `${group.name.charAt(0).toUpperCase()}${group.name.slice(1)}${
-          group.roles.length > 1 ? ` (${group.roles.length})` : ""
-        }`,
+        label: `${group.name.charAt(0).toUpperCase()}${group.name.slice(1)}`,
         children: (
           <UserTabContent
             group={group}
@@ -77,11 +70,22 @@ export default function UserManagement() {
             onSelectBranchRole={onSelectBranchRole}
             search={searchByName[group.name] || ""}
             onEdit={(record) => openModal(record)}
+            onDelete={(record) => handleDelete(record)}
           />
         ),
       })),
     [roleGroups, selectedByName, onSelectBranchRole],
   );
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteUser(id).unwrap();
+      message.success(t?.page?.messages?.deleteSuccess || "User deactivated successfully");
+    } catch (error) {
+      console.error("Error deactivating user:", error);
+      message.error(t?.page?.messages?.deleteFailed || "Failed to deactivate user");
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -94,14 +98,10 @@ export default function UserManagement() {
 
       if (userEditing?.id) {
         await updateUser({ id: userEditing.id, ...payload }).unwrap();
-        message.success(
-          t?.message?.updateSuccess || "User updated successfully",
-        );
+        message.success(t?.page?.messages?.updateSuccess || "User updated successfully");
       } else {
         await createUser(payload).unwrap();
-        message.success(
-          t?.message?.createSuccess || "User created successfully",
-        );
+        message.success(t?.page?.messages?.createSuccess || "User created successfully");
       }
 
       closeModal();
@@ -109,8 +109,8 @@ export default function UserManagement() {
       console.error("Error submitting user form:", error);
       message.error(
         userEditing?.id
-          ? t?.message?.updateError || "Failed to update user"
-          : t?.message?.createError || "Failed to create user",
+          ? t?.page?.messages?.updateFailed || "Failed to update user"
+          : t?.page?.messages?.createFailed || "Failed to create user",
       );
     }
   };
@@ -126,9 +126,7 @@ export default function UserManagement() {
       <Input
         placeholder={t?.page?.searchPlaceholder || "Search users"}
         value={searchByName[activeKey] || ""}
-        onChange={(e) =>
-          setSearchByName((s) => ({ ...s, [activeKey]: e.target.value }))
-        }
+        onChange={(e) => setSearchByName((s) => ({ ...s, [activeKey]: e.target.value }))}
         style={{ width: 320 }}
       />
     </div>
@@ -136,11 +134,7 @@ export default function UserManagement() {
 
   return (
     <div>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={() => openModal(null)}
-      >
+      <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal(null)}>
         {common?.button?.create || "Create"}
       </Button>
 
@@ -150,6 +144,8 @@ export default function UserManagement() {
         title={userEditing ? t.editUser : t.addUser}
         width={600}
         onOk={() => handleSubmit()}
+        confirmLoading={isCreatingUser || isUpdatingUser}
+        permissionKey="users"
       >
         <UserForm form={form} initialValues={userEditing || {}} />
       </ModalShared>

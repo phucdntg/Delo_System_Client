@@ -1,5 +1,6 @@
-import { Modal } from "antd";
+import { usePermission } from "@core/hooks/usePermission";
 import { useTranslate } from "@core/providers/TranslateProvider";
+import { Modal } from "antd";
 
 const ModalShared = ({
   title,
@@ -14,11 +15,11 @@ const ModalShared = ({
 }) => {
   const { translate } = useTranslate();
   const translateCommon = translate("common.button") || {};
-  //   const { hasPermission } = usePermission();
+  const { hasPermission } = usePermission();
 
-  //   const canSave = permissionKey
-  //     ? hasPermission(`${permissionKey}.${isEdit ? 'edit' : 'create'}`)
-  //     : true;
+  const canSave = permissionKey
+    ? hasPermission(`${permissionKey}.${isEdit ? "edit" : "create"}`)
+    : true;
 
   return (
     <Modal
