@@ -23,13 +23,16 @@ export default function UserManagement() {
   const t = translate("user") || {};
 
   const [form] = useForm();
-  const { open, close, data: userEditing, openModal, closeModal } = useModal();
+  const { open, data: userEditing, openModal, closeModal } = useModal();
 
   const [searchByName, setSearchByName] = useState({});
   const [activeKey, setActiveKey] = useState(() => null);
 
   const { data: roleRes } = useFetchRolesQuery({
-    filters: { isSystem: selectedOrg === 0 },
+    filters: {
+      organizationId: selectedOrg || "null",
+      isSystem: false,
+    },
   });
 
   const [createUser, { isLoading: isCreatingUser }] = useCreateUserMutation();
@@ -38,7 +41,9 @@ export default function UserManagement() {
 
   const roleGroups = useMemo(() => {
     const minLevel = user?.role?.level ?? null;
-    const filtered = (roleRes?.data || []).filter((r) => minLevel === null || r.level >= minLevel);
+    const filtered = (roleRes?.data || []).filter(
+      (r) => minLevel === null || r.level >= minLevel,
+    );
 
     const groupMap = filtered.reduce((acc, r) => {
       const key = r.name || "";
@@ -49,9 +54,14 @@ export default function UserManagement() {
     return Object.values(groupMap)
       .map((roles) => ({
         name: roles[0].name,
-        roles: roles.sort((a, b) => (a.level ?? Infinity) - (b.level ?? Infinity)),
+        roles: roles.sort(
+          (a, b) => (a.level ?? Infinity) - (b.level ?? Infinity),
+        ),
       }))
-      .sort((a, b) => (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity));
+      .sort(
+        (a, b) =>
+          (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity),
+      );
   }, [roleRes?.data, user?.role?.level]);
 
   const onSelectBranchRole = useCallback((roleName, roleId) => {
@@ -80,10 +90,14 @@ export default function UserManagement() {
   const handleDelete = async (id) => {
     try {
       await deleteUser(id).unwrap();
-      message.success(t?.page?.messages?.deleteSuccess || "User deactivated successfully");
+      message.success(
+        t?.page?.messages?.deleteSuccess || "User deactivated successfully",
+      );
     } catch (error) {
       console.error("Error deactivating user:", error);
-      message.error(t?.page?.messages?.deleteFailed || "Failed to deactivate user");
+      message.error(
+        t?.page?.messages?.deleteFailed || "Failed to deactivate user",
+      );
     }
   };
 
@@ -98,10 +112,14 @@ export default function UserManagement() {
 
       if (userEditing?.id) {
         await updateUser({ id: userEditing.id, ...payload }).unwrap();
-        message.success(t?.page?.messages?.updateSuccess || "User updated successfully");
+        message.success(
+          t?.page?.messages?.updateSuccess || "User updated successfully",
+        );
       } else {
         await createUser(payload).unwrap();
-        message.success(t?.page?.messages?.createSuccess || "User created successfully");
+        message.success(
+          t?.page?.messages?.createSuccess || "User created successfully",
+        );
       }
 
       closeModal();
@@ -126,7 +144,9 @@ export default function UserManagement() {
       <Input
         placeholder={t?.page?.searchPlaceholder || "Search users"}
         value={searchByName[activeKey] || ""}
-        onChange={(e) => setSearchByName((s) => ({ ...s, [activeKey]: e.target.value }))}
+        onChange={(e) =>
+          setSearchByName((s) => ({ ...s, [activeKey]: e.target.value }))
+        }
         style={{ width: 320 }}
       />
     </div>
@@ -134,7 +154,11 @@ export default function UserManagement() {
 
   return (
     <div>
-      <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal(null)}>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={() => openModal(null)}
+      >
         {common?.button?.create || "Create"}
       </Button>
 

@@ -6,7 +6,6 @@ import { useFetchRolesQuery } from "../../role";
 import { useAreaFetch } from "../hooks/useAreaFetch";
 import { usePermissionSync } from "../hooks/usePermissionSync";
 import { useRoleSelect } from "../hooks/useRoleSelect";
-import { useSelectedPermissionList } from "../hooks/useSelectedPermissionList";
 
 export default function UserForm({ form, initialValues = {}, onFinish }) {
   const { translate, language } = useTranslate();
@@ -29,22 +28,23 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
     handleRoleClear,
   } = useRoleSelect({ form, roles, initialValues, userText });
 
-  const { selectedPermissionIds, rolePermissions, handlePermissionsChange } = usePermissionSync({
-    form,
-    selectedRoleId: selectedRole?.id ?? null,
-    initialUserId: initialValues?.id ?? null,
-  });
+  const { selectedPermissionIds, rolePermissions, handlePermissionsChange } =
+    usePermissionSync({
+      form,
+      selectedRoleId: selectedRole?.id ?? null,
+      initialUserId: initialValues?.id ?? null,
+    });
 
   const { fetchAreasFn, fetchAreaByIdFn } = useAreaFetch({
     selectedRole,
     form,
   });
 
-  const selectedPermissionList = useSelectedPermissionList({
-    rolePermissions,
-    selectedPermissionIds,
-    language,
-  });
+  // const selectedPermissionList = useSelectedPermissionList({
+  //   rolePermissions,
+  //   selectedPermissionIds,
+  //   language,
+  // });
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
@@ -67,7 +67,8 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
         rules={[
           {
             required: true,
-            message: userForm?.errors?.usernameRequired || "Username is required",
+            message:
+              userForm?.errors?.usernameRequired || "Username is required",
           },
         ]}
       >
@@ -93,14 +94,19 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
         rules={[
           {
             required: !initialValues?.id,
-            message: userForm?.errors?.passwordRequired || "Password is required",
+            message:
+              userForm?.errors?.passwordRequired || "Password is required",
           },
         ]}
       >
         <Input.Password placeholder={userForm?.passwordPlaceholder || ""} />
       </Form.Item>
 
-      <Form.Item label={userForm?.status || "Active"} name="isActive" valuePropName="checked">
+      <Form.Item
+        label={userForm?.status || "Active"}
+        name="isActive"
+        valuePropName="checked"
+      >
         <Switch />
       </Form.Item>
 
@@ -113,7 +119,9 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           {
             validator: () => {
               if (!selectedRoleName) {
-                return Promise.reject(userForm?.errors?.roleRequired || "Vui lòng chọn vai trò");
+                return Promise.reject(
+                  userForm?.errors?.roleRequired || "Vui lòng chọn vai trò",
+                );
               }
               if (showBranchSelect && !selectedBranchRoleId) {
                 return Promise.reject(
@@ -145,7 +153,8 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
               validator: () => {
                 if (!selectedBranchRoleId) {
                   return Promise.reject(
-                    userForm?.errors?.branchRequired || "Vui lòng chọn chi nhánh",
+                    userForm?.errors?.branchRequired ||
+                      "Vui lòng chọn chi nhánh",
                   );
                 }
                 return Promise.resolve();
@@ -154,7 +163,9 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           ]}
         >
           <Select
-            placeholder={common?.placeholder?.selectBranch || "-- Chọn chi nhánh --"}
+            placeholder={
+              common?.placeholder?.selectBranch || "-- Chọn chi nhánh --"
+            }
             options={(roleGroups[selectedRoleName] || []).map((r) => ({
               label: r.branch?.name || "(No branch)",
               value: r.id,
@@ -187,7 +198,9 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
       )}
 
       {!showBranchSelect && selectedRole?.branchId && (
-        <span className="text-gray-500">Chi nhánh: {selectedRole.branch?.name}</span>
+        <span className="text-gray-500">
+          Chi nhánh: {selectedRole.branch?.name}
+        </span>
       )}
 
       {/* Permission Selector - show only if role is selected */}
