@@ -1,25 +1,15 @@
-import { lazy } from "react";
 import { PATH } from "@shared/constants/systemConstants";
+import { lazy } from "react";
 
-const OrgManagement = lazy(
-  () => import("./features/organization/pages/OrgManagement"),
-);
+const OrgManagement = lazy(() => import("./features/organization/pages/OrgManagement"));
 
-const BranchManagement = lazy(
-  () => import("./features/branch/pages/BranchManagement"),
-);
+const BranchManagement = lazy(() => import("./features/branch/pages/BranchManagement"));
 
-const AreaManagement = lazy(
-  () => import("./features/area/pages/AreaManagement"),
-);
+const AreaManagement = lazy(() => import("./features/area/pages/AreaManagement"));
 
-const RoleManagement = lazy(
-  () => import("./features/role/pages/RoleManagement"),
-);
+const RoleManagement = lazy(() => import("./features/role/pages/RoleManagement"));
 
-const UserManagement = lazy(
-  () => import("./features/user/pages/UserManagement"),
-);
+const UserManagement = lazy(() => import("./features/user/pages/UserManagement"));
 
 export const systemRoutes = [
   {
@@ -44,7 +34,7 @@ export const systemRoutes = [
     path: PATH.SYSTEM.ROLE_MANAGEMENT,
     handle: { title: "Quản lý vai trò" },
     element: <RoleManagement />,
-    requireOrg: true,
+    requireOrg: false,
   },
   {
     path: PATH.SYSTEM.USER_MANAGEMENT,

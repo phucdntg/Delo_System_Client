@@ -39,6 +39,7 @@ export default function RoleManagement() {
     pagination,
     filters: {
       isSystem: false,
+      organizationId: selectedOrg || "null",
     },
   });
 
@@ -104,9 +105,7 @@ export default function RoleManagement() {
     } catch (error) {
       console.error(error);
       message.error(
-        dataEditing?.id
-          ? roleText?.message?.updateFail
-          : roleText?.message?.createFail,
+        dataEditing?.id ? roleText?.message?.updateFail : roleText?.message?.createFail,
       );
     }
   };
@@ -142,8 +141,7 @@ export default function RoleManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: roles?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,
@@ -151,11 +149,7 @@ export default function RoleManagement() {
           handleSearch: (value) => handleSearch(value),
         }}
         topLeftComponent={
-          <Button
-            type="primary"
-            onClick={() => openModal()}
-            icon={<PlusOutlined />}
-          >
+          <Button type="primary" onClick={() => openModal()} icon={<PlusOutlined />}>
             {commonText?.button?.create}
           </Button>
         }
