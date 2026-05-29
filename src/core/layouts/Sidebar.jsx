@@ -1,60 +1,36 @@
-import { useEffect, useRef, useState } from "react";
-import { PiBuilding, PiBuildingApartment } from "react-icons/pi";
-import { SlOrganization } from "react-icons/sl";
-import { Link, NavLink } from "react-router";
 import LogoDefault from "@assets/images/logo-default.png";
+import { DOMAIN_MODULES } from "@core/navigation/domainModules";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink } from "react-router";
 import { PATH } from "@shared/constants/systemConstants";
+import { useAuth } from "../providers/AuthProvider";
 import { useSidebar } from "../providers/SidebarProvider";
-import { GoShieldCheck } from "react-icons/go";
-import { LuUsers } from "react-icons/lu";
-
-const MENU_ITEMS = [
-  {
-    label: "Quản lý tổ chức",
-    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ORG_MANAGEMENT}`,
-    icon: <PiBuildingApartment />,
-  },
-  {
-    label: "Quản lý chi nhánh",
-    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.BRANCH_MANAGEMENT}`,
-    icon: <SlOrganization />,
-  },
-  {
-    label: "Quản lý khu vực",
-    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.AREA_MANAGEMENT}`,
-    icon: <PiBuilding />,
-  },
-  {
-    label: "Quản lý vai trò",
-    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.ROLE_MANAGEMENT}`,
-    icon: <GoShieldCheck />,
-  },
-  {
-    label: "Quản lý người dùng",
-    path: `/${PATH.SYSTEM.BASE}/${PATH.SYSTEM.USER_MANAGEMENT}`,
-    icon: <LuUsers />,
-  },
-];
 
 const Sidebar = () => {
-  const { isExpanded, isMobileOpen, isHovered, closeSidebar } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, closeSidebar, setIsHovered } =
+    useSidebar();
+  const { domainActive } = useAuth();
   const isSidebarOpen = isExpanded || isHovered || isMobileOpen;
+
   const sidebarRef = useRef(null);
   const [headerHeight, setHeaderHeight] = useState(74);
+
+  const visibleModules = DOMAIN_MODULES.filter(
+    (m) => m.alwaysVisible || domainActive.includes(m.id),
+  ).sort((a, b) => {
+    if (a.alwaysVisible) return -1;
+    if (b.alwaysVisible) return 1;
+    return domainActive.indexOf(a.id) - domainActive.indexOf(b.id);
+  });
 
   useEffect(() => {
     const header = document.getElementById("app-header");
     if (!header) return;
-
-    const updateHeight = () => {
-      setHeaderHeight(header.offsetHeight);
-    };
-
+    const updateHeight = () => setHeaderHeight(header.offsetHeight);
     updateHeight();
-    const resizeObserver = new ResizeObserver(updateHeight);
-    resizeObserver.observe(header);
-
-    return () => resizeObserver.disconnect();
+    const ro = new ResizeObserver(updateHeight);
+    ro.observe(header);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -72,7 +48,6 @@ const Sidebar = () => {
         closeSidebar();
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileOpen, closeSidebar]);
@@ -86,11 +61,12 @@ const Sidebar = () => {
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
     >
+      {/* ── Logo ── */}
       <div
         className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}
       >
-        <Link to="/" className="m-auto">
-          {isExpanded || isHovered || isMobileOpen ? (
+        <Link to={PATH.HOME} className="m-auto">
+          {isSidebarOpen ? (
             <img
               className="m-auto object-contain"
               src={LogoDefault}
@@ -110,36 +86,56 @@ const Sidebar = () => {
         </Link>
       </div>
 
+      {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto no-scrollbar">
-        <ul className="flex flex-col">
-          {MENU_ITEMS.map((item) => (
-            <li key={item.label}>
-              <NavLink
-                to={item.path}
-                onClick={() => isMobileOpen && closeSidebar()}
-                className={({ isActive }) =>
-                  (isActive ? "menu-item-active" : "menu-item-inactive") +
-                  " menu-item group"
-                }
-              >
-                <span
-                  className={`menu-item-icon-size ${!isSidebarOpen && "mx-auto"}`}
-                >
-                  {item.icon}
+        {visibleModules.map((module, idx) => (
+          <div key={module.id}>
+            {/* Domain section label */}
+            {isSidebarOpen && (
+              /* Expanded: label đầy đủ */
+              <div className="flex items-center gap-2 px-3 pt-4 pb-1 text-xl">
+                <span className="text-sm font-semibold tracking-widest uppercase text-gray-400 truncate">
+                  {module.label}
                 </span>
-                <span
-                  className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
-                    isSidebarOpen
-                      ? "max-w-60 opacity-100 translate-x-0"
-                      : "max-w-0 opacity-0 -translate-x-2 hidden"
-                  }`}
-                >
-                  {item.label}
-                </span>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+              </div>
+            )}
+
+            <ul className="flex flex-col">
+              {module.items.map((item) => (
+                <li key={item.label}>
+                  <NavLink
+                    to={item.path}
+                    onClick={() => isMobileOpen && closeSidebar()}
+                    title={!isSidebarOpen ? item.label : undefined}
+                    className={({ isActive }) =>
+                      (isActive ? "menu-item-active" : "menu-item-inactive") +
+                      " menu-item group"
+                    }
+                  >
+                    <span
+                      className={`menu-item-icon-size ${!isSidebarOpen && "mx-auto"}`}
+                    >
+                      {item.icon}
+                    </span>
+                    <span
+                      className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out ${
+                        isSidebarOpen
+                          ? "max-w-60 opacity-100 translate-x-0"
+                          : "max-w-0 opacity-0 -translate-x-2 hidden"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+
+            {idx < visibleModules.length - 1 && (
+              <div className="mx-3 my-1 border-t border-gray-200" />
+            )}
+          </div>
+        ))}
       </nav>
     </aside>
   );

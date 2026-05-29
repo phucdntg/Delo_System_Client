@@ -16,6 +16,7 @@ export const HEADER_DEVICE_ID = "X-Device-Id";
 export const LANGUAGE = "delo_language";
 
 export const PATH = {
+  HOME: "/",
   AUTH: "/auth/login",
   SYSTEM: {
     BASE: "system",
@@ -26,6 +27,25 @@ export const PATH = {
     USER_MANAGEMENT: "users",
   },
   QMS: {
-    BASE: "/qms",
+    BASE: "qms",
+    DASHBOARD: "dashboard",
+    COUNTERS: "counters",
+    SERVICES: "services",
+    CONFIG: "config",
+  },
+  QNA: {
+    BASE: "qna",
+    DASHBOARD: "dashboard",
+    QUESTIONS: "questions",
+  },
+  EVALUATION: {
+    BASE: "evaluation",
+    DASHBOARD: "dashboard",
+    REVIEWS: "reviews",
+  },
+  LOOKUP: {
+    BASE: "lookup",
+    DASHBOARD: "dashboard",
+    SEARCH: "search",
   },
 };

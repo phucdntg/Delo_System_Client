@@ -1,3 +1,9 @@
+import { useLazyGetCurrentUserQuery } from "@domains/auth";
+import {
+  ACCESS_TOKEN,
+  ORG_ID,
+  REFRESH_TOKEN,
+} from "@shared/constants/systemConstants";
 import {
   createContext,
   useCallback,
@@ -5,12 +11,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useLazyGetCurrentUserQuery } from "@domains/auth";
-import {
-  ACCESS_TOKEN,
-  ORG_ID,
-  REFRESH_TOKEN,
-} from "@shared/constants/systemConstants";
 import { allRTKServices } from "../services/allRTKServices";
 import { store } from "../store";
 
@@ -20,6 +20,13 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [domainActive, setDomainActive] = useState([
+    "qms",
+    "lookup",
+    "qna",
+    "evaluation",
+  ]);
+
   const [selectedOrg, setSelectedOrg] = useState(() => {
     const stored = localStorage.getItem(ORG_ID);
     return stored ? Number(stored) : 0;
@@ -141,6 +148,8 @@ export function AuthProvider({ children }) {
     loading,
     isAuthenticated: !!token,
     selectedOrg,
+    domainActive,
+    setDomainActive,
     saveSelectedOrg,
     logout,
     setToken: saveToken,

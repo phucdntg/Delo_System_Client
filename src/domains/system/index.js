@@ -4,3 +4,5 @@ export * from "./features/organization";
 export * from "./features/permission";
 export * from "./features/role";
 export * from "./features/user";
+export { systemRoutes } from "./routes";
+export { systemNavigation } from "./navigation";

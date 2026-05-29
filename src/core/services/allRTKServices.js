@@ -8,6 +8,8 @@ import {
   userService,
 } from "@domains/system";
 
+import { counterService } from "@domains/qms";
+
 export const allRTKServices = {
   authService,
   branchService,
@@ -16,4 +18,6 @@ export const allRTKServices = {
   roleService,
   permissionService,
   userService,
+
+  counterService,
 };
