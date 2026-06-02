@@ -4,6 +4,7 @@ import {
   MdOutlineDashboard,
   MdOutlineQueuePlayNext,
   MdOutlineSettings,
+  MdOutlineRateReview,
 } from "react-icons/md";
 
 export const qmsNavigation = {
@@ -28,6 +29,11 @@ export const qmsNavigation = {
       label: "Quản lý dịch vụ",
       path: `/${PATH.QMS.BASE}/${PATH.QMS.SERVICES}`,
       icon: <MdOutlineQueuePlayNext />,
+    },
+    {
+      label: "Nội dung đánh giá",
+      path: `/${PATH.QMS.BASE}/${PATH.QMS.EVALUATION_CONTENTS}`,
+      icon: <MdOutlineRateReview />,
     },
     {
       label: "Cấu hình",

@@ -8,7 +8,20 @@ import {
   userService,
 } from "@domains/system";
 
-import { counterService } from "@domains/qms";
+import {
+  counterService,
+  employeeEvaluationContentService,
+  serviceEvaluationContentService,
+  serviceService,
+} from "@domains/qms";
+
+import {
+  actionService,
+  contentService,
+  recordService,
+  targetService,
+  topicService,
+} from "@domains/evaluation";
 
 export const allRTKServices = {
   authService,
@@ -20,4 +33,13 @@ export const allRTKServices = {
   userService,
 
   counterService,
+  employeeEvaluationContentService,
+  serviceEvaluationContentService,
+  serviceService,
+
+  topicService,
+  targetService,
+  actionService,
+  contentService,
+  recordService,
 };

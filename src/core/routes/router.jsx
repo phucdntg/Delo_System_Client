@@ -1,10 +1,10 @@
-import { qmsRoutes } from "@domains/qms";
-import { qnaRoutes } from "@domains/qna";
 import { evaluationRoutes } from "@domains/evaluation";
 import { lookupRoutes } from "@domains/lookup";
+import { qmsRoutes } from "@domains/qms";
+import { qnaRoutes } from "@domains/qna";
 import { systemRoutes } from "@domains/system";
 import { PATH } from "@shared/constants/systemConstants";
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import RouteTitleSync from "./RouteTitleSync";
@@ -12,9 +12,25 @@ import ErrorBoundary from "./guards/ErrorBoundary";
 import ProtectedRoute from "./guards/ProtectedRoute";
 import RequireOrgGuard from "./guards/RequireOrgGuard";
 
+function RouteGuard({ route }) {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProtectedRoute>
+          <RequireOrgGuard required={route.requireOrg}>
+            {route.element}
+          </RequireOrgGuard>
+        </ProtectedRoute>
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
 const LoginPage = lazy(
   () => import("../../domains/auth/features/login/pages/LoginPage"),
 );
+
+const NotFoundPage = lazy(() => import("../../shared/pages/NotFoundPage"));
 
 function RootRouteLayout() {
   return (
@@ -61,17 +77,7 @@ const routes = [
             children: [
               ...systemRoutes.map((route) => ({
                 ...route,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>
-                        <RequireOrgGuard required={route.requireOrg}>
-                          {route.element}
-                        </RequireOrgGuard>
-                      </ProtectedRoute>
-                    </Suspense>
-                  </ErrorBoundary>
-                ),
+                element: <RouteGuard route={route} />,
               })),
             ],
           },
@@ -80,17 +86,7 @@ const routes = [
             children: [
               ...qmsRoutes.map((route) => ({
                 ...route,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>
-                        <RequireOrgGuard required={route.requireOrg}>
-                          {route.element}
-                        </RequireOrgGuard>
-                      </ProtectedRoute>
-                    </Suspense>
-                  </ErrorBoundary>
-                ),
+                element: <RouteGuard route={route} />,
               })),
             ],
           },
@@ -99,17 +95,7 @@ const routes = [
             children: [
               ...qnaRoutes.map((route) => ({
                 ...route,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>
-                        <RequireOrgGuard required={route.requireOrg}>
-                          {route.element}
-                        </RequireOrgGuard>
-                      </ProtectedRoute>
-                    </Suspense>
-                  </ErrorBoundary>
-                ),
+                element: <RouteGuard route={route} />,
               })),
             ],
           },
@@ -118,17 +104,7 @@ const routes = [
             children: [
               ...evaluationRoutes.map((route) => ({
                 ...route,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>
-                        <RequireOrgGuard required={route.requireOrg}>
-                          {route.element}
-                        </RequireOrgGuard>
-                      </ProtectedRoute>
-                    </Suspense>
-                  </ErrorBoundary>
-                ),
+                element: <RouteGuard route={route} />,
               })),
             ],
           },
@@ -137,19 +113,20 @@ const routes = [
             children: [
               ...lookupRoutes.map((route) => ({
                 ...route,
-                element: (
-                  <ErrorBoundary>
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <ProtectedRoute>
-                        <RequireOrgGuard required={route.requireOrg}>
-                          {route.element}
-                        </RequireOrgGuard>
-                      </ProtectedRoute>
-                    </Suspense>
-                  </ErrorBoundary>
-                ),
+                element: <RouteGuard route={route} />,
               })),
             ],
+          },
+          {
+            path: "*",
+            handle: { title: "404 - Không tìm thấy trang" },
+            element: (
+              <ErrorBoundary>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <NotFoundPage />
+                </Suspense>
+              </ErrorBoundary>
+            ),
           },
         ],
       },

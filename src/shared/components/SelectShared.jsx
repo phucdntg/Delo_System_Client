@@ -1,6 +1,8 @@
 import { Select, Spin } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const DEFAULT_EXTRA_OPTIONS = [];
+
 const SelectShared = ({
   fetchFn,
   fetchItemById,
@@ -14,7 +16,7 @@ const SelectShared = ({
   getLabel,
   getValue,
   value,
-  extraOptions = [],
+  extraOptions = DEFAULT_EXTRA_OPTIONS,
   ...restProps
 }) => {
   const [options, setOptions] = useState([]);
@@ -95,11 +97,11 @@ const SelectShared = ({
     initializedRef.current = false;
     setOptions(dedupedSeed);
     setQuery("");
-  }, [resetKey, defaultValueItem, extraOptions]);
+  }, [defaultValueItem, extraOptions, getValue]);
 
   useEffect(() => {
     reset();
-  }, [resetKey]);
+  }, [resetKey, reset]);
 
   useEffect(() => {
     const seed = !query && defaultValueItem ? [defaultValueItem] : [];

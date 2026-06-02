@@ -193,11 +193,11 @@ body {
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50 text-(--primary-color) border-r-4 border-(--primary-color);
+  @apply bg-brand-50! text-(--primary-color)! border-r-4 border-(--primary-color)!;
 }
 
 @utility menu-item-inactive {
-  @apply text-gray-900 hover:bg-gray-100 hover:text-gray-700 transition-all duration-200;
+  @apply text-gray-500! hover:bg-gray-100 hover:text-gray-700 transition-all duration-200;
 }
 
 @utility menu-item-icon {
@@ -205,7 +205,7 @@ body {
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500;
+  @apply text-brand-500!;
 }
 
 @utility menu-item-icon-size {

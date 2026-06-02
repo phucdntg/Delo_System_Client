@@ -9,10 +9,13 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { allRTKServices } from "../services/allRTKServices";
 import { store } from "../store";
+import { setDomainActive } from "../store/domainSlice";
 
 const AuthContext = createContext(null);
 
@@ -20,48 +23,45 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [domainActive, setDomainActive] = useState([
-    "qms",
-    "lookup",
-    "qna",
-    "evaluation",
-  ]);
-
   const [selectedOrg, setSelectedOrg] = useState(() => {
     const stored = localStorage.getItem(ORG_ID);
     return stored ? Number(stored) : 0;
   });
+  const dispatch = useDispatch();
+  const domainActive = useSelector((state) => state.domain.domainActive);
   const [triggerGetCurrentUser] = useLazyGetCurrentUserQuery();
+
+  const triggerRef = useRef(triggerGetCurrentUser);
+  triggerRef.current = triggerGetCurrentUser;
 
   useEffect(() => {
     let mounted = true;
+    let called = false;
 
     async function init() {
+      if (called) return;
+      called = true;
+
       try {
         const access = localStorage.getItem(ACCESS_TOKEN);
         if (access) setToken(access);
 
         if (access) {
           try {
-            const res = await triggerGetCurrentUser();
+            const res = await triggerRef.current();
             const fetched = res?.data ?? res;
             if (mounted && fetched) {
               saveUser(fetched);
+              if (fetched.domainActive) {
+                dispatch(setDomainActive(fetched.domainActive));
+              }
             }
           } catch (err) {
             console.error("AuthProvider: getCurrentUser failed", err);
-            if (mounted) {
-              saveToken(null);
-              saveUser(null);
-            }
           }
         }
       } catch (err) {
         console.error("AuthProvider: failed to read from localStorage", err);
-        if (mounted) {
-          setToken(null);
-          setUser(null);
-        }
       } finally {
         if (mounted) setLoading(false);
       }
@@ -72,7 +72,7 @@ export function AuthProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [triggerGetCurrentUser]);
+  }, []);
 
   const saveToken = useCallback((t) => {
     if (t) {
@@ -137,10 +137,17 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!selectedOrg && user) {
-      saveSelectedOrg(0);
+    if (selectedOrg === null && user) {
+      saveSelectedOrg({ id: 0 });
     }
-  }, [user]);
+  }, [user, selectedOrg, saveSelectedOrg]);
+
+  const handleSetDomainActive = useCallback(
+    (payload) => {
+      dispatch(setDomainActive(payload));
+    },
+    [dispatch],
+  );
 
   const value = {
     token,
@@ -149,7 +156,7 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!token,
     selectedOrg,
     domainActive,
-    setDomainActive,
+    setDomainActive: handleSetDomainActive,
     saveSelectedOrg,
     logout,
     setToken: saveToken,
@@ -163,7 +170,21 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    return {
+      token: null,
+      user: null,
+      loading: true,
+      isAuthenticated: false,
+      selectedOrg: null,
+      domainActive: [],
+      setDomainActive: () => {},
+      saveSelectedOrg: () => {},
+      logout: () => {},
+      setToken: () => {},
+      setUser: () => {},
+      updateUser: () => {},
+    };
   }
+
   return context;
 }

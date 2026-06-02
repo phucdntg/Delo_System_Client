@@ -1,0 +1,39 @@
+{
+  "form": {
+    "topic": {
+      "name": "Tên chủ đề",
+      "description": "Mô tả",
+      "isActive": "Trạng thái",
+      "placeholder": {
+        "name": "Nhập tên chủ đề",
+        "description": "Nhập mô tả"
+      },
+      "validation": {
+        "nameRequired": "Vui lòng nhập tên chủ đề"
+      }
+    }
+  },
+  "modal": {
+    "createTitle": "Thêm mới chủ đề đánh giá",
+    "editTitle": "Chỉnh sửa chủ đề đánh giá"
+  },
+  "table": {
+    "name": "Tên",
+    "description": "Mô tả",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "actions": "Hành động"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm theo tên chủ đề"
+  },
+  "message": {
+    "createSuccess": "Thêm mới chủ đề thành công",
+    "createFailed": "Thêm mới chủ đề thất bại",
+    "updateSuccess": "Cập nhật chủ đề thành công",
+    "updateFailed": "Cập nhật chủ đề thất bại",
+    "deleteSuccess": "Xóa chủ đề thành công",
+    "deleteFailed": "Xóa chủ đề thất bại"
+  }
+}

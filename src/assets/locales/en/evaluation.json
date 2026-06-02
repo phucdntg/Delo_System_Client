@@ -1,0 +1,39 @@
+{
+  "form": {
+    "topic": {
+      "name": "Topic Name",
+      "description": "Description",
+      "isActive": "Status",
+      "placeholder": {
+        "name": "Enter topic name",
+        "description": "Enter description"
+      },
+      "validation": {
+        "nameRequired": "Please enter topic name"
+      }
+    }
+  },
+  "modal": {
+    "createTitle": "Create Evaluation Topic",
+    "editTitle": "Edit Evaluation Topic"
+  },
+  "table": {
+    "name": "Name",
+    "description": "Description",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "actions": "Actions"
+  },
+  "search": {
+    "placeholder": "Search by topic name"
+  },
+  "message": {
+    "createSuccess": "Topic created successfully",
+    "createFailed": "Failed to create topic",
+    "updateSuccess": "Topic updated successfully",
+    "updateFailed": "Failed to update topic",
+    "deleteSuccess": "Topic deleted successfully",
+    "deleteFailed": "Failed to delete topic"
+  }
+}

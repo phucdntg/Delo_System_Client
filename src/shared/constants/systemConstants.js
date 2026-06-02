@@ -32,6 +32,7 @@ export const PATH = {
     COUNTERS: "counters",
     SERVICES: "services",
     CONFIG: "config",
+    EVALUATION_CONTENTS: "evaluation-contents",
   },
   QNA: {
     BASE: "qna",
@@ -42,6 +43,11 @@ export const PATH = {
     BASE: "evaluation",
     DASHBOARD: "dashboard",
     REVIEWS: "reviews",
+    TOPICS: "topics",
+    TARGETS: "targets",
+    ACTIONS: "actions",
+    CONTENTS: "contents",
+    RECORDS: "records",
   },
   LOOKUP: {
     BASE: "lookup",

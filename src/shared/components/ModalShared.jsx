@@ -31,7 +31,7 @@ const ModalShared = ({
       cancelText={translateCommon?.cancel}
       confirmLoading={confirmLoading}
       okButtonProps={{ style: { display: true ? "inline-block" : "none" } }}
-      destroyOnHidden
+      forceRender
       {...props}
     >
       {children}

@@ -1,0 +1,8 @@
+{
+  "title": "500 - Internal Server Error",
+  "subTitle": "An unexpected error has occurred.",
+  "description": "We apologize for the inconvenience. The error has been logged and we are working on it. Please try again later.",
+  "backHome": "Back to Home",
+  "reload": "Reload Page",
+  "errorDetails": "Error Details"
+}

@@ -1,23 +1,8 @@
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
+import InternalServerErrorPage from "../../../shared/pages/InternalServerErrorPage";
 
-function ErrorFallback({ error, resetErrorBoundary }) {
-  return (
-    <div
-      style={{
-        flex: 1,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 24,
-        textAlign: "center",
-      }}
-    >
-      <h1>Something went wrong</h1>
-      <p>{"Unexpected application error."}</p>
-    </div>
-  );
+function ErrorFallback({ error, resetErrorBoundary, errorInfo }) {
+  return <InternalServerErrorPage error={error} errorInfo={errorInfo} />;
 }
 
 export default function ErrorBoundary({ children }) {
