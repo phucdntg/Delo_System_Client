@@ -1,13 +1,13 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import ModalShared from "@shared/components/ModalShared";
 import TableShared from "@shared/components/TableShared";
 import { toVNTime } from "@shared/utils/formatTime";
-import { Button, message, Space, Tag } from "antd";
+import { App, Button, Space, Tag } from "antd";
 import { useForm } from "antd/es/form/Form";
 import OrganizationForm from "../components/OrganizationForm";
 import {
@@ -18,6 +18,7 @@ import {
 } from "../services/orgService";
 
 export default function OrgManagement() {
+  const { message } = App.useApp();
   const { translate } = useTranslate();
   const translateOrgPage = translate("organization") || {};
 

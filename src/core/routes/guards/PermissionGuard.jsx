@@ -1,5 +1,5 @@
 // import { Navigate, useLocation } from 'react-router-dom';
-// import { useAuth } from '../../providers/AuthProvider';
+// import { useAuth } from '../../providers/auth';
 // import appRoutes from '../AppRoutes';
 
 // const normalizePermissions = (permissions) =>

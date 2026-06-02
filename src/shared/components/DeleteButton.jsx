@@ -1,6 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 
 const DeleteButton = ({ onDelete }) => {
   const { translate } = useTranslate();

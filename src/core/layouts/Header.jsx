@@ -1,3 +1,4 @@
+import { useAuth } from "@core/providers/auth";
 import { Dropdown, Select } from "antd";
 import { useMemo, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
@@ -7,9 +8,8 @@ import {
   useLazyFetchOrgQuery,
 } from "../../domains/system/features/organization/services/orgService";
 import SelectShared from "../../shared/components/SelectShared";
-import { useAuth } from "../providers/AuthProvider";
-import { useSidebar } from "../providers/SidebarProvider";
-import { useTranslate } from "../providers/TranslateProvider";
+import { useSidebar } from "../providers/sidebar";
+import { useTranslate } from "../providers/translate";
 
 const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();

@@ -1,16 +1,16 @@
-import { Space, Tag } from "antd";
-import { useEffect } from "react";
+import { usePermission } from "@core/hooks/usePermission";
 import useTable from "@core/hooks/useTable";
-import { useAuth } from "@core/providers/AuthProvider";
-import { useTranslate } from "@core/providers/TranslateProvider";
-import TableShared from "@shared/components/TableShared";
+import { useAuth } from "@core/providers/auth";
+import { useTranslate } from "@core/providers/translate";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
+import TableShared from "@shared/components/TableShared";
 import {
   PERMISSIONS,
   PERMISSION_MODULES,
 } from "@shared/constants/permission.constant";
-import { usePermission } from "@core/hooks/usePermission";
+import { Space, Tag } from "antd";
+import { useEffect } from "react";
 import { useFetchUsersQuery } from "../services/userService";
 
 export default function UserTable({

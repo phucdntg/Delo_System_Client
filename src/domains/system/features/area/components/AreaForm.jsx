@@ -1,12 +1,12 @@
+import { useAuth } from "@core/providers/auth";
+import { useTranslate } from "@core/providers/translate";
+import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Switch } from "antd";
 import { useLayoutEffect } from "react";
-import { useTranslate } from "@core/providers/TranslateProvider";
-import { useAuth } from "@core/providers/AuthProvider";
 import {
-  useLazyFetchBranchesQuery,
   useLazyFetchBranchByIdQuery,
+  useLazyFetchBranchesQuery,
 } from "../../branch";
-import SelectShared from "@shared/components/SelectShared";
 
 const AreaForm = ({ form, initialValue }) => {
   const { translate } = useTranslate();

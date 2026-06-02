@@ -8,7 +8,7 @@ import EditButton from "@shared/components/EditButton";
 import ModalShared from "@shared/components/ModalShared";
 import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
-import { Button, Form, message, Modal, Space, Tag } from "antd";
+import { App, Button, Form, Space, Tag } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import EvaluationContentFormService from "../components/EvaluationContentFormService";
 import { useServiceEvaluationContentManager } from "../hooks/useServiceEvaluationContentManager";
@@ -18,6 +18,7 @@ import {
 } from "../services/serviceService";
 
 export default function ServiceEvaluationTab() {
+  const { message, modal } = App.useApp();
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
@@ -223,7 +224,7 @@ export default function ServiceEvaluationTab() {
   // Delete handler
   const handleDeleteRecord = useCallback(
     async (record) => {
-      Modal.confirm({
+      modal.confirm({
         title: "Xác nhận xóa",
         content: `Bạn có chắc chắn muốn xóa nội dung đánh giá "${record.content}"?`,
         okText: "Xóa",

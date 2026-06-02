@@ -1,5 +1,5 @@
-import { useAuth } from "@core/providers/AuthProvider";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useAuth } from "@core/providers/auth";
+import { useTranslate } from "@core/providers/translate";
 import SelectShared from "@shared/components/SelectShared";
 import { Form, Input } from "antd";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";

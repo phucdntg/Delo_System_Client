@@ -1,9 +1,9 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
-import { useAuth } from "@core/providers/AuthProvider";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useAuth } from "@core/providers/auth";
+import { useTranslate } from "@core/providers/translate";
 import ModalShared from "@shared/components/ModalShared";
-import { Button, Input, message, Tabs } from "antd";
+import { App, Button, Input, Tabs } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFetchRolesQuery } from "../../role";
@@ -16,6 +16,7 @@ import {
 } from "../services/userService";
 
 export default function UserManagement() {
+  const { message } = App.useApp();
   const { user, selectedOrg } = useAuth();
   const [selectedByName, setSelectedByName] = useState({});
   const { translate } = useTranslate();

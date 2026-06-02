@@ -1,5 +1,5 @@
 // import { Navigate } from 'react-router-dom';
-// import { useAuth } from '../../providers/AuthProvider';
+// import { useAuth } from '../../providers/auth';
 
 // export default function RoleGate({ children, requiredRole = 'user', fallbackTo = '/' }) {
 //   const { user } = useAuth();

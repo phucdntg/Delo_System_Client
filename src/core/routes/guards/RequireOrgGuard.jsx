@@ -1,5 +1,5 @@
+import { useAuth } from "@core/providers/auth";
 import { Alert } from "antd";
-import { useAuth } from "../../providers/AuthProvider";
 
 export default function RequireOrgGuard({ children, required = true }) {
   const { selectedOrg, loading } = useAuth();

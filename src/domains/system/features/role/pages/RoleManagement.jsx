@@ -1,13 +1,13 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
-import { useAuth } from "@core/providers/AuthProvider";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useAuth } from "@core/providers/auth";
+import { useTranslate } from "@core/providers/translate";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import ModalShared from "@shared/components/ModalShared";
 import TableShared from "@shared/components/TableShared";
-import { Button, message, Space } from "antd";
+import { App, Button, Space } from "antd";
 import { useForm } from "antd/es/form/Form";
 import RoleForm from "../components/RoleForm";
 import {
@@ -18,6 +18,7 @@ import {
 } from "../services/roleService";
 
 export default function RoleManagement() {
+  const { message } = App.useApp();
   const { selectedOrg } = useAuth();
   const { translate } = useTranslate();
   const roleText = translate("role") || {};

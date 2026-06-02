@@ -8,8 +8,8 @@ Delo System Client is a React-based multi-domain management system built with a 
 
 ## Tech Stack
 
-- **React 19** with React Compiler enabled (impacts build performance)
-- **Vite 8** with **Rolldown** (via `@rolldown/plugin-babel`) - Build tool and dev server
+- **React 19** with React Compiler enabled only for production builds
+- **Vite 8** (via `@vitejs/plugin-react`) - Build tool and dev server
 - **Redux Toolkit** with RTK Query for API calls and Redux slices for app state
 - **React Router v7** - Client-side routing
 - **Ant Design 6** - UI component library
@@ -203,14 +203,53 @@ Routes are defined per domain in `routes.jsx` as plain arrays of route objects. 
 - `requireOrg: boolean` — controls whether `RequireOrgGuard` enforces organization selection
 - `element` — lazy-loaded page component (imported with `lazy()`)
 
-Routes are aggregated in `src/core/routes/router.jsx`, where each route is wrapped with:
+Routes are aggregated in `src/core/routes/router.jsx`, where each domain's routes are wrapped with a shared `RouteGuard` component:
 
+```jsx
+function RouteGuard({ route }) {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProtectedRoute>
+          <RequireOrgGuard required={route.requireOrg}>
+            {route.element}
+          </RequireOrgGuard>
+        </ProtectedRoute>
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+```
+
+Each domain route array is spread inside its parent path with the `RouteGuard` wrapper:
+
+```jsx
+...systemRoutes.map((route) => ({
+  ...route,
+  element: <RouteGuard route={route} />,
+})),
+```
+
+The guard stack (from outermost to innermost):
 1. **ErrorBoundary** — Catches rendering errors
 2. **Suspense** — Handles lazy-loaded components (fallback: `<div>Loading...</div>`)
 3. **ProtectedRoute** — Checks `isAuthenticated` from `AuthProvider`; redirects to login if missing
 4. **RequireOrgGuard** — Shows warning if `requireOrg` is true and `selectedOrg` is falsy
 
 The default root redirect is `/system/organizations`. The login page at `/auth/login` sits outside `MainLayout`.
+
+### RouteGuard Pattern
+
+Route wrapping logic is centralized in a `RouteGuard` component in `router.jsx` rather than duplicated per domain. This component composes `ErrorBoundary` → `Suspense` → `ProtectedRoute` → `RequireOrgGuard`. Each domain route array is mapped through `RouteGuard`:
+
+```jsx
+...systemRoutes.map((route) => ({
+  ...route,
+  element: <RouteGuard route={route} />,
+})),
+```
+
+This avoids repeating the guard stack for each of the 5 domain groups. The 404 catch-all route at the end of `MainLayout` children uses its own `ErrorBoundary` + `Suspense` since it doesn't need the other guards.
 
 ### RouteTitleSync
 
@@ -242,6 +281,9 @@ Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered b
 
 - **AuthProvider** manages: token, user, selectedOrg, domainActive, loading state
 - On mount, reads token from localStorage and fetches current user via `useLazyGetCurrentUserQuery` (only if token exists)
+- **HMR safety:** The `triggerGetCurrentUser` ref is stabilized with `useRef` to prevent the init effect from re-running when HMR replaces the RTK Query service. A `called` flag guard ensures the init function runs only once even under React StrictMode double-invocation.
+- **Error resilience:** If `getCurrentUser` fails (network glitch, HMR timing, server restart), the catch block only logs the error — it does **not** clear the token or user state. Token refresh is handled by the Axios response interceptor, not by AuthProvider.
+- If the API response includes a `domainActive` field, `AuthProvider` dispatches `setDomainActive` to sync which domain modules are visible in the sidebar.
 - **saveToken** accepts either a string or an object with `accessToken`/`access_token` and `refreshToken`/`refresh_token` properties
 - **saveSelectedOrg** updates org in localStorage AND invalidates RTK Query cache tags (`Area`, `Branch`, `Role`) so data refreshes for the new org
 - **updateUser** merges a partial object into the current user state
@@ -355,7 +397,8 @@ To add a completely new domain:
 
 ## Important Notes
 
-- **React Compiler** is enabled (via Babel plugin), which impacts Vite dev and build performance
+- **React Compiler** is configured via `@vitejs/plugin-react`'s `babel` option (not `@rolldown/plugin-babel`). It is **production-only** (`process.env.NODE_ENV === "production"`) to avoid conflicts with React Refresh (HMR) during development. The `babel-plugin-react-compiler` plugin is used directly.
+- **HMR note:** If you experience sidebar domains disappearing or page stuck on "Loading..." after saving a file, this is typically caused by React Compiler conflicting with React Refresh during HMR. The fix is to ensure the compiler runs only in production (see `vite.config.js`).
 - **All routes require authentication** by default (via ProtectedRoute)
 - **Some routes require org selection** (controlled by `requireOrg` flag on the route definition)
 - **The application uses Vietnamese by default** — translation JSON files are in `src/assets/locales/`
@@ -365,3 +408,4 @@ To add a completely new domain:
 - **Ant Design's `App` component** wraps the app in `main.jsx` — use `App.useApp()` for `message`, `notification`, `modal` static methods instead of importing them directly
 - **`ModalShared` uses `forceRender`** — do not remove it, as it ensures child Form instances are mounted even when the modal is closed, preventing "useForm not connected" warnings
 - **Axios timeout** is 15 seconds (configured in `src/core/services/axios.js`)
+- **Agent skills** are installed under `.agents/skills/` (4 Vercel skills: composition-patterns, react-best-practices, react-view-transitions, web-design-guidelines). These are referenced by their `/skill-name` in chat commands. The lockfile at `skills-lock.json` pins their versions.

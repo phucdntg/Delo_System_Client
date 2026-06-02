@@ -4,22 +4,14 @@ import {
   ORG_ID,
   REFRESH_TOKEN,
 } from "@shared/constants/systemConstants";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { allRTKServices } from "../services/allRTKServices";
-import { store } from "../store";
-import { setDomainActive } from "../store/domainSlice";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { allRTKServices } from "@core/services/allRTKServices";
+import { store } from "@core/store";
 
-const AuthContext = createContext(null);
+import { AuthContext } from "./useAuth";
 
 export function AuthProvider({ children }) {
+  const domainActive = ["qms", "lookup", "evaluation", "qna"];
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,12 +19,15 @@ export function AuthProvider({ children }) {
     const stored = localStorage.getItem(ORG_ID);
     return stored ? Number(stored) : 0;
   });
-  const dispatch = useDispatch();
-  const domainActive = useSelector((state) => state.domain.domainActive);
+
   const [triggerGetCurrentUser] = useLazyGetCurrentUserQuery();
 
+  // Stabilize ref to prevent HMR re-trigger
   const triggerRef = useRef(triggerGetCurrentUser);
-  triggerRef.current = triggerGetCurrentUser;
+
+  useEffect(() => {
+    triggerRef.current = triggerGetCurrentUser;
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -52,9 +47,6 @@ export function AuthProvider({ children }) {
             const fetched = res?.data ?? res;
             if (mounted && fetched) {
               saveUser(fetched);
-              if (fetched.domainActive) {
-                dispatch(setDomainActive(fetched.domainActive));
-              }
             }
           } catch (err) {
             console.error("AuthProvider: getCurrentUser failed", err);
@@ -142,13 +134,6 @@ export function AuthProvider({ children }) {
     }
   }, [user, selectedOrg, saveSelectedOrg]);
 
-  const handleSetDomainActive = useCallback(
-    (payload) => {
-      dispatch(setDomainActive(payload));
-    },
-    [dispatch],
-  );
-
   const value = {
     token,
     user,
@@ -156,7 +141,6 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!token,
     selectedOrg,
     domainActive,
-    setDomainActive: handleSetDomainActive,
     saveSelectedOrg,
     logout,
     setToken: saveToken,
@@ -165,26 +149,4 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    return {
-      token: null,
-      user: null,
-      loading: true,
-      isAuthenticated: false,
-      selectedOrg: null,
-      domainActive: [],
-      setDomainActive: () => {},
-      saveSelectedOrg: () => {},
-      logout: () => {},
-      setToken: () => {},
-      setUser: () => {},
-      updateUser: () => {},
-    };
-  }
-
-  return context;
 }

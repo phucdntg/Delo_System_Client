@@ -1,4 +1,4 @@
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Select, Switch } from "antd";
 import PermissionSelector from "../../permission/components/PermissionSelector";

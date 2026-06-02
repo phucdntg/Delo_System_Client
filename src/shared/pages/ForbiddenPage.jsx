@@ -1,5 +1,5 @@
 import { HomeOutlined, WarningOutlined } from "@ant-design/icons";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import { PATH } from "@shared/constants/systemConstants";
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";

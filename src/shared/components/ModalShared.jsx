@@ -1,5 +1,5 @@
 import { usePermission } from "@core/hooks/usePermission";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import { Modal } from "antd";
 
 const ModalShared = ({

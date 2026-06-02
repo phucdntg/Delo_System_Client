@@ -1,4 +1,4 @@
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import ModalShared from "@shared/components/ModalShared";
 import { Form, Input, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
@@ -71,7 +71,6 @@ export default function TopicFormModal({
             placeholder={translateEval?.form?.topic?.placeholder?.description}
           />
         </Form.Item>
-
         <Form.Item
           name="isActive"
           label={translateEval?.form?.topic?.isActive}

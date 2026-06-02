@@ -1,4 +1,4 @@
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import { Checkbox, Collapse, Empty } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { ACTION_LABELS, MODULE_LABELS } from "../constants";

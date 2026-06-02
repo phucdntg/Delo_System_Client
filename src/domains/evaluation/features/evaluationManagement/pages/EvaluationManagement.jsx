@@ -1,11 +1,11 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
-import { useTranslate } from "@core/providers/TranslateProvider";
+import { useTranslate } from "@core/providers/translate";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import TableShared from "@shared/components/TableShared";
-import { Button, message, Space } from "antd";
+import { App, Button, Space } from "antd";
 import TopicFormModal from "../components/TopicFormModal";
 import {
   useCreateTopicMutation,
@@ -15,6 +15,7 @@ import {
 } from "../services/topicService";
 
 export default function EvaluationManagement() {
+  const { message } = App.useApp();
   const { translate } = useTranslate();
   const translateEval = translate("evaluation") || {};
   const commonText = translate("common") || {};
