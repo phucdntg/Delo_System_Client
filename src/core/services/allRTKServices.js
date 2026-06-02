@@ -18,7 +18,6 @@ import {
 import {
   actionService,
   contentService,
-  recordService,
   targetService,
   topicService,
 } from "@domains/evaluation";
@@ -41,5 +40,4 @@ export const allRTKServices = {
   targetService,
   actionService,
   contentService,
-  recordService,
 };

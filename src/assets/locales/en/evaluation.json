@@ -1,5 +1,15 @@
 {
   "form": {
+    "topicSection": "Topic",
+    "name": "Name",
+    "description": "Description",
+    "isActive": "Status",
+    "label": "Label",
+    "color": "Color",
+    "displayOrder": "Display Order",
+    "icon": "Icon",
+    "content": "Content",
+    "action": "Action",
     "topic": {
       "name": "Topic Name",
       "description": "Description",
@@ -11,29 +21,49 @@
       "validation": {
         "nameRequired": "Please enter topic name"
       }
+    },
+    "placeholder": {
+      "name": "Enter name",
+      "description": "Enter description",
+      "selectTopic": "Select topic",
+      "label": "Enter label",
+      "color": "Enter color code",
+      "content": "Enter content",
+      "selectAction": "Select action"
+    },
+    "validation": {
+      "nameRequired": "Please enter name",
+      "topicRequired": "Please select a topic",
+      "labelRequired": "Please enter label",
+      "contentRequired": "Please enter content",
+      "actionRequired": "Please select an action"
     }
   },
   "modal": {
-    "createTitle": "Create Evaluation Topic",
-    "editTitle": "Edit Evaluation Topic"
+    "createTitle": "Create New",
+    "editTitle": "Edit"
   },
   "table": {
     "name": "Name",
     "description": "Description",
+    "topic": "Topic",
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
     "actions": "Actions"
   },
+  "filter": {
+    "topic": "Filter by topic"
+  },
   "search": {
-    "placeholder": "Search by topic name"
+    "placeholder": "Search..."
   },
   "message": {
-    "createSuccess": "Topic created successfully",
-    "createFailed": "Failed to create topic",
-    "updateSuccess": "Topic updated successfully",
-    "updateFailed": "Failed to update topic",
-    "deleteSuccess": "Topic deleted successfully",
-    "deleteFailed": "Failed to delete topic"
+    "createSuccess": "Created successfully",
+    "createFailed": "Failed to create",
+    "updateSuccess": "Updated successfully",
+    "updateFailed": "Failed to update",
+    "deleteSuccess": "Deleted successfully",
+    "deleteFailed": "Failed to delete"
   }
 }

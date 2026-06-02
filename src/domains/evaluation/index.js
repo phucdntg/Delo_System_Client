@@ -1,34 +1,7 @@
 export { evaluationNavigation } from "./navigation";
 export * from "./routes";
 
-export {
-  actionService,
-  contentService,
-  recordService,
-  targetService,
-  topicService,
-  useCreateActionMutation,
-  useCreateActionWithIconMutation,
-  useCreateContentMutation,
-  useCreateTargetMutation,
-  useCreateTopicMutation,
-  useDeleteActionMutation,
-  useDeleteContentMutation,
-  useDeleteTargetMutation,
-  useDeleteTopicMutation,
-  useGetActionByIdQuery,
-  useGetActionsQuery,
-  useGetContentByIdQuery,
-  useGetContentsQuery,
-  useGetRecordByIdQuery,
-  useGetRecordsQuery,
-  useGetTargetByIdQuery,
-  useGetTargetsQuery,
-  useGetTopicByIdQuery,
-  useGetTopicsQuery,
-  useUpdateActionIconMutation,
-  useUpdateActionMutation,
-  useUpdateContentMutation,
-  useUpdateTargetMutation,
-  useUpdateTopicMutation,
-} from "./features/evaluationManagement";
+export * from "./features/actions";
+export * from "./features/contents";
+export * from "./features/targets";
+export * from "./features/topics";

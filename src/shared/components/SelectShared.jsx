@@ -56,6 +56,7 @@ const SelectShared = ({
       setLoading(true);
       try {
         const res = await fetchFn(currentPage, pageSize, currentQuery);
+
         const existingIds = new Set(currentOptions.map((o) => getValue(o)));
         const newItems = res.data.filter((o) => !existingIds.has(getValue(o)));
         const merged = [...currentOptions, ...newItems];

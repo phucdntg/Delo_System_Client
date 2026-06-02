@@ -54,17 +54,19 @@ src/domains/{domain}/
     └── constants/              # Feature-specific constants
 ```
 
-**⚠️ Import Rule (enforced by ESLint via `no-restricted-imports` in `eslint.config.js`):**
-Never import directly into internal paths of a feature (e.g., `@domains/qms/features/counter/services/...`). Only use the public API via the domain's `index.js` and feature's `index.js` barrel exports. The same restriction applies to relative imports across features (`../*/services/*`, `../*/hooks/*`, `../*/store/*`). **Violations fail CI lint.**
+**⚠️ Import Rule (partially enforced — expand `no-restricted-imports` in `eslint.config.js`):**
+Never import directly into internal paths of a feature (e.g., `@domains/qms/features/counter/services/...`). Only use the public API via the domain's `index.js` and feature's `index.js` barrel exports. The same restriction applies to relative imports across features (`../*/services/*`, `../*/hooks/*`, `../*/store/*`).
+
+**Current ESLint enforcement:** Only `@domains/system/features/*` and `@domains/qms/features/*` explicit path patterns are blocked, plus relative `../*/services/*`, `../*/hooks/*`, `../*/store/*` patterns. New domains need their explicit path patterns added to the `no-restricted-imports` rule in `eslint.config.js`.**Violations fail CI lint.**
 
 **Available Domains:**
-- `system` - Organization, branch, area, role, user, permission management
-- `qms` - Queue management system (counters, services, evaluation content)
-- `qna` - Q&A management
-- `evaluation` - Evaluation and reviews (topics, targets, actions, contents, records)
-- `lookup` - Search and lookup functionality
-- `auth` - Authentication (login)
-- `kiosk` - Kiosk-specific features
+- `system` — Organization, branch, area, role, user, permission management (5 features)
+- `qms` — Queue management: counters and evaluation-contents (2 features). Only `counters` and `evaluation-contents` have routes; dashboard, services, and config pages are not yet implemented.
+- `qna` — Q&A management (no routes or features implemented yet — only navigation structure exists)
+- `evaluation` — Evaluation and reviews. Recently restructured from a monolithic `evaluationManagement` feature into separate features: `topics`, `targets`, `actions`, `contents`. The legacy `evaluationManagement` feature still exists but only exports `recordService`.
+- `lookup` — Search and lookup (no routes or features implemented yet — only navigation structure exists)
+- `auth` — Authentication (login feature only; no domain `routes.jsx` — the login route is hardcoded in `src/core/routes/router.jsx`)
+- `kiosk` — Kiosk-specific features (not yet implemented)
 
 ### Core Structure
 
@@ -273,7 +275,7 @@ Navigation is defined as module objects in each domain's `navigation.jsx`:
 }
 ```
 
-Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered by the `Sidebar` component. Visibility is controlled by `AuthProvider`'s `domainActive` state (stored in Redux `domainSlice`) — only modules whose `id` is in `domainActive` (or `alwaysVisible: true`) are shown. Update via `setDomainActive()` from `AuthContext`.
+Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered by the `Sidebar` component. Visibility is controlled by `AuthProvider`'s hardcoded `domainActive` array (`["qms", "lookup", "evaluation", "qna"]`) — only modules whose `id` is included (or `alwaysVisible: true`) are shown. The Redux `domainSlice` has a matching initial state and a `setDomainActive` reducer, but `AuthProvider` does not currently use it. To support dynamic sidebar visibility from an API response, wire `setDomainActive()` dispatching into `AuthProvider`.
 
 **SidebarProvider** manages responsive sidebar state: `isExpanded` (desktop toggle), `isMobileOpen` (mobile overlay), `isHovered` (expand-on-hover for collapsed sidebar), `openSubmenu` (submenu accordion). Uses a `1024px` breakpoint to distinguish mobile vs desktop.
 
@@ -283,9 +285,9 @@ Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered b
 - On mount, reads token from localStorage and fetches current user via `useLazyGetCurrentUserQuery` (only if token exists)
 - **HMR safety:** The `triggerGetCurrentUser` ref is stabilized with `useRef` to prevent the init effect from re-running when HMR replaces the RTK Query service. A `called` flag guard ensures the init function runs only once even under React StrictMode double-invocation.
 - **Error resilience:** If `getCurrentUser` fails (network glitch, HMR timing, server restart), the catch block only logs the error — it does **not** clear the token or user state. Token refresh is handled by the Axios response interceptor, not by AuthProvider.
-- If the API response includes a `domainActive` field, `AuthProvider` dispatches `setDomainActive` to sync which domain modules are visible in the sidebar.
+- `domainActive` is currently hardcoded as `["qms", "lookup", "evaluation", "qna"]` in `AuthProvider.jsx` (the Redux `domainSlice` has `setDomainActive` but it is not dispatched by `AuthProvider` — update both if dynamic domain activation is needed).
 - **saveToken** accepts either a string or an object with `accessToken`/`access_token` and `refreshToken`/`refresh_token` properties
-- **saveSelectedOrg** updates org in localStorage AND invalidates RTK Query cache tags (`Area`, `Branch`, `Role`) so data refreshes for the new org
+- **saveSelectedOrg** updates org in localStorage AND iterates over ALL registered RTK services to invalidate cache tags (`Area`, `Branch`, `Role`) — this ensures all domain data refreshes when the org changes
 - **updateUser** merges a partial object into the current user state
 - **logout** clears token, user, and org state
 - **useAuth** provides a safe fallback (returns defaults) when used outside `AuthProvider`

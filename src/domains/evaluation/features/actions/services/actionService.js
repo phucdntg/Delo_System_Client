@@ -115,6 +115,7 @@ export const actionService = createApi({
 
 export const {
   useGetActionsQuery,
+  useLazyGetActionsQuery,
   useGetActionByIdQuery,
   useCreateActionMutation,
   useCreateActionWithIconMutation,

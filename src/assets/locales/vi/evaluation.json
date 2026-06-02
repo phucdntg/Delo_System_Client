@@ -1,5 +1,15 @@
 {
   "form": {
+    "topicSection": "Chủ đề",
+    "name": "Tên",
+    "description": "Mô tả",
+    "isActive": "Trạng thái",
+    "label": "Nhãn",
+    "color": "Màu sắc",
+    "displayOrder": "Thứ tự hiển thị",
+    "icon": "Icon",
+    "content": "Nội dung",
+    "action": "Hành động",
     "topic": {
       "name": "Tên chủ đề",
       "description": "Mô tả",
@@ -11,29 +21,49 @@
       "validation": {
         "nameRequired": "Vui lòng nhập tên chủ đề"
       }
+    },
+    "placeholder": {
+      "name": "Nhập tên",
+      "description": "Nhập mô tả",
+      "selectTopic": "Chọn chủ đề",
+      "label": "Nhập nhãn",
+      "color": "Nhập mã màu",
+      "content": "Nhập nội dung",
+      "selectAction": "Chọn hành động"
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên",
+      "topicRequired": "Vui lòng chọn chủ đề",
+      "labelRequired": "Vui lòng nhập nhãn",
+      "contentRequired": "Vui lòng nhập nội dung",
+      "actionRequired": "Vui lòng chọn hành động"
     }
   },
   "modal": {
-    "createTitle": "Thêm mới chủ đề đánh giá",
-    "editTitle": "Chỉnh sửa chủ đề đánh giá"
+    "createTitle": "Thêm mới",
+    "editTitle": "Chỉnh sửa"
   },
   "table": {
     "name": "Tên",
     "description": "Mô tả",
+    "topic": "Chủ đề",
     "status": "Trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
     "actions": "Hành động"
   },
+  "filter": {
+    "topic": "Lọc theo chủ đề"
+  },
   "search": {
-    "placeholder": "Tìm kiếm theo tên chủ đề"
+    "placeholder": "Tìm kiếm..."
   },
   "message": {
-    "createSuccess": "Thêm mới chủ đề thành công",
-    "createFailed": "Thêm mới chủ đề thất bại",
-    "updateSuccess": "Cập nhật chủ đề thành công",
-    "updateFailed": "Cập nhật chủ đề thất bại",
-    "deleteSuccess": "Xóa chủ đề thành công",
-    "deleteFailed": "Xóa chủ đề thất bại"
+    "createSuccess": "Thêm mới thành công",
+    "createFailed": "Thêm mới thất bại",
+    "updateSuccess": "Cập nhật thành công",
+    "updateFailed": "Cập nhật thất bại",
+    "deleteSuccess": "Xóa thành công",
+    "deleteFailed": "Xóa thất bại"
   }
 }

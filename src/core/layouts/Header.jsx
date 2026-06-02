@@ -1,6 +1,6 @@
 import { useAuth } from "@core/providers/auth";
 import { Dropdown, Select } from "antd";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import {
@@ -15,11 +15,8 @@ const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const [fetchOrg] = useLazyFetchOrgQuery();
   const [fetchOrgById] = useLazyFetchOrganizationByIdQuery();
-  const [defaultOrgItem, setDefaultOrgItem] = useState(null);
-  const [initDone, setInitDone] = useState(false);
   const { language: currentLang, translate, changeLanguage } = useTranslate();
   const menuText = translate("menu");
-  const commonText = translate("common");
 
   const { user, selectedOrg, saveSelectedOrg, logout } = useAuth();
 
@@ -33,16 +30,17 @@ const Header = () => {
     [user],
   );
 
-  const fetchFn = async (page, pageSize, query) => {
+  const fetchOrgs = async (page, pageSize, query) => {
     try {
       const res = await fetchOrg({
         keyword: query,
         pagination: { current: page, pageSize },
         search: "name",
       }).unwrap();
+
       return res;
     } catch (err) {
-      console.error("Header: fetchFn failed", err);
+      console.error("Header: fetchOrgs failed", err);
       return { data: [], meta: { totalPages: 0 } };
     }
   };
@@ -63,6 +61,9 @@ const Header = () => {
       toggleMobileSidebar();
     }
   };
+
+  const getLabel = useCallback((item) => item.name, []);
+  const getValue = useCallback((item) => item.id, []);
 
   return (
     <header
@@ -114,25 +115,24 @@ const Header = () => {
             {isSuperUser && user && extraOptions && (
               <SelectShared
                 value={selectedOrg}
-                style={{ width: 200 }}
+                style={{ minWidth: 200 }}
                 placeholder="-- Chọn tổ chức --"
-                fetchFn={fetchFn}
+                fetchFn={fetchOrgs}
                 fetchItemById={fetchOrgDetail}
                 defaultId={selectedOrg}
                 pageSize={10}
                 searchable={true}
-                getLabel={(item) => item.name}
-                getValue={(item) => item.id}
+                getLabel={getLabel}
+                getValue={getValue}
                 onChange={(item) => {
                   saveSelectedOrg(item);
                 }}
-                resetKey={defaultOrgItem?.id}
                 extraOptions={extraOptions}
               />
             )}
 
             <Select
-              style={{ width: 60 }}
+              style={{ width: 70 }}
               value={currentLang}
               onChange={(val) => changeLanguage(val)}
               options={[
