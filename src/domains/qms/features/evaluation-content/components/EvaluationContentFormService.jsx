@@ -1,26 +1,34 @@
 import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Switch } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function EvaluationContentFormService({
   form,
-  fetchBranches,
-  fetchBranchById,
-  fetchServices,
-  fetchServiceById,
+  useQueryHook,
+  useItemQueryHook,
+  useServiceQueryHook,
+  useServiceItemQueryHook,
   selectedBranchId: parentSelectedBranchId,
 }) {
   const [selectedBranchId, setSelectedBranchId] = useState(
     parentSelectedBranchId || null,
   );
 
-  // Memoized getters for SelectShared to prevent infinite loop
   const getItemLabel = useCallback((item) => item?.name || "", []);
   const getItemValue = useCallback((item) => item?.id, []);
 
   useEffect(() => {
     setSelectedBranchId(parentSelectedBranchId || null);
   }, [parentSelectedBranchId]);
+
+  const serviceQueryParams = useMemo(
+    () => {
+      const filters = {};
+      if (selectedBranchId) filters.branchId = selectedBranchId;
+      return { filters };
+    },
+    [selectedBranchId],
+  );
 
   return (
     <Form form={form} layout="vertical">
@@ -40,8 +48,9 @@ export default function EvaluationContentFormService({
 
       <Form.Item label="Chi nhánh">
         <SelectShared
-          fetchFn={fetchBranches}
-          fetchItemById={fetchBranchById}
+          useQueryHook={useQueryHook}
+          useItemQueryHook={useItemQueryHook}
+          searchField="name"
           placeholder="Chọn chi nhánh"
           searchable={true}
           getLabel={getItemLabel}
@@ -59,10 +68,9 @@ export default function EvaluationContentFormService({
 
       <Form.Item label="Dịch vụ">
         <SelectShared
-          fetchFn={(page, pageSize, search) =>
-            fetchServices(page, pageSize, search, selectedBranchId)
-          }
-          fetchItemById={fetchServiceById}
+          useQueryHook={useServiceQueryHook}
+          useItemQueryHook={useServiceItemQueryHook}
+          queryParams={serviceQueryParams}
           placeholder="Chọn dịch vụ"
           searchable={true}
           getLabel={getItemLabel}

@@ -3,13 +3,15 @@ import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
 import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
-import { useLazyFetchBranchesQuery } from "@domains/system";
+import {
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
+} from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
 import { App, Button, Space, Tag } from "antd";
-import { useCallback } from "react";
 import TopicFormModal from "../components/TopicFormModal";
 import {
   useCreateTopicMutation,
@@ -26,14 +28,8 @@ export default function TopicPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const {
-    pagination,
-    searchTerm,
-    filters,
-    handleSearch,
-    handleTableChange,
-    setFilters,
-  } = useTable();
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+    useTable();
 
   const {
     data: topics,
@@ -49,24 +45,6 @@ export default function TopicPage() {
   const [createTopic, { isLoading: isCreating }] = useCreateTopicMutation();
   const [updateTopic, { isLoading: isUpdating }] = useUpdateTopicMutation();
   const [deleteTopic] = useDeleteTopicMutation();
-
-  const [fetchBranches] = useLazyFetchBranchesQuery();
-
-  const fetchBranchesFn = useCallback(
-    async (page, pageSize, query) => {
-      try {
-        return await fetchBranches({
-          keyword: query,
-          pagination: { current: page, pageSize },
-          search: query ? "name" : null,
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchBranchesFn failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [fetchBranches],
-  );
 
   const handleSubmit = async (values) => {
     try {
@@ -125,8 +103,7 @@ export default function TopicPage() {
       title: translateEval?.table?.status,
       dataIndex: "isActive",
       key: "isActive",
-      render: (value) =>
-        value ? translateEval?.table?.active : translateEval?.table?.inactive,
+      render: (value) => (value ? translateEval?.table?.active : translateEval?.table?.inactive),
     },
     {
       title: translateEval?.table?.actions,
@@ -150,6 +127,8 @@ export default function TopicPage() {
           onSubmit={handleSubmit}
           initialValue={dataEditing}
           confirmLoading={isCreating || isUpdating}
+          useQueryHook={useFetchBranchesQuery}
+          useItemQueryHook={useFetchBranchByIdQuery}
         />
       )}
 
@@ -162,8 +141,7 @@ export default function TopicPage() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: topics?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,
@@ -173,11 +151,10 @@ export default function TopicPage() {
         topRightComponent={
           <SelectShared
             style={{ width: 200 }}
+            useQueryHook={useFetchBranchesQuery}
+            searchField="name"
             allowClear
-            placeholder={
-              commonText?.placeholder?.selectBranch || "-- Chọn chi nhánh --"
-            }
-            fetchFn={fetchBranchesFn}
+            placeholder={commonText?.placeholder?.selectBranch || "-- Chọn chi nhánh --"}
             getLabel={(item) => item.name}
             getValue={(item) => item.id}
             onChange={(item) => {
@@ -191,11 +168,7 @@ export default function TopicPage() {
           />
         }
         topLeftComponent={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => openModal()}
-          >
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
             {commonText?.button?.create}
           </Button>
         }

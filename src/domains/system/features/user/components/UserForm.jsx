@@ -35,16 +35,14 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
       initialUserId: initialValues?.id ?? null,
     });
 
-  const { fetchAreasFn, fetchAreaByIdFn } = useAreaFetch({
+  const {
+    useQueryHook: areaUseQueryHook,
+    useItemQueryHook: areaUseItemQueryHook,
+    queryParams: areaQueryParams,
+  } = useAreaFetch({
     selectedRole,
     form,
   });
-
-  // const selectedPermissionList = useSelectedPermissionList({
-  //   rolePermissions,
-  //   selectedPermissionIds,
-  //   language,
-  // });
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
@@ -146,7 +144,6 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
       {/* Branch select */}
       {showBranchSelect && (
         <Form.Item
-          // label={common?.placeholder?.selectBranch || "Chi nhánh"}
           name="_branchDisplay" // tên ảo
           rules={[
             {
@@ -182,8 +179,9 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           <SelectShared
             allowClear
             style={{ width: "100%" }}
-            fetchFn={fetchAreasFn}
-            fetchItemById={fetchAreaByIdFn}
+            useQueryHook={areaUseQueryHook}
+            useItemQueryHook={areaUseItemQueryHook}
+            queryParams={areaQueryParams}
             defaultId={initialValues?.areaId}
             value={form.getFieldValue("areaId")}
             pageSize={10}
@@ -216,24 +214,6 @@ export default function UserForm({ form, initialValues = {}, onFinish }) {
           />
         </div>
       )}
-
-      {/* Display selected permissions as tags */}
-      {/* {selectedPermissionList.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 8,
-            marginBottom: 16,
-          }}
-        >
-          {selectedPermissionList.map((item) => (
-            <Tag key={item.moduleLabel} color="blue">
-              {item.moduleLabel} ({item.actionsLabel})
-            </Tag>
-          ))}
-        </div>
-      )} */}
 
       {/* Hidden fields — giá trị thực gửi lên server */}
       <Form.Item name="roleId" hidden>

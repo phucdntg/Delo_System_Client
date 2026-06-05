@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import {
-  useLazyFetchOrganizationByIdQuery,
-  useLazyFetchOrgQuery,
-} from "../../domains/system/features/organization/services/orgService";
+  useFetchOrgQuery,
+  useFetchOrganizationByIdQuery,
+} from "@domains/system";
 import SelectShared from "../../shared/components/SelectShared";
 import { useSidebar } from "../providers/sidebar";
 import { useTranslate } from "../providers/translate";
@@ -14,8 +14,6 @@ import { memo } from "react";
 
 const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const [fetchOrg] = useLazyFetchOrgQuery();
-  const [fetchOrgById] = useLazyFetchOrganizationByIdQuery();
   const { language: currentLang, translate, changeLanguage } = useTranslate();
   const menuText = translate("menu");
 
@@ -30,30 +28,6 @@ const Header = () => {
     () => (user ? [{ id: 0, name: user.username }] : []),
     [user],
   );
-
-  const fetchOrgs = async (page, pageSize, query) => {
-    try {
-      const res = await fetchOrg({
-        keyword: query,
-        pagination: { current: page, pageSize },
-        search: "name",
-      }).unwrap();
-
-      return res;
-    } catch (err) {
-      console.error("Header: fetchOrgs failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchOrgDetail = async (id) => {
-    try {
-      return await fetchOrgById(id).unwrap();
-    } catch (err) {
-      console.error("Header: fetchOrgDetail failed", err);
-      return null;
-    }
-  };
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -115,8 +89,9 @@ const Header = () => {
                 value={selectedOrg}
                 style={{ minWidth: 200 }}
                 placeholder="-- Chọn tổ chức --"
-                fetchFn={fetchOrgs}
-                fetchItemById={fetchOrgDetail}
+                useQueryHook={useFetchOrgQuery}
+                useItemQueryHook={useFetchOrganizationByIdQuery}
+                queryParams={{ search: "name" }}
                 defaultId={selectedOrg}
                 pageSize={10}
                 searchable={true}

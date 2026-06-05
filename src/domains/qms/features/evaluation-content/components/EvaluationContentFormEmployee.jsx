@@ -1,26 +1,34 @@
 import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Switch } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function EvaluationContentFormEmployee({
   form,
-  fetchAreas,
-  fetchAreaById,
-  fetchBranches,
-  fetchBranchById,
+  useQueryHook,
+  useItemQueryHook,
+  useAreaQueryHook,
+  useAreaItemQueryHook,
   selectedBranchId: parentSelectedBranchId,
 }) {
   const [selectedBranchId, setSelectedBranchId] = useState(
     parentSelectedBranchId || null,
   );
 
-  // Memoized getters for SelectShared to prevent infinite loop
   const getItemLabel = useCallback((item) => item?.name || "", []);
   const getItemValue = useCallback((item) => item?.id, []);
 
   useEffect(() => {
     setSelectedBranchId(parentSelectedBranchId || null);
   }, [parentSelectedBranchId]);
+
+  const areaQueryParams = useMemo(
+    () => {
+      const filters = {};
+      if (selectedBranchId) filters.branchId = selectedBranchId;
+      return { filters };
+    },
+    [selectedBranchId],
+  );
 
   return (
     <Form form={form} layout="vertical">
@@ -41,8 +49,9 @@ export default function EvaluationContentFormEmployee({
       {/* Visible branch selector */}
       <Form.Item label="Chi nhánh">
         <SelectShared
-          fetchFn={fetchBranches}
-          fetchItemById={fetchBranchById}
+          useQueryHook={useQueryHook}
+          useItemQueryHook={useItemQueryHook}
+          searchField="name"
           placeholder="Chọn chi nhánh"
           searchable={true}
           getLabel={getItemLabel}
@@ -60,10 +69,9 @@ export default function EvaluationContentFormEmployee({
 
       <Form.Item label="Khu vực">
         <SelectShared
-          fetchFn={(page, pageSize, search) =>
-            fetchAreas(page, pageSize, search, selectedBranchId)
-          }
-          fetchItemById={fetchAreaById}
+          useQueryHook={useAreaQueryHook}
+          useItemQueryHook={useAreaItemQueryHook}
+          queryParams={areaQueryParams}
           placeholder="Chọn khu vực"
           searchable={true}
           getLabel={getItemLabel}

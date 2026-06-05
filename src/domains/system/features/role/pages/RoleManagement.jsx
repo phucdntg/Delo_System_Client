@@ -89,9 +89,7 @@ export default function RoleManagement() {
       const { baseRoleId, ...rest } = values;
       const payload = {
         ...rest,
-        ...(selectedOrg
-          ? { organizationId: selectedOrg }
-          : { organizationId: "null" }),
+        ...(selectedOrg ? { organizationId: selectedOrg } : { organizationId: "null" }),
       };
 
       if (dataEditing?.id) {
@@ -108,9 +106,7 @@ export default function RoleManagement() {
     } catch (error) {
       console.error(error);
       message.error(
-        dataEditing?.id
-          ? roleText?.message?.updateFail
-          : roleText?.message?.createFail,
+        dataEditing?.id ? roleText?.message?.updateFail : roleText?.message?.createFail,
       );
     }
   };
@@ -127,15 +123,17 @@ export default function RoleManagement() {
 
   return (
     <div>
-      <ModalShared
-        title={roleText?.modal?.titleBasicInfo}
-        open={open}
-        confirmLoading={isCreating || isUpdating}
-        onOk={handleSubmit}
-        onCancel={closeModal}
-      >
-        <RoleForm form={form} initialValue={dataEditing} />
-      </ModalShared>
+      {open && (
+        <ModalShared
+          title={roleText?.modal?.titleBasicInfo}
+          open={open}
+          confirmLoading={isCreating || isUpdating}
+          onOk={handleSubmit}
+          onCancel={closeModal}
+        >
+          <RoleForm form={form} initialValue={dataEditing} />
+        </ModalShared>
+      )}
 
       <TableShared
         isLoading={isLoading}
@@ -146,8 +144,7 @@ export default function RoleManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: roles?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,
@@ -155,11 +152,7 @@ export default function RoleManagement() {
           handleSearch: (value) => handleSearch(value),
         }}
         topLeftComponent={
-          <Button
-            type="primary"
-            onClick={() => openModal()}
-            icon={<PlusOutlined />}
-          >
+          <Button type="primary" onClick={() => openModal()} icon={<PlusOutlined />}>
             {commonText?.button?.create}
           </Button>
         }

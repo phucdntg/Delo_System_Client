@@ -1,5 +1,3 @@
-// NGHỆ HONG, BẤT NGỜ LIỀN, AI viết cái helper này đó chứ đóng này Human chịu
-
 /**
  * Get namespace name from file path
  * Example: '../vi/branch.json' -> 'branch'

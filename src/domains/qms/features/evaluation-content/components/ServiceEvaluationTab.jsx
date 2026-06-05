@@ -1,7 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import {
-  useLazyFetchBranchByIdQuery,
-  useLazyFetchBranchesQuery,
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
 } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
@@ -13,8 +13,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import EvaluationContentFormService from "../components/EvaluationContentFormService";
 import { useServiceEvaluationContentManager } from "../hooks/useServiceEvaluationContentManager";
 import {
+  useFetchServicesQuery,
+  useFetchServiceByIdQuery,
   useLazyFetchServiceByIdQuery,
-  useLazyFetchServicesQuery,
 } from "../services/serviceService";
 
 export default function ServiceEvaluationTab() {
@@ -46,16 +47,9 @@ export default function ServiceEvaluationTab() {
     isUpdating,
   } = useServiceEvaluationContentManager();
 
-  // RTK Query lazy hooks for SelectShared
-  const [triggerFetchBranches] = useLazyFetchBranchesQuery();
-  const [triggerFetchBranchById] = useLazyFetchBranchByIdQuery();
-  const [triggerFetchServices] = useLazyFetchServicesQuery();
-  const [triggerFetchServiceById] = useLazyFetchServiceByIdQuery();
-
-  // Create service map for display
+  // Fetch services for display
   const [serviceMap, setServiceMap] = useState({});
 
-  // Fetch services when data changes to build service map
   useEffect(() => {
     const fetchServiceNames = async () => {
       const serviceIds = [...new Set(dataSource.map((item) => item.serviceId))];
@@ -88,61 +82,21 @@ export default function ServiceEvaluationTab() {
     };
 
     fetchServiceNames();
-  }, [dataSource, serviceMap, triggerFetchServiceById]);
+  }, [dataSource, serviceMap]);
 
-  // Fetch branches for SelectShared
-  const fetchBranches = useCallback(
-    async (page, pageSize, search) => {
+  // Lazy trigger for service by-ID (needed for display map outside SelectShared)
+  const [triggerFetchServiceById] = useLazyFetchServiceByIdQuery();
+
+  const serviceQueryParams = useMemo(
+    () => {
       const filters = {};
-      if (search) filters.name = search;
-
-      const result = await triggerFetchBranches({
-        page,
-        limit: pageSize,
-        filters,
-      }).unwrap();
-
-      return result;
+      if (selectedBranchId) filters.branchId = selectedBranchId;
+      return { filters };
     },
-    [triggerFetchBranches],
+    [selectedBranchId],
   );
 
-  const fetchBranchById = useCallback(
-    async (id) => {
-      const result = await triggerFetchBranchById(id).unwrap();
-      return result;
-    },
-    [triggerFetchBranchById],
-  );
-
-  // Fetch services for SelectShared
-  const fetchServices = useCallback(
-    async (page, pageSize, search, branchIdOverride = null) => {
-      const filters = {};
-      const branchId = branchIdOverride ?? selectedBranchId;
-      if (branchId) filters.branchId = branchId;
-      if (search) filters.name = search;
-
-      const result = await triggerFetchServices({
-        page,
-        limit: pageSize,
-        filters,
-      }).unwrap();
-
-      return result;
-    },
-    [selectedBranchId, triggerFetchServices],
-  );
-
-  const fetchServiceById = useCallback(
-    async (id) => {
-      const result = await triggerFetchServiceById(id).unwrap();
-      return result;
-    },
-    [triggerFetchServiceById],
-  );
-
-  // Memoized getters for SelectShared to prevent infinite loop
+  // Memoized getters for SelectShared
   const getItemLabel = useCallback((item) => item?.name || "", []);
   const getItemValue = useCallback((item) => item?.id, []);
 
@@ -150,7 +104,7 @@ export default function ServiceEvaluationTab() {
   const handleOpenCreate = useCallback(() => {
     setEditingRecord(null);
     form.resetFields();
-    setModalBranchId(null); // Form starts empty, independent of table filter
+    setModalBranchId(null);
     setModalKey((prev) => prev + 1);
     setIsModalOpen(true);
   }, [form]);
@@ -165,7 +119,6 @@ export default function ServiceEvaluationTab() {
         isActive: record.isActive,
       });
 
-      // Fetch service to get branchId for filtering
       try {
         if (record.serviceId) {
           const service = await triggerFetchServiceById(record.serviceId).unwrap();
@@ -210,7 +163,6 @@ export default function ServiceEvaluationTab() {
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.errorFields) {
-        // Validation error - do nothing, form will show errors
         return;
       }
       message.error(
@@ -324,8 +276,8 @@ export default function ServiceEvaluationTab() {
         topRightComponent={
           <Space>
             <SelectShared
-              fetchFn={fetchBranches}
-              fetchItemById={fetchBranchById}
+              useQueryHook={useFetchBranchesQuery}
+              searchField="name"
               placeholder="Lọc theo chi nhánh"
               searchable={true}
               getLabel={getItemLabel}
@@ -337,10 +289,8 @@ export default function ServiceEvaluationTab() {
             />
 
             <SelectShared
-              fetchFn={(page, pageSize, search) =>
-                fetchServices(page, pageSize, search, selectedBranchId)
-              }
-              fetchItemById={fetchServiceById}
+              useQueryHook={useFetchServicesQuery}
+              queryParams={serviceQueryParams}
               placeholder="Lọc theo dịch vụ"
               searchable={true}
               getLabel={getItemLabel}
@@ -382,10 +332,10 @@ export default function ServiceEvaluationTab() {
           key={modalKey}
           form={form}
           type="service"
-          fetchBranches={fetchBranches}
-          fetchBranchById={fetchBranchById}
-          fetchServices={fetchServices}
-          fetchServiceById={fetchServiceById}
+          useQueryHook={useFetchBranchesQuery}
+          useItemQueryHook={useFetchBranchByIdQuery}
+          useServiceQueryHook={useFetchServicesQuery}
+          useServiceItemQueryHook={useFetchServiceByIdQuery}
           selectedBranchId={modalBranchId}
         />
       </ModalShared>

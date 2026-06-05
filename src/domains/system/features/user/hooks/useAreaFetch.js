@@ -1,32 +1,18 @@
-import { useLazyFetchAreaByIdQuery, useLazyFetchAreasQuery } from "../../area";
+import { useMemo } from "react";
+import { useFetchAreasQuery, useFetchAreaByIdQuery } from "../../area";
 
 export function useAreaFetch({ selectedRole = null, form }) {
-  const [fetchAreas] = useLazyFetchAreasQuery();
-  const [fetchAreaById] = useLazyFetchAreaByIdQuery();
+  const branchId = selectedRole?.branchId || form.getFieldValue("branchId");
 
-  const fetchAreasFn = async (page, pageSize, query) => {
-    try {
-      const branchId = selectedRole?.branchId || form.getFieldValue("branchId");
-      return await fetchAreas({
-        filters: branchId ? { branchId } : undefined,
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-        keyword: query,
-      }).unwrap();
-    } catch (err) {
-      console.error("fetchAreasFn failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
+  const queryParams = useMemo(() => {
+    const params = {};
+    if (branchId) params.filters = { branchId };
+    return params;
+  }, [branchId]);
+
+  return {
+    useQueryHook: useFetchAreasQuery,
+    useItemQueryHook: useFetchAreaByIdQuery,
+    queryParams,
   };
-
-  const fetchAreaByIdFn = async (id) => {
-    try {
-      return await fetchAreaById(id).unwrap();
-    } catch (err) {
-      console.error("fetchAreaById failed", err);
-      return null;
-    }
-  };
-
-  return { fetchAreasFn, fetchAreaByIdFn };
 }

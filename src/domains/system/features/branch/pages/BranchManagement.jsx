@@ -113,19 +113,21 @@ export default function BranchManagement() {
 
   return (
     <div>
-      <ModalShared
-        title={
-          dataEditing?.id
-            ? translateBranchPage?.modal?.editTitle
-            : translateBranchPage?.modal?.addTitle
-        }
-        open={open}
-        onOk={handleSubmit}
-        onCancel={closeModal}
-        confirmLoading={isCreating || isUpdating}
-      >
-        <BranchForm form={form} initialValue={dataEditing} />
-      </ModalShared>
+      {open && (
+        <ModalShared
+          title={
+            dataEditing?.id
+              ? translateBranchPage?.modal?.editTitle
+              : translateBranchPage?.modal?.addTitle
+          }
+          open={open}
+          onOk={handleSubmit}
+          onCancel={closeModal}
+          confirmLoading={isCreating || isUpdating}
+        >
+          <BranchForm form={form} initialValue={dataEditing} />
+        </ModalShared>
+      )}
 
       <TableShared
         isLoading={isLoading}
@@ -141,16 +143,11 @@ export default function BranchManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: data?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         topLeftComponent={
           <>
-            <Button
-              type="primary"
-              onClick={() => openModal()}
-              icon={<PlusOutlined />}
-            >
+            <Button type="primary" onClick={() => openModal()} icon={<PlusOutlined />}>
               {translate("common.button")?.create}
             </Button>
           </>

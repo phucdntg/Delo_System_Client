@@ -63,7 +63,6 @@ const Sidebar = () => {
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
     >
-      {/* ── Logo ── */}
       <div
         className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}
       >
@@ -88,13 +87,10 @@ const Sidebar = () => {
         </Link>
       </div>
 
-      {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto no-scrollbar">
         {visibleModules.map((module, idx) => (
           <div key={module.id}>
-            {/* Domain section label */}
             {isSidebarOpen && (
-              /* Expanded: label đầy đủ */
               <div className="flex items-center gap-2 px-3 pt-4 pb-1 text-xl">
                 <span className="text-sm font-semibold tracking-widest uppercase text-white/40 truncate">
                   {module.label}

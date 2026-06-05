@@ -4,15 +4,15 @@ import SelectShared from "@shared/components/SelectShared";
 import { Form, Input } from "antd";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
-  useLazyFetchBranchByIdQuery,
-  useLazyFetchBranchesQuery,
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
 } from "../../branch";
 import { useFetchPermissionsQuery } from "../../permission";
 import PermissionSelector from "../../permission/components/PermissionSelector";
 import { ACTION_LABELS, MODULE_LABELS } from "../../permission/constants";
 import {
+  useFetchRolesQuery,
   useFetchRolePermissionsQuery,
-  useLazyFetchRolesQuery,
 } from "../services/roleService";
 
 const ACTION_ORDER = ["view", "create", "edit", "delete"];
@@ -33,18 +33,12 @@ const RoleForm = ({ form, initialValue }) => {
   const modalText = roleText?.modal || {};
   const commonText = translate("common") || {};
 
-  const [fetchRoles] = useLazyFetchRolesQuery();
-  const [fetchBranches] = useLazyFetchBranchesQuery();
-  const [fetchBranchById] = useLazyFetchBranchByIdQuery();
-
   const { data: permissions } = useFetchPermissionsQuery();
 
   const [selectedPermissionIds, setSelectedPermissionIds] = useState([]);
   const [selectedRoleName, setSelectedRoleName] = useState("");
   const [selectedBaseRoleId, setSelectedBaseRoleId] = useState(null);
   const [hasBranchOnEdit, setHasBranchOnEdit] = useState(false);
-
-  // ─── RTK Query ───────────────────────────────────────────────────────────────
 
   const { data: rolePermissionDetail } = useFetchRolePermissionsQuery(
     initialValue?.id,
@@ -55,46 +49,6 @@ const RoleForm = ({ form, initialValue }) => {
     selectedBaseRoleId,
     { skip: !selectedBaseRoleId || !!initialValue?.id },
   );
-
-  // ─── Fetch helpers ───────────────────────────────────────────────────────────
-
-  const fetchBaseRolesFn = async (page, pageSize, query) => {
-    try {
-      return await fetchRoles({
-        filters: { isSystem: true, skipOrgId: true },
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-        keyword: query,
-      }).unwrap();
-    } catch (err) {
-      console.error("fetchBaseRolesFn failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchBranchesFn = async (page, pageSize, query) => {
-    try {
-      return await fetchBranches({
-        keyword: query,
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-      }).unwrap();
-    } catch (err) {
-      console.error("fetchBranchesFn failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchBranchDetails = async (id) => {
-    try {
-      return await fetchBranchById(id).unwrap();
-    } catch (err) {
-      console.error("fetchBranchDetails failed", err);
-      return null;
-    }
-  };
-
-  // ─── Handlers ────────────────────────────────────────────────────────────────
 
   const handleRoleChange = (role) => {
     setSelectedRoleName(role?.name || "");
@@ -113,8 +67,6 @@ const RoleForm = ({ form, initialValue }) => {
   const handlePermissionsChange = (ids) => {
     applyPermissionIds(ids || []);
   };
-
-  // ─── Effects ─────────────────────────────────────────────────────────────────
 
   useLayoutEffect(() => {
     if (initialValue) {
@@ -166,8 +118,6 @@ const RoleForm = ({ form, initialValue }) => {
     }
   }, [selectedPermissionIds, initialValue?.id]);
 
-  // ─── Derived state ───────────────────────────────────────────────────────────
-
   const currentRoleName = selectedRoleName || form.getFieldValue("name") || "";
   const isRoleWithBranch = isSupervisorOrUser(currentRoleName);
   const showBranchField = initialValue?.id
@@ -206,8 +156,6 @@ const RoleForm = ({ form, initialValue }) => {
     }));
   }, [permissions, selectedPermissionIds, language]);
 
-  // ─── Render ──────────────────────────────────────────────────────────────────
-
   return (
     <Form form={form} layout="vertical">
       {!initialValue?.id ? (
@@ -219,7 +167,9 @@ const RoleForm = ({ form, initialValue }) => {
           >
             <SelectShared
               style={{ width: "100%" }}
-              fetchFn={fetchBaseRolesFn}
+              useQueryHook={useFetchRolesQuery}
+              queryParams={{ filters: { isSystem: true, skipOrgId: true } }}
+              searchField="name"
               pageSize={10}
               searchable
               placeholder={modalText?.selectRole}
@@ -260,8 +210,9 @@ const RoleForm = ({ form, initialValue }) => {
         >
           <SelectShared
             style={{ width: "100%" }}
-            fetchFn={fetchBranchesFn}
-            fetchItemById={fetchBranchDetails}
+            useQueryHook={useFetchBranchesQuery}
+            useItemQueryHook={useFetchBranchByIdQuery}
+            searchField="name"
             defaultId={initialValue?.branchId}
             pageSize={10}
             searchable

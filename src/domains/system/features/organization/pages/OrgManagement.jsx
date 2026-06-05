@@ -24,8 +24,7 @@ export default function OrgManagement() {
 
   const [form] = useForm();
   const { open, data: dataEditing, openModal, closeModal } = useModal();
-  const { pagination, handleTableChange, searchTerm, handleSearch } =
-    useTable();
+  const { pagination, handleTableChange, searchTerm, handleSearch } = useTable();
 
   const { data, isLoading, isFetching } = useFetchOrgQuery({
     search: searchTerm.length > 0 ? "name" : null,
@@ -130,19 +129,21 @@ export default function OrgManagement() {
 
   return (
     <div>
-      <ModalShared
-        title={
-          dataEditing?.id
-            ? translateOrgPage?.modal?.updateTitle
-            : translateOrgPage?.modal?.createTitle
-        }
-        open={open}
-        onOk={handleSubmit}
-        onCancel={closeModal}
-        confirmLoading={isCreating || isUpdating}
-      >
-        <OrganizationForm form={form} initialValue={dataEditing} />
-      </ModalShared>
+      {open && (
+        <ModalShared
+          title={
+            dataEditing?.id
+              ? translateOrgPage?.modal?.updateTitle
+              : translateOrgPage?.modal?.createTitle
+          }
+          open={open}
+          onOk={handleSubmit}
+          onCancel={closeModal}
+          confirmLoading={isCreating || isUpdating}
+        >
+          <OrganizationForm form={form} initialValue={dataEditing} />
+        </ModalShared>
+      )}
 
       <TableShared
         isLoading={isLoading}
@@ -158,16 +159,11 @@ export default function OrgManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: data?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         topLeftComponent={
           <>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => openModal()}
-            >
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
               {translate("common.button")?.create}
             </Button>
           </>

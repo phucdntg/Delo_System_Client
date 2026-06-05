@@ -18,7 +18,6 @@ const TableShared = ({
   const translateCommon = translate("common") || {};
   const shouldShowSearch = search.useSearch;
 
-  // ─── Stabilize reference for inline pagination objects ─────────────────
   const stablePagination = useMemo(
     () => pagination,
     // eslint-disable-next-line react-hooks/exhaustive-deps

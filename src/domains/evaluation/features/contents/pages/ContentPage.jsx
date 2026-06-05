@@ -3,17 +3,14 @@ import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
 import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
-import {
-  useLazyGetActionsQuery,
-  useLazyGetTopicsQuery,
-} from "@domains/evaluation";
-import { useLazyFetchBranchesQuery } from "@domains/system";
+import { useGetActionsQuery, useGetTopicsQuery } from "@domains/evaluation";
+import { useFetchBranchesQuery } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
 import { App, Button, Space, Tag } from "antd";
-import { useCallback, useRef } from "react";
+import { useMemo } from "react";
 import ContentFormModal from "../components/ContentFormModal";
 import {
   useCreateContentMutation,
@@ -30,107 +27,20 @@ export default function ContentPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const {
-    pagination,
-    searchTerm,
-    filters,
-    handleSearch,
-    handleTableChange,
-    setFilters,
-  } = useTable();
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+    useTable();
 
-  // ─── Branch filter ──────────────────────────────────────────────────
-  const [fetchBranches] = useLazyFetchBranchesQuery();
+  const branchId = filters?.["topic.branchId"];
+  const topicId = filters?.topicId;
 
-  const fetchBranchesFn = useCallback(
-    async (page, pageSize, query) => {
-      try {
-        return await fetchBranches({
-          keyword: query,
-          pagination: { current: page, pageSize },
-          search: query ? "name" : null,
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchBranchesFn failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [fetchBranches],
+  const topicQueryParams = useMemo(
+    () => (branchId ? { filters: { branchId } } : undefined),
+    [branchId],
   );
 
-  // ─── Topic filter (scoped by branch) ────────────────────────────────
-  const [triggerFetchTopics] = useLazyGetTopicsQuery();
-  const branchFilterIdRef = useRef();
-
-  const fetchFilterTopics = useCallback(
-    async (page, pageSize, query) => {
-      if (!branchFilterIdRef.current) {
-        return { data: [], meta: { totalPages: 0 } };
-      }
-      try {
-        return await triggerFetchTopics({
-          pagination: { current: page, pageSize },
-          search: query ? "name" : null,
-          keyword: query,
-          filters: { branchId: branchFilterIdRef.current },
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchFilterTopics failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [triggerFetchTopics],
-  );
-
-  const handleBranchChange = useCallback(
-    (branch) => {
-      const branchId = branch?.id || undefined;
-      branchFilterIdRef.current = branchId;
-      setFilters((prev) => ({
-        ...prev,
-        "topic.branchId": branchId,
-        topicId: undefined,
-        actionId: undefined,
-      }));
-    },
-    [setFilters],
-  );
-
-  // ─── Action filter (scoped by selected topic) ────────────────────────
-  const [triggerFetchActions] = useLazyGetActionsQuery();
-  const topicFilterIdRef = useRef();
-
-  const fetchFilterActions = useCallback(
-    async (page, pageSize, query) => {
-      if (!topicFilterIdRef.current) {
-        return { data: [], meta: { totalPages: 0 } };
-      }
-      try {
-        return await triggerFetchActions({
-          pagination: { current: page, pageSize },
-          search: query ? "label" : null,
-          keyword: query,
-          filters: { topicId: topicFilterIdRef.current },
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchFilterActions failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [triggerFetchActions],
-  );
-
-  const handleTopicChange = useCallback(
-    (item) => {
-      const topicId = item?.id || undefined;
-      topicFilterIdRef.current = topicId;
-      setFilters((prev) => ({
-        ...prev,
-        topicId,
-        actionId: undefined,
-      }));
-    },
-    [setFilters],
+  const actionQueryParams = useMemo(
+    () => (topicId ? { filters: { topicId } } : undefined),
+    [topicId],
   );
 
   const {
@@ -190,11 +100,7 @@ export default function ContentPage() {
       dataIndex: "actionId",
       key: "action",
       render: (actionId, record) => {
-        return record?.action?.label ? (
-          <Tag color="blue">{record.action.label}</Tag>
-        ) : (
-          "-"
-        );
+        return record?.action?.label ? <Tag color="blue">{record.action.label}</Tag> : "-";
       },
     },
     {
@@ -245,13 +151,15 @@ export default function ContentPage() {
 
   return (
     <>
-      <ContentFormModal
-        open={open}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        initialValue={dataEditing}
-        confirmLoading={isCreating || isUpdating}
-      />
+      {open && (
+        <ContentFormModal
+          open={open}
+          onClose={closeModal}
+          onSubmit={handleSubmit}
+          initialValue={dataEditing}
+          confirmLoading={isCreating || isUpdating}
+        />
+      )}
 
       <TableShared
         isLoading={isLoading}
@@ -262,8 +170,7 @@ export default function ContentPage() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: contents?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,
@@ -274,35 +181,54 @@ export default function ContentPage() {
           <Space>
             <SelectShared
               style={{ width: 200 }}
+              useQueryHook={useFetchBranchesQuery}
+              searchField="name"
               allowClear
               placeholder={commonText?.placeholder?.selectBranch}
-              fetchFn={fetchBranchesFn}
               getLabel={(item) => item.name}
               getValue={(item) => item.id}
-              onChange={handleBranchChange}
+              onChange={(item) => {
+                const newBranchId = item?.id || undefined;
+                setFilters((prev) => ({
+                  ...prev,
+                  "topic.branchId": newBranchId,
+                  topicId: undefined,
+                  actionId: undefined,
+                }));
+              }}
               value={filters?.["topic.branchId"]}
               resetKey={selectedOrg}
             />
 
             <SelectShared
               style={{ width: 200 }}
+              useQueryHook={useGetTopicsQuery}
+              queryParams={topicQueryParams}
+              searchField="name"
               allowClear
-              disabled={!filters?.["topic.branchId"]}
+              disabled={!branchId}
               placeholder={commonText?.placeholder?.selectTopic}
-              fetchFn={fetchFilterTopics}
               getLabel={(item) => item.name}
               getValue={(item) => item.id}
-              onChange={handleTopicChange}
+              onChange={(item) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  topicId: item?.id || undefined,
+                  actionId: undefined,
+                }));
+              }}
               value={filters?.topicId}
-              resetKey={filters?.["topic.branchId"]}
+              resetKey={branchId}
             />
 
             <SelectShared
               style={{ width: 200 }}
+              useQueryHook={useGetActionsQuery}
+              queryParams={actionQueryParams}
+              searchField="label"
               allowClear
-              disabled={!filters?.topicId}
+              disabled={!topicId}
               placeholder={commonText?.placeholder?.selectAction}
-              fetchFn={fetchFilterActions}
               getLabel={(item) => item.label}
               getValue={(item) => item.id}
               onChange={(item) => {
@@ -312,16 +238,12 @@ export default function ContentPage() {
                 }));
               }}
               value={filters?.actionId}
-              resetKey={filters?.topicId}
+              resetKey={topicId}
             />
           </Space>
         }
         topLeftComponent={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => openModal()}
-          >
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
             {commonText?.button?.create}
           </Button>
         }

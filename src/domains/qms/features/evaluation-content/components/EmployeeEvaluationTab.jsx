@@ -1,10 +1,10 @@
 import { PlusOutlined } from "@ant-design/icons";
 import {
   useFetchAreasQuery,
+  useFetchAreaByIdQuery,
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
   useLazyFetchAreaByIdQuery,
-  useLazyFetchAreasQuery,
-  useLazyFetchBranchByIdQuery,
-  useLazyFetchBranchesQuery,
 } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
@@ -45,7 +45,7 @@ export default function EmployeeEvaluationTab() {
     isUpdating,
   } = useEmployeeEvaluationContentManager();
 
-  // Fetch areas for filter
+  // Fetch areas for display map
   const { data: areasResponse } = useFetchAreasQuery({
     page: 1,
     limit: 1000,
@@ -61,63 +61,19 @@ export default function EmployeeEvaluationTab() {
     return map;
   }, [areas]);
 
-  const [triggerFetchAreas] = useLazyFetchAreasQuery();
+  // Lazy trigger for programmatic fetches (edit modal needs by-ID)
   const [triggerFetchAreaById] = useLazyFetchAreaByIdQuery();
-  const [triggerFetchBranches] = useLazyFetchBranchesQuery();
-  const [triggerFetchBranchById] = useLazyFetchBranchByIdQuery();
 
-  // Fetch areas for SelectShared
-  const fetchAreas = useCallback(
-    async (page, pageSize, search, branchIdOverride = null) => {
+  const areaQueryParams = useMemo(
+    () => {
       const filters = {};
-      if (search) filters.name = search;
-      const branchId = branchIdOverride ?? selectedBranchId;
-      if (branchId) filters.branchId = branchId;
-
-      const result = await triggerFetchAreas({
-        page,
-        limit: pageSize,
-        filters,
-      }).unwrap();
-
-      return result;
+      if (selectedBranchId) filters.branchId = selectedBranchId;
+      return { filters };
     },
-    [triggerFetchAreas, selectedBranchId],
+    [selectedBranchId],
   );
 
-  const fetchAreaById = useCallback(
-    async (id) => {
-      const result = await triggerFetchAreaById(id).unwrap();
-      return result;
-    },
-    [triggerFetchAreaById],
-  );
-
-  const fetchBranches = useCallback(
-    async (page, pageSize, search) => {
-      const filters = {};
-      if (search) filters.name = search;
-
-      const result = await triggerFetchBranches({
-        page,
-        limit: pageSize,
-        filters,
-      }).unwrap();
-
-      return result;
-    },
-    [triggerFetchBranches],
-  );
-
-  const fetchBranchById = useCallback(
-    async (id) => {
-      const result = await triggerFetchBranchById(id).unwrap();
-      return result;
-    },
-    [triggerFetchBranchById],
-  );
-
-  // Memoized getters for SelectShared to prevent infinite loop
+  // Memoized getters for SelectShared
   const getItemLabel = useCallback((item) => item?.name || "", []);
   const getItemValue = useCallback((item) => item?.id, []);
 
@@ -125,7 +81,7 @@ export default function EmployeeEvaluationTab() {
   const handleOpenCreate = useCallback(() => {
     setEditingRecord(null);
     form.resetFields();
-    setModalBranchId(null); // Form starts empty, independent of table filter
+    setModalBranchId(null);
     setModalKey((prev) => prev + 1);
     setIsModalOpen(true);
   }, [form]);
@@ -183,7 +139,6 @@ export default function EmployeeEvaluationTab() {
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.errorFields) {
-        // Validation error - do nothing, form will show errors
         return;
       }
       message.error(
@@ -297,8 +252,8 @@ export default function EmployeeEvaluationTab() {
         topRightComponent={
           <Space>
             <SelectShared
-              fetchFn={fetchBranches}
-              fetchItemById={fetchBranchById}
+              useQueryHook={useFetchBranchesQuery}
+              searchField="name"
               placeholder="Lọc theo chi nhánh"
               searchable={true}
               getLabel={getItemLabel}
@@ -310,8 +265,8 @@ export default function EmployeeEvaluationTab() {
             />
 
             <SelectShared
-              fetchFn={fetchAreas}
-              fetchItemById={fetchAreaById}
+              useQueryHook={useFetchAreasQuery}
+              queryParams={areaQueryParams}
               placeholder="Lọc theo khu vực"
               searchable={true}
               getLabel={getItemLabel}
@@ -352,10 +307,10 @@ export default function EmployeeEvaluationTab() {
         <EvaluationContentFormEmployee
           key={modalKey}
           form={form}
-          fetchAreas={fetchAreas}
-          fetchAreaById={fetchAreaById}
-          fetchBranches={fetchBranches}
-          fetchBranchById={fetchBranchById}
+          useQueryHook={useFetchBranchesQuery}
+          useItemQueryHook={useFetchBranchByIdQuery}
+          useAreaQueryHook={useFetchAreasQuery}
+          useAreaItemQueryHook={useFetchAreaByIdQuery}
           selectedBranchId={modalBranchId}
         />
       </ModalShared>

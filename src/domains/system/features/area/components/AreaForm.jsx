@@ -4,8 +4,8 @@ import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Switch } from "antd";
 import { useLayoutEffect } from "react";
 import {
-  useLazyFetchBranchByIdQuery,
-  useLazyFetchBranchesQuery,
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
 } from "../../branch";
 
 const AreaForm = ({ form, initialValue }) => {
@@ -14,33 +14,6 @@ const AreaForm = ({ form, initialValue }) => {
   const areaFormText = areaText?.form || {};
   const commonText = translate("common") || {};
   const { selectedOrg } = useAuth();
-
-  const [fetchBranches] = useLazyFetchBranchesQuery();
-  const [fetchBranchById] = useLazyFetchBranchByIdQuery();
-
-  const fetchBranchesFn = async (page, pageSize, query) => {
-    try {
-      const res = await fetchBranches({
-        keyword: query,
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-      }).unwrap();
-      return res;
-    } catch (err) {
-      console.error("AreaForm: fetchBranchesFn failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchBranchDetails = async (id) => {
-    try {
-      const res = await fetchBranchById(id).unwrap();
-      return res;
-    } catch (err) {
-      console.error("AreaForm: fetchBranchDetails failed", err);
-      return null;
-    }
-  };
 
   const handleBranchChange = (branch) => {
     form.setFieldValue("branchId", branch?.id);
@@ -87,8 +60,9 @@ const AreaForm = ({ form, initialValue }) => {
       >
         <SelectShared
           style={{ width: "100%" }}
-          fetchFn={fetchBranchesFn}
-          fetchItemById={fetchBranchDetails}
+          useQueryHook={useFetchBranchesQuery}
+          useItemQueryHook={useFetchBranchByIdQuery}
+          searchField="name"
           defaultId={initialValue?.branchId}
           pageSize={10}
           searchable={true}

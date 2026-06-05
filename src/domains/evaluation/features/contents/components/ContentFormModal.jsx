@@ -1,19 +1,19 @@
 import { useTranslate } from "@core/providers/translate";
 import {
-  useLazyGetActionByIdQuery,
-  useLazyGetActionsQuery,
-  useLazyGetTopicByIdQuery,
-  useLazyGetTopicsQuery,
+  useGetTopicsQuery,
+  useGetTopicByIdQuery,
+  useGetActionsQuery,
+  useGetActionByIdQuery,
 } from "@domains/evaluation";
 import {
-  useLazyFetchBranchByIdQuery,
-  useLazyFetchBranchesQuery,
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
 } from "@domains/system";
 import ModalShared from "@shared/components/ModalShared";
 import SelectShared from "@shared/components/SelectShared";
 import { Form, Input, Switch } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 export default function ContentFormModal({
   open,
@@ -27,18 +27,9 @@ export default function ContentFormModal({
   const commonText = translate("common") || {};
   const [form] = useForm();
 
-  const [triggerFetchBranches] = useLazyFetchBranchesQuery();
-  const [triggerFetchBranchById] = useLazyFetchBranchByIdQuery();
-  const [triggerFetchTopics] = useLazyGetTopicsQuery();
-  const [triggerFetchTopicById] = useLazyGetTopicByIdQuery();
-  const [triggerFetchActions] = useLazyGetActionsQuery();
-  const [triggerFetchActionById] = useLazyGetActionByIdQuery();
-
-  // ─── Branch/topic derived state ──────────────────────────────────────
   const [userBranchId, setUserBranchId] = useState(null);
   const [userTopicId, setUserTopicId] = useState(null);
 
-  // Reset user overrides when switching to a different record
   const lastRecordIdRef = useRef(null);
   const currentRecordId = open ? (initialValue?.id ?? null) : null;
 
@@ -60,81 +51,16 @@ export default function ContentFormModal({
     ? (userTopicId ?? getTopicId(initialValue))
     : null;
 
-  const fetchBranchesFn = async (page, pageSize, query) => {
-    try {
-      return await triggerFetchBranches({
-        keyword: query,
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-      }).unwrap();
-    } catch (err) {
-      console.error("fetchBranches failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
+  const topicQueryParams = useMemo(
+    () => (selectedBranchId ? { filters: { branchId: selectedBranchId } } : undefined),
+    [selectedBranchId],
+  );
 
-  const fetchBranchById = async (id) => {
-    try {
-      return await triggerFetchBranchById(id).unwrap();
-    } catch {
-      return null;
-    }
-  };
+  const actionQueryParams = useMemo(
+    () => (selectedTopicId ? { filters: { topicId: selectedTopicId } } : undefined),
+    [selectedTopicId],
+  );
 
-  const fetchTopics = async (page, pageSize, query) => {
-    if (!selectedBranchId) {
-      return { data: [], meta: { totalPages: 0 } };
-    }
-    try {
-      const res = await triggerFetchTopics({
-        pagination: { current: page, pageSize },
-        search: query ? "name" : null,
-        keyword: query,
-        filters: { branchId: selectedBranchId },
-      }).unwrap();
-      return res;
-    } catch (err) {
-      console.error("fetchTopics failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchTopicById = async (id) => {
-    try {
-      return await triggerFetchTopicById(id).unwrap();
-    } catch {
-      return null;
-    }
-  };
-
-  // ─── Action fetch (filtered by selected topic) ──────────────────────
-  const fetchActions = async (page, pageSize, query) => {
-    if (!selectedTopicId) {
-      return { data: [], meta: { totalPages: 0 } };
-    }
-    try {
-      const res = await triggerFetchActions({
-        pagination: { current: page, pageSize },
-        search: query ? "label" : null,
-        keyword: query,
-        filters: { topicId: selectedTopicId },
-      }).unwrap();
-      return res;
-    } catch (err) {
-      console.error("fetchActions failed", err);
-      return { data: [], meta: { totalPages: 0 } };
-    }
-  };
-
-  const fetchActionById = async (id) => {
-    try {
-      return await triggerFetchActionById(id).unwrap();
-    } catch {
-      return null;
-    }
-  };
-
-  // ─── Populate form khi modal mở ─────────────────────────────────────
   useLayoutEffect(() => {
     if (open) {
       form.resetFields();
@@ -197,7 +123,6 @@ export default function ContentFormModal({
           />
         </Form.Item>
 
-        {/* ─── Branch (not bound to form — used to filter topics) ──── */}
         <Form.Item
           label={translateEval?.form?.topic?.branch || "Chi nhánh"}
           required
@@ -205,8 +130,9 @@ export default function ContentFormModal({
         >
           <SelectShared
             style={{ width: "100%" }}
-            fetchFn={fetchBranchesFn}
-            fetchItemById={fetchBranchById}
+            useQueryHook={useFetchBranchesQuery}
+            useItemQueryHook={useFetchBranchByIdQuery}
+            searchField="name"
             defaultId={
               initialValue?.action?.topic?.branchId || initialValue?.topic?.branchId
             }
@@ -222,7 +148,6 @@ export default function ContentFormModal({
           />
         </Form.Item>
 
-        {/* ─── Topic (standalone, used to filter actions) ──────────── */}
         <Form.Item
           label={translateEval?.form?.topicSection}
           required
@@ -231,8 +156,10 @@ export default function ContentFormModal({
           <SelectShared
             key={selectedBranchId || "no-branch"}
             style={{ width: "100%" }}
-            fetchFn={fetchTopics}
-            fetchItemById={fetchTopicById}
+            useQueryHook={useGetTopicsQuery}
+            useItemQueryHook={useGetTopicByIdQuery}
+            queryParams={topicQueryParams}
+            searchField="name"
             defaultId={
               initialValue?.action?.topicId || initialValue?.topicId
             }
@@ -249,7 +176,6 @@ export default function ContentFormModal({
           />
         </Form.Item>
 
-        {/* ─── Action (filtered by selected topic) ─────────────────── */}
         <Form.Item
           name="actionId"
           label={translateEval?.form?.action}
@@ -263,8 +189,10 @@ export default function ContentFormModal({
           <SelectShared
             key={selectedTopicId || "no-topic"}
             style={{ width: "100%" }}
-            fetchFn={fetchActions}
-            fetchItemById={fetchActionById}
+            useQueryHook={useGetActionsQuery}
+            useItemQueryHook={useGetActionByIdQuery}
+            queryParams={actionQueryParams}
+            searchField="label"
             defaultId={initialValue?.actionId}
             value={initialValue?.actionId}
             pageSize={10}

@@ -1,12 +1,19 @@
 import { Select, Spin } from "antd";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DEFAULT_EXTRA_OPTIONS = [];
 
+function useEmptyQuery() {
+  return { data: undefined, isFetching: false, isLoading: false, error: undefined };
+}
+
 const SelectShared = ({
-  fetchFn,
-  fetchItemById,
+  useQueryHook,
+  queryParams,
+  searchField,
+  useItemQueryHook,
   defaultId,
+  defaultValueItem,
   pageSize = 10,
   placeholder = "-- Chọn --",
   searchable = false,
@@ -17,152 +24,130 @@ const SelectShared = ({
   getValue,
   value,
   extraOptions = DEFAULT_EXTRA_OPTIONS,
+  disabled = false,
+  allowClear,
   ...restProps
 }) => {
-  const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
-  const [labelReady, setLabelReady] = useState(!defaultId);
+  const [allItems, setAllItems] = useState([]);
+  const [preloadedItem, setPreloadedItem] = useState(null);
+  const [labelReady, setLabelReady] = useState(!defaultId || !!defaultValueItem);
 
-  const pageRef = useRef(1);
-  const hasMoreRef = useRef(true);
-  const optionsRef = useRef([]);
-  const loadingRef = useRef(false);
-  const initializedRef = useRef(false);
+  const onChangeRef = useRef(onChange);
+  const getValueRef = useRef(getValue);
+  const extraOptionsRef = useRef(extraOptions);
+  const defaultValueItemRef = useRef(defaultValueItem ?? null);
   const debounceRef = useRef(null);
 
-  // Dùng ref để tránh inline functions từ cha gây unstable deps
-  const getValueRef = useRef(getValue);
-  const fetchFnRef = useRef(fetchFn);
-  const fetchItemByIdRef = useRef(fetchItemById);
-  const extraOptionsRef = useRef(extraOptions);
-  const pageSizeRef = useRef(pageSize);
-  const defaultValueItemRef = useRef(null);
-  const onChangeRef = useRef(onChange);
-
-  /* eslint-disable react-hooks/refs */
-  getValueRef.current = getValue;
-  fetchFnRef.current = fetchFn;
-  fetchItemByIdRef.current = fetchItemById;
-  extraOptionsRef.current = extraOptions;
-  pageSizeRef.current = pageSize;
   onChangeRef.current = onChange;
-  /* eslint-enable react-hooks/refs */
+  getValueRef.current = getValue;
+  extraOptionsRef.current = extraOptions;
+  defaultValueItemRef.current = defaultValueItem ?? null;
 
-  // ─── Fetch defaultId (chạy lại khi defaultId thay đổi) ─────────────────────
-  useEffect(() => {
-    if (!defaultId || !fetchItemByIdRef.current) {
-      setLabelReady(true);
-      return;
-    }
-    fetchItemByIdRef.current(defaultId)
-      .then((item) => {
-        if (item) {
-          defaultValueItemRef.current = item;
-          // Merge item vào options nếu chưa tồn tại
-          const gv = getValueRef.current;
-          const exists = optionsRef.current.some((o) => gv(o) === gv(item));
-          if (!exists) {
-            const merged = [item, ...optionsRef.current];
-            optionsRef.current = merged;
-            setOptions(merged);
-          }
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLabelReady(true));
-  }, [defaultId]);
-
-  // ─── Load (stable, dùng refs hoàn toàn) ──────────────────────────────────
-  const load = useCallback(
-    async (currentPage, currentQuery, currentOptions) => {
-      if (loadingRef.current || !hasMoreRef.current) return;
-      loadingRef.current = true;
-      setLoading(true);
-      try {
-        const gv = getValueRef.current;
-        const eo = extraOptionsRef.current;
-        const res = await fetchFnRef.current(
-          currentPage,
-          pageSizeRef.current,
-          currentQuery,
-        );
-
-        const existingIds = new Set(currentOptions.map((o) => gv(o)));
-        const newItems = res.data.filter((o) => !existingIds.has(gv(o)));
-        const merged = [...currentOptions, ...newItems];
-
-        const extraIds = new Set(eo.map((o) => gv(o)));
-        const final = [...eo, ...merged.filter((o) => !extraIds.has(gv(o)))];
-
-        optionsRef.current = final;
-        setOptions(final);
-        hasMoreRef.current = currentPage < res.meta.totalPages;
-        pageRef.current = currentPage + 1;
-        initializedRef.current = true;
-      } finally {
-        loadingRef.current = false;
-        setLoading(false);
-      }
-    },
-    [],
-  ); // stable - không deps nào
-
-  // ─── Build seed (extraOptions + defaultValueItem, deduped) ────────────────
-  const buildSeed = useCallback((currentQuery) => {
-    const gv = getValueRef.current;
-    const eo = extraOptionsRef.current;
-    const dv = defaultValueItemRef.current;
-    const base = !currentQuery && dv ? [dv] : [];
-    const seen = new Set();
-    return [...eo, ...base].filter((o) => {
-      const v = gv(o);
-      if (seen.has(v)) return false;
-      seen.add(v);
-      return true;
-    });
-  }, []); // stable
-
-  // ─── Reset (được gọi khi resetKey thay đổi) ───────────────────────────────
-  const reset = useCallback(() => {
-    const seed = buildSeed("");
-    optionsRef.current = seed;
-    pageRef.current = 1;
-    hasMoreRef.current = true;
-    loadingRef.current = false;
-    initializedRef.current = false;
-    setOptions(seed);
-    setQuery("");
-    // setQuery("") sẽ trigger useEffect([query]) → tự load lại
-  }, [buildSeed]); // stable vì buildSeed stable
-
-  // ─── Chỉ chạy khi resetKey thay đổi, KHÔNG chạy lúc mount ────────────────
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    reset();
+    setPage(1);
+    setQuery("");
+    setAllItems([]);
+    setPreloadedItem(null);
+    setLabelReady(!defaultId || !!defaultValueItem);
     onChangeRef.current?.(null);
-  }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [resetKey]);
 
-  // ─── Chạy khi query thay đổi (kể cả lúc mount với query = "") ────────────
+  const apiParams = useMemo(
+    () => ({
+      ...(queryParams || {}),
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+      ...(query && searchField ? { keyword: query, search: searchField } : {}),
+    }),
+    [queryParams, page, pageSize, query, searchField],
+  );
+
+  const { data, isFetching } = useQueryHook(apiParams, { skip: disabled || !useQueryHook });
+
   useEffect(() => {
-    const seed = buildSeed(query);
-    optionsRef.current = seed;
-    pageRef.current = 1;
-    hasMoreRef.current = true;
-    initializedRef.current = false;
-    load(1, query, seed);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+    if (!data) return;
+    const items = data?.data || [];
+    setAllItems((prev) => (page === 1 ? items : [...prev, ...items]));
+  }, [data, page]);
 
-  // ─── Debounce search ──────────────────────────────────────────────────────
+  const ItemHook = useItemQueryHook || useEmptyQuery;
+  const skipItem = !defaultId || !!defaultValueItem || !useItemQueryHook;
+  const { data: itemData } = ItemHook(defaultId, { skip: skipItem });
+
+  useEffect(() => {
+    if (itemData) {
+      setPreloadedItem(itemData);
+      setLabelReady(true);
+    }
+  }, [itemData]);
+
+  // Reset preload cache khi defaultId thay đổi
+  useEffect(() => {
+    setPreloadedItem(null);
+  }, [defaultId]);
+
+  const options = useMemo(() => {
+    const seen = new Set();
+    const gv = getValueRef.current;
+    const result = [];
+
+    // Extra options (pinned)
+    const eo = extraOptionsRef.current || [];
+    eo.forEach((item) => {
+      const v = gv(item);
+      if (!seen.has(v)) {
+        seen.add(v);
+        result.push(item);
+      }
+    });
+
+    // Default value (prefer explicit object > preloaded from API)
+    const defaultItem = defaultValueItemRef.current || preloadedItem;
+    if (defaultItem) {
+      const v = gv(defaultItem);
+      if (!seen.has(v)) {
+        seen.add(v);
+        result.push(defaultItem);
+      }
+    }
+
+    // API items
+    allItems.forEach((item) => {
+      const v = gv(item);
+      if (!seen.has(v)) {
+        seen.add(v);
+        result.push(item);
+      }
+    });
+
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allItems, preloadedItem]);
+
+  const onPopupScroll = useCallback(
+    (e) => {
+      const { scrollTop, scrollHeight, clientHeight } = e.target;
+      if (scrollTop + clientHeight >= scrollHeight - 20 && !isFetching && !disabled) {
+        setPage((prev) => prev + 1);
+      }
+    },
+    [isFetching, disabled],
+  );
+
   const handleSearch = useCallback(
     (val) => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => setQuery(val), debounceMs);
+      debounceRef.current = setTimeout(() => {
+        setQuery(val);
+        setPage(1);
+      }, debounceMs);
     },
     [debounceMs],
   );
@@ -173,27 +158,6 @@ const SelectShared = ({
     };
   }, []);
 
-  // ─── Infinite scroll ──────────────────────────────────────────────────────
-  const onPopupScroll = useCallback(
-    (e) => {
-      const { scrollTop, scrollHeight, clientHeight } = e.target;
-      if (scrollTop + clientHeight >= scrollHeight - 20) {
-        load(pageRef.current, query, optionsRef.current);
-      }
-    },
-    [query, load],
-  );
-
-  // ─── Chỉ load khi mở dropdown lần đầu (sau reset) ────────────────────────
-  const handleOpenChange = useCallback(
-    (open) => {
-      if (open && !initializedRef.current) {
-        load(1, query, optionsRef.current);
-      }
-    },
-    [query, load],
-  );
-
   const { style, ...selectProps } = restProps;
 
   return (
@@ -201,9 +165,7 @@ const SelectShared = ({
       style={{
         position: "relative",
         display: "inline-block",
-        ...(style?.width === "100%" && {
-          width: "100%",
-        }),
+        ...(style?.width === "100%" && { width: "100%" }),
       }}
     >
       <Select
@@ -214,9 +176,11 @@ const SelectShared = ({
         suffixIcon={!labelReady ? null : undefined}
         onSearch={searchable ? handleSearch : undefined}
         onPopupScroll={onPopupScroll}
-        onOpenChange={handleOpenChange}
-        onChange={(val, option) => onChange?.(option?.rawData)}
-        notFoundContent={loading ? "" : "Không có dữ liệu"}
+        onChange={(val, option) => onChangeRef.current?.(option?.rawData)}
+        notFoundContent={isFetching ? "" : "Không có dữ liệu"}
+        loading={isFetching}
+        disabled={disabled}
+        allowClear={allowClear}
         options={options.map((item) => ({
           label: getLabel(item),
           value: getValue(item),
@@ -225,7 +189,7 @@ const SelectShared = ({
         popupRender={(menu) => (
           <>
             {menu}
-            {loading && (
+            {isFetching && (
               <div style={{ textAlign: "center", padding: "8px 0" }}>
                 <Spin size="small" />
               </div>

@@ -3,14 +3,17 @@ import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
 import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
-import { useLazyGetTopicsQuery } from "@domains/evaluation";
-import { useLazyFetchBranchesQuery } from "@domains/system";
+import { useGetTopicsQuery } from "@domains/evaluation";
+import {
+  useFetchBranchesQuery,
+  useFetchBranchByIdQuery,
+} from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
 import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
 import { App, Button, Space, Tag } from "antd";
-import { useCallback, useRef } from "react";
+import { useMemo } from "react";
 import TargetFormModal from "../components/TargetFormModal";
 import {
   useCreateTargetMutation,
@@ -27,69 +30,14 @@ export default function TargetPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const {
-    pagination,
-    searchTerm,
-    filters,
-    handleSearch,
-    handleTableChange,
-    setFilters,
-  } = useTable();
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+    useTable();
 
-  // ─── Branch filter ──────────────────────────────────────────────────
-  const [fetchBranches] = useLazyFetchBranchesQuery();
+  const branchId = filters?.topic?.branchId;
 
-  const fetchBranchesFn = useCallback(
-    async (page, pageSize, query) => {
-      try {
-        return await fetchBranches({
-          keyword: query,
-          pagination: { current: page, pageSize },
-          search: query ? "name" : null,
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchBranchesFn failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [fetchBranches],
-  );
-
-  // ─── Topic filter (scoped by branch) ────────────────────────────────
-  const [triggerFetchTopics] = useLazyGetTopicsQuery();
-  const branchFilterIdRef = useRef();
-
-  const fetchFilterTopics = useCallback(
-    async (page, pageSize, query) => {
-      if (!branchFilterIdRef.current) {
-        return { data: [], meta: { totalPages: 0 } };
-      }
-      try {
-        return await triggerFetchTopics({
-          pagination: { current: page, pageSize },
-          search: query ? "name" : null,
-          keyword: query,
-          filters: { branchId: branchFilterIdRef.current },
-        }).unwrap();
-      } catch (err) {
-        console.error("fetchFilterTopics failed", err);
-        return { data: [], meta: { totalPages: 0 } };
-      }
-    },
-    [triggerFetchTopics],
-  );
-
-  const handleBranchChange = useCallback(
-    (branch) => {
-      const branchId = branch?.id || undefined;
-      branchFilterIdRef.current = branchId;
-      setFilters((prev) => ({
-        ...prev,
-        topic: { branchId },
-        topicId: undefined,
-      }));
-    },
-    [setFilters],
+  const topicQueryParams = useMemo(
+    () => (branchId ? { filters: { branchId } } : undefined),
+    [branchId],
   );
 
   const {
@@ -191,13 +139,17 @@ export default function TargetPage() {
 
   return (
     <>
-      <TargetFormModal
-        open={open}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        initialValue={dataEditing}
-        confirmLoading={isCreating || isUpdating}
-      />
+      {open && (
+        <TargetFormModal
+          open={open}
+          onClose={closeModal}
+          onSubmit={handleSubmit}
+          initialValue={dataEditing}
+          confirmLoading={isCreating || isUpdating}
+          useQueryHook={useFetchBranchesQuery}
+          useItemQueryHook={useFetchBranchByIdQuery}
+        />
+      )}
 
       <TableShared
         isLoading={isLoading}
@@ -208,8 +160,7 @@ export default function TargetPage() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: targets?.meta?.totalItems || 0,
-          onChange: (page, pageSize) =>
-            handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
         search={{
           useSearch: true,
@@ -220,22 +171,32 @@ export default function TargetPage() {
           <Space>
             <SelectShared
               style={{ width: 200 }}
+              useQueryHook={useFetchBranchesQuery}
+              searchField="name"
               allowClear
               placeholder={commonText?.placeholder?.selectBranch}
-              fetchFn={fetchBranchesFn}
               getLabel={(item) => item.name}
               getValue={(item) => item.id}
-              onChange={handleBranchChange}
+              onChange={(item) => {
+                const newBranchId = item?.id || undefined;
+                setFilters((prev) => ({
+                  ...prev,
+                  topic: { branchId: newBranchId },
+                  topicId: undefined,
+                }));
+              }}
               value={filters?.topic?.branchId}
               resetKey={selectedOrg}
             />
 
             <SelectShared
               style={{ width: 200 }}
+              useQueryHook={useGetTopicsQuery}
+              queryParams={topicQueryParams}
+              searchField="name"
               allowClear
-              disabled={!filters?.topic?.branchId}
+              disabled={!branchId}
               placeholder={commonText?.placeholder?.selectTopic}
-              fetchFn={fetchFilterTopics}
               getLabel={(item) => item.name}
               getValue={(item) => item.id}
               onChange={(item) => {
@@ -245,16 +206,12 @@ export default function TargetPage() {
                 }));
               }}
               value={filters?.topicId}
-              resetKey={filters?.topic?.branchId}
+              resetKey={branchId}
             />
           </Space>
         }
         topLeftComponent={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => openModal()}
-          >
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
             {commonText?.button?.create}
           </Button>
         }
