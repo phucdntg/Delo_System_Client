@@ -3,12 +3,10 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 import { branchService } from "../../branch";
 
-const AREA_TAG = "Area";
-
 export const areaService = createApi({
   reducerPath: "areaService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [AREA_TAG],
+  tagTypes: ["Area"],
   endpoints: (builder) => ({
     fetchAreas: builder.query({
       query: (args) => ({
@@ -63,11 +61,11 @@ export const areaService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: AREA_TAG, id: "LIST" },
+          { type: "Area", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: AREA_TAG, id })),
+            .map((id) => ({ type: "Area", id })),
         ];
       },
     }),
@@ -79,7 +77,7 @@ export const areaService = createApi({
       }),
       transformResponse: (response) =>
         response?.success ? response?.data : {},
-      providesTags: (result, error, id) => [{ type: AREA_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "Area", id }],
     }),
 
     createArea: builder.mutation({
@@ -90,8 +88,8 @@ export const areaService = createApi({
       }),
       transformResponse: (res) => (res?.success ? res?.data : null),
       invalidatesTags: (result) => {
-        const tags = [{ type: AREA_TAG, id: "LIST" }];
-        if (result?.id) tags.push({ type: AREA_TAG, id: result.id });
+        const tags = [{ type: "Area", id: "LIST" }];
+        if (result?.id) tags.push({ type: "Area", id: result.id });
         return tags;
       },
     }),
@@ -103,7 +101,7 @@ export const areaService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: AREA_TAG, id: args?.id },
+        { type: "Area", id: args?.id },
       ],
     }),
 
@@ -113,8 +111,8 @@ export const areaService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: AREA_TAG, id },
-        { type: AREA_TAG, id: "LIST" },
+        { type: "Area", id },
+        { type: "Area", id: "LIST" },
       ],
     }),
   }),

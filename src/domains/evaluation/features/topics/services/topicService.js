@@ -5,7 +5,7 @@ import { buildParams } from "@shared/utils/queryHelper";
 export const topicService = createApi({
   reducerPath: "topicService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Topic"],
+  tagTypes: ["EvaluationTopic"],
   endpoints: (builder) => ({
     getTopics: builder.query({
       query: (args) => ({
@@ -16,10 +16,13 @@ export const topicService = createApi({
       providesTags: (result) =>
         result?.data
           ? [
-              { type: "Topic", id: "LIST" },
-              ...result.data.map((r) => ({ type: "Topic", id: r.id })),
+              { type: "EvaluationTopic", id: "LIST" },
+              ...result.data.map((r) => ({
+                type: "EvaluationTopic",
+                id: r.id,
+              })),
             ]
-          : [{ type: "Topic", id: "LIST" }],
+          : [{ type: "EvaluationTopic", id: "LIST" }],
     }),
 
     getTopicById: builder.query({
@@ -27,7 +30,7 @@ export const topicService = createApi({
         url: `/evaluation/topics/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Topic", id }],
+      providesTags: (result, error, id) => [{ type: "EvaluationTopic", id }],
     }),
 
     createTopic: builder.mutation({
@@ -36,7 +39,7 @@ export const topicService = createApi({
         method: "POST",
         data: body,
       }),
-      invalidatesTags: [{ type: "Topic", id: "LIST" }],
+      invalidatesTags: [{ type: "EvaluationTopic", id: "LIST" }],
     }),
 
     updateTopic: builder.mutation({
@@ -46,8 +49,8 @@ export const topicService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, { id }) => [
-        { type: "Topic", id: "LIST" },
-        { type: "Topic", id },
+        { type: "EvaluationTopic", id: "LIST" },
+        { type: "EvaluationTopic", id },
       ],
     }),
 
@@ -57,8 +60,8 @@ export const topicService = createApi({
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: "Topic", id: "LIST" },
-        { type: "Topic", id },
+        { type: "EvaluationTopic", id: "LIST" },
+        { type: "EvaluationTopic", id },
       ],
     }),
   }),
@@ -68,6 +71,7 @@ export const {
   useGetTopicsQuery,
   useLazyGetTopicsQuery,
   useGetTopicByIdQuery,
+  useLazyGetTopicByIdQuery,
   useCreateTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation,

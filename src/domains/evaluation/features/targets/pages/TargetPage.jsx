@@ -1,13 +1,16 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
+import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
-import { useGetTopicsQuery } from "@domains/evaluation";
+import { useLazyGetTopicsQuery } from "@domains/evaluation";
+import { useLazyFetchBranchesQuery } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
+import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
-import { App, Button, Select, Space, Tag } from "antd";
-import { useMemo } from "react";
+import { App, Button, Space, Tag } from "antd";
+import { useCallback, useRef } from "react";
 import TargetFormModal from "../components/TargetFormModal";
 import {
   useCreateTargetMutation,
@@ -17,6 +20,7 @@ import {
 } from "../services/targetService";
 
 export default function TargetPage() {
+  const { selectedOrg } = useAuth();
   const { message: messageApi } = App.useApp();
   const { translate } = useTranslate();
   const translateEval = translate("evaluation") || {};
@@ -32,17 +36,60 @@ export default function TargetPage() {
     setFilters,
   } = useTable();
 
-  const { data: topicsData } = useGetTopicsQuery({
-    pagination: { current: 1, pageSize: 10 },
-  });
+  // ─── Branch filter ──────────────────────────────────────────────────
+  const [fetchBranches] = useLazyFetchBranchesQuery();
 
-  const topicOptions = useMemo(
-    () =>
-      (topicsData?.data || []).map((t) => ({
-        label: t.name,
-        value: t.id,
-      })),
-    [topicsData],
+  const fetchBranchesFn = useCallback(
+    async (page, pageSize, query) => {
+      try {
+        return await fetchBranches({
+          keyword: query,
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchBranchesFn failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [fetchBranches],
+  );
+
+  // ─── Topic filter (scoped by branch) ────────────────────────────────
+  const [triggerFetchTopics] = useLazyGetTopicsQuery();
+  const branchFilterIdRef = useRef();
+
+  const fetchFilterTopics = useCallback(
+    async (page, pageSize, query) => {
+      if (!branchFilterIdRef.current) {
+        return { data: [], meta: { totalPages: 0 } };
+      }
+      try {
+        return await triggerFetchTopics({
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+          keyword: query,
+          filters: { branchId: branchFilterIdRef.current },
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchFilterTopics failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [triggerFetchTopics],
+  );
+
+  const handleBranchChange = useCallback(
+    (branch) => {
+      const branchId = branch?.id || undefined;
+      branchFilterIdRef.current = branchId;
+      setFilters((prev) => ({
+        ...prev,
+        topic: { branchId },
+        topicId: undefined,
+      }));
+    },
+    [setFilters],
   );
 
   const {
@@ -104,11 +151,18 @@ export default function TargetPage() {
     },
     {
       title: translateEval?.table?.topic,
-      dataIndex: "topicId",
       key: "topic",
-      render: (topicId) => {
-        const topic = topicsData?.data?.find((t) => t.id === topicId);
-        return topic ? <Tag color="blue">{topic.name}</Tag> : "-";
+      render: (record) => {
+        if (!record.topicId) return "-";
+        return <Tag color="blue">{record?.topic?.name || "-"}</Tag>;
+      },
+    },
+    {
+      title: translateEval?.table?.branch,
+      key: "branch",
+      render: (record) => {
+        if (!record.topic?.branchId) return "-";
+        return <Tag color="blue">{record?.topic?.branch?.name || "-"}</Tag>;
       },
     },
     {
@@ -137,16 +191,13 @@ export default function TargetPage() {
 
   return (
     <>
-      {open && (
-        <TargetFormModal
-          open={open}
-          onClose={closeModal}
-          onSubmit={handleSubmit}
-          initialValue={dataEditing}
-          confirmLoading={isCreating || isUpdating}
-          topics={topicsData?.data || []}
-        />
-      )}
+      <TargetFormModal
+        open={open}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        initialValue={dataEditing}
+        confirmLoading={isCreating || isUpdating}
+      />
 
       <TableShared
         isLoading={isLoading}
@@ -166,21 +217,37 @@ export default function TargetPage() {
           handleSearch,
         }}
         topRightComponent={
-          <Select
-            allowClear
-            style={{ width: 200 }}
-            placeholder={
-              translateEval?.filter?.topic || "-- Lọc theo chủ đề --"
-            }
-            options={topicOptions}
-            onChange={(value) => {
-              setFilters((prev) => ({
-                ...prev,
-                topicId: value || undefined,
-              }));
-            }}
-            value={filters?.topicId}
-          />
+          <Space>
+            <SelectShared
+              style={{ width: 200 }}
+              allowClear
+              placeholder={commonText?.placeholder?.selectBranch}
+              fetchFn={fetchBranchesFn}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+              onChange={handleBranchChange}
+              value={filters?.topic?.branchId}
+              resetKey={selectedOrg}
+            />
+
+            <SelectShared
+              style={{ width: 200 }}
+              allowClear
+              disabled={!filters?.topic?.branchId}
+              placeholder={commonText?.placeholder?.selectTopic}
+              fetchFn={fetchFilterTopics}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+              onChange={(item) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  topicId: item?.id || undefined,
+                }));
+              }}
+              value={filters?.topicId}
+              resetKey={filters?.topic?.branchId}
+            />
+          </Space>
         }
         topLeftComponent={
           <Button

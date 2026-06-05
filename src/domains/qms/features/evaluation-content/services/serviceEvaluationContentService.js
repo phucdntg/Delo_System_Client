@@ -2,12 +2,10 @@ import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const SERVICE_EVALUATION_CONTENT_TAG = "ServiceEvaluationContent";
-
 export const serviceEvaluationContentService = createApi({
   reducerPath: "serviceEvaluationContentService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [SERVICE_EVALUATION_CONTENT_TAG],
+  tagTypes: ["ServiceEvaluationContent"],
   endpoints: (builder) => ({
     fetchServiceEvaluationContents: builder.query({
       query: (args) => ({
@@ -18,11 +16,11 @@ export const serviceEvaluationContentService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: SERVICE_EVALUATION_CONTENT_TAG, id: "LIST" },
+          { type: "ServiceEvaluationContent", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: SERVICE_EVALUATION_CONTENT_TAG, id })),
+            .map((id) => ({ type: "ServiceEvaluationContent", id })),
         ];
       },
     }),
@@ -35,7 +33,7 @@ export const serviceEvaluationContentService = createApi({
       transformResponse: (response) =>
         response?.success ? response?.data : {},
       providesTags: (result, error, id) => [
-        { type: SERVICE_EVALUATION_CONTENT_TAG, id },
+        { type: "ServiceEvaluationContent", id },
       ],
     }),
 
@@ -47,9 +45,9 @@ export const serviceEvaluationContentService = createApi({
       }),
       transformResponse: (res) => (res?.success ? res?.data : null),
       invalidatesTags: (result) => {
-        const tags = [{ type: SERVICE_EVALUATION_CONTENT_TAG, id: "LIST" }];
+        const tags = [{ type: "ServiceEvaluationContent", id: "LIST" }];
         if (result?.id)
-          tags.push({ type: SERVICE_EVALUATION_CONTENT_TAG, id: result.id });
+          tags.push({ type: "ServiceEvaluationContent", id: result.id });
         return tags;
       },
     }),
@@ -61,8 +59,8 @@ export const serviceEvaluationContentService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: SERVICE_EVALUATION_CONTENT_TAG, id: args?.id },
-        { type: SERVICE_EVALUATION_CONTENT_TAG, id: "LIST" },
+        { type: "ServiceEvaluationContent", id: args?.id },
+        { type: "ServiceEvaluationContent", id: "LIST" },
       ],
     }),
 
@@ -72,8 +70,8 @@ export const serviceEvaluationContentService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: SERVICE_EVALUATION_CONTENT_TAG, id },
-        { type: SERVICE_EVALUATION_CONTENT_TAG, id: "LIST" },
+        { type: "ServiceEvaluationContent", id },
+        { type: "ServiceEvaluationContent", id: "LIST" },
       ],
     }),
   }),

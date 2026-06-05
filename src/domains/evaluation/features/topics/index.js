@@ -3,6 +3,7 @@ export {
   useGetTopicsQuery,
   useLazyGetTopicsQuery,
   useGetTopicByIdQuery,
+  useLazyGetTopicByIdQuery,
   useCreateTopicMutation,
   useUpdateTopicMutation,
   useDeleteTopicMutation,

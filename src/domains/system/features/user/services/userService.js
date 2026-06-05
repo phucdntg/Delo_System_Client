@@ -2,13 +2,10 @@ import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const USER_TAG = "User";
-const USER_PERMISSIONS = "UserPermissions";
-
 export const userService = createApi({
   reducerPath: "userService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [USER_TAG, USER_PERMISSIONS],
+  tagTypes: ["User", "UserPermissions"],
   endpoints: (builder) => ({
     fetchUsers: builder.query({
       query: (args) => ({
@@ -83,11 +80,11 @@ export const userService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: USER_TAG, id: "LIST" },
+          { type: "User", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: USER_TAG, id })),
+            .map((id) => ({ type: "User", id })),
         ];
       },
     }),
@@ -102,7 +99,7 @@ export const userService = createApi({
         console.error("Fetch user by ID error:", error);
         return {};
       },
-      providesTags: (result, error, id) => [{ type: USER_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "User", id }],
     }),
 
     createUser: builder.mutation({
@@ -112,8 +109,8 @@ export const userService = createApi({
         data: body,
       }),
       invalidatesTags: (result) => {
-        const tags = [{ type: USER_TAG, id: "LIST" }];
-        if (result?.id) tags.push({ type: USER_TAG, id: result.id });
+        const tags = [{ type: "User", id: "LIST" }];
+        if (result?.id) tags.push({ type: "User", id: result.id });
         return tags;
       },
     }),
@@ -125,9 +122,9 @@ export const userService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: USER_TAG, id: args?.id },
-        { type: USER_TAG, id: "LIST" },
-        { type: USER_PERMISSIONS, id: args?.id },
+        { type: "User", id: args?.id },
+        { type: "User", id: "LIST" },
+        { type: "UserPermissions", id: args?.id },
       ],
       async onQueryStarted({ id }, { dispatch, queryFulfilled }) {
         try {
@@ -135,7 +132,7 @@ export const userService = createApi({
           const { permissionService } = await import("@domains/system");
           dispatch(
             permissionService.util.invalidateTags([
-              { type: USER_PERMISSIONS, id },
+              { type: "UserPermissions", id },
             ]),
           );
         } catch (err) {
@@ -150,8 +147,8 @@ export const userService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: USER_TAG, id },
-        { type: USER_TAG, id: "LIST" },
+        { type: "User", id },
+        { type: "User", id: "LIST" },
       ],
     }),
 
@@ -166,7 +163,7 @@ export const userService = createApi({
         console.error("Fetch user permissions error:", err);
         return [];
       },
-      providesTags: (result, error, id) => [{ type: USER_PERMISSIONS, id }],
+      providesTags: (result, error, id) => [{ type: "UserPermissions", id }],
     }),
   }),
 });

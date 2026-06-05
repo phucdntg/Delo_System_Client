@@ -1,11 +1,15 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
+import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
+import { useLazyFetchBranchesQuery } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
+import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
-import { App, Button, Space } from "antd";
+import { App, Button, Space, Tag } from "antd";
+import { useCallback } from "react";
 import TopicFormModal from "../components/TopicFormModal";
 import {
   useCreateTopicMutation,
@@ -15,14 +19,21 @@ import {
 } from "../services/topicService";
 
 export default function TopicPage() {
+  const { selectedOrg } = useAuth();
   const { message } = App.useApp();
   const { translate } = useTranslate();
   const translateEval = translate("evaluation") || {};
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, handleSearch, handleTableChange } =
-    useTable();
+  const {
+    pagination,
+    searchTerm,
+    filters,
+    handleSearch,
+    handleTableChange,
+    setFilters,
+  } = useTable();
 
   const {
     data: topics,
@@ -32,11 +43,30 @@ export default function TopicPage() {
     pagination,
     search: "name",
     keyword: searchTerm,
+    filters,
   });
 
   const [createTopic, { isLoading: isCreating }] = useCreateTopicMutation();
   const [updateTopic, { isLoading: isUpdating }] = useUpdateTopicMutation();
   const [deleteTopic] = useDeleteTopicMutation();
+
+  const [fetchBranches] = useLazyFetchBranchesQuery();
+
+  const fetchBranchesFn = useCallback(
+    async (page, pageSize, query) => {
+      try {
+        return await fetchBranches({
+          keyword: query,
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchBranchesFn failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [fetchBranches],
+  );
 
   const handleSubmit = async (values) => {
     try {
@@ -82,6 +112,14 @@ export default function TopicPage() {
       dataIndex: "description",
       key: "description",
       render: (value) => value || "-",
+    },
+    {
+      title: translateEval?.table?.branch,
+      key: "branch",
+      render: (_, record) => {
+        if (!record.branch) return "-";
+        return <Tag color="blue">{record?.branch?.name}</Tag>;
+      },
     },
     {
       title: translateEval?.table?.status,
@@ -132,6 +170,26 @@ export default function TopicPage() {
           hint: translateEval?.search?.placeholder,
           handleSearch,
         }}
+        topRightComponent={
+          <SelectShared
+            style={{ width: 200 }}
+            allowClear
+            placeholder={
+              commonText?.placeholder?.selectBranch || "-- Chọn chi nhánh --"
+            }
+            fetchFn={fetchBranchesFn}
+            getLabel={(item) => item.name}
+            getValue={(item) => item.id}
+            onChange={(item) => {
+              setFilters((prev) => ({
+                ...prev,
+                branchId: item?.id || undefined,
+              }));
+            }}
+            value={filters?.branchId}
+            resetKey={selectedOrg}
+          />
+        }
         topLeftComponent={
           <Button
             type="primary"

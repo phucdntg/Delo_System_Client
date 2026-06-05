@@ -2,12 +2,10 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const BRANCH_TAG = "Branch";
-
 export const branchService = createApi({
   reducerPath: "branchService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [BRANCH_TAG],
+  tagTypes: ["Branch"],
   endpoints: (builder) => ({
     fetchBranches: builder.query({
       query: (args) => ({
@@ -18,11 +16,11 @@ export const branchService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: BRANCH_TAG, id: "LIST" },
+          { type: "Branch", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: BRANCH_TAG, id })),
+            .map((id) => ({ type: "Branch", id })),
         ];
       },
     }),
@@ -34,7 +32,7 @@ export const branchService = createApi({
       }),
       transformResponse: (response) =>
         response?.success ? response?.data : {},
-      providesTags: (result, error, id) => [{ type: BRANCH_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "Branch", id }],
     }),
 
     createBranch: builder.mutation({
@@ -45,8 +43,8 @@ export const branchService = createApi({
       }),
       transformResponse: (res) => (res?.success ? res?.data : null),
       invalidatesTags: (result) => {
-        const tags = [{ type: BRANCH_TAG, id: "LIST" }];
-        if (result?.id) tags.push({ type: BRANCH_TAG, id: result.id });
+        const tags = [{ type: "Branch", id: "LIST" }];
+        if (result?.id) tags.push({ type: "Branch", id: result.id });
         return tags;
       },
     }),
@@ -58,7 +56,7 @@ export const branchService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: BRANCH_TAG, id: args?.id },
+        { type: "Branch", id: args?.id },
       ],
     }),
 
@@ -68,8 +66,8 @@ export const branchService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: BRANCH_TAG, id },
-        { type: BRANCH_TAG, id: "LIST" },
+        { type: "Branch", id },
+        { type: "Branch", id: "LIST" },
       ],
     }),
   }),

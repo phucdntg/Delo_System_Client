@@ -5,7 +5,7 @@ import { buildParams } from "@shared/utils/queryHelper";
 export const targetService = createApi({
   reducerPath: "targetService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["Target"],
+  tagTypes: ["EvaluationTarget"],
   endpoints: (builder) => ({
     getTargets: builder.query({
       query: (args) => ({
@@ -16,10 +16,13 @@ export const targetService = createApi({
       providesTags: (result) =>
         result?.data
           ? [
-              { type: "Target", id: "LIST" },
-              ...result.data.map((r) => ({ type: "Target", id: r.id })),
+              { type: "EvaluationTarget", id: "LIST" },
+              ...result.data.map((r) => ({
+                type: "EvaluationTarget",
+                id: r.id,
+              })),
             ]
-          : [{ type: "Target", id: "LIST" }],
+          : [{ type: "EvaluationTarget", id: "LIST" }],
     }),
 
     getTargetById: builder.query({
@@ -27,7 +30,7 @@ export const targetService = createApi({
         url: `/evaluation/targets/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Target", id }],
+      providesTags: (result, error, id) => [{ type: "EvaluationTarget", id }],
     }),
 
     createTarget: builder.mutation({
@@ -36,7 +39,7 @@ export const targetService = createApi({
         method: "POST",
         data: body,
       }),
-      invalidatesTags: [{ type: "Target", id: "LIST" }],
+      invalidatesTags: [{ type: "EvaluationTarget", id: "LIST" }],
     }),
 
     updateTarget: builder.mutation({
@@ -46,8 +49,8 @@ export const targetService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, { id }) => [
-        { type: "Target", id: "LIST" },
-        { type: "Target", id },
+        { type: "EvaluationTarget", id: "LIST" },
+        { type: "EvaluationTarget", id },
       ],
     }),
 
@@ -57,8 +60,8 @@ export const targetService = createApi({
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: "Target", id: "LIST" },
-        { type: "Target", id },
+        { type: "EvaluationTarget", id: "LIST" },
+        { type: "EvaluationTarget", id },
       ],
     }),
   }),

@@ -14,6 +14,7 @@
       "name": "Topic Name",
       "description": "Description",
       "isActive": "Status",
+      "branch": "Branch",
       "placeholder": {
         "name": "Enter topic name",
         "description": "Enter description"
@@ -25,6 +26,7 @@
     "placeholder": {
       "name": "Enter name",
       "description": "Enter description",
+      "branch": "Select branch",
       "selectTopic": "Select topic",
       "label": "Enter label",
       "color": "Enter color code",
@@ -46,7 +48,14 @@
   "table": {
     "name": "Name",
     "description": "Description",
+    "branch": "Branch",
     "topic": "Topic",
+    "label": "Label",
+    "icon": "Icon",
+    "color": "Color",
+    "displayOrder": "Display Order",
+    "content": "Content",
+    "action": "Action",
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",

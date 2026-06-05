@@ -2,12 +2,10 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const ORG_TAG = "Org";
-
 export const orgService = createApi({
   reducerPath: "orgService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [ORG_TAG],
+  tagTypes: ["Org"],
   endpoints: (builder) => ({
     fetchOrg: builder.query({
       query: (args) => ({
@@ -18,11 +16,11 @@ export const orgService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: ORG_TAG, id: "LIST" },
+          { type: "Org", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: ORG_TAG, id })),
+            .map((id) => ({ type: "Org", id })),
         ];
       },
     }),
@@ -39,7 +37,7 @@ export const orgService = createApi({
         console.log("Fetch organization details failed with error: ", error);
         return {};
       },
-      providesTags: (result, error, id) => [{ type: ORG_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "Org", id }],
     }),
 
     createOrg: builder.mutation({
@@ -49,8 +47,8 @@ export const orgService = createApi({
         data: body,
       }),
       invalidatesTags: (result) => {
-        const tags = [{ type: ORG_TAG, id: "LIST" }];
-        if (result?.id) tags.push({ type: ORG_TAG, id: result.id });
+        const tags = [{ type: "Org", id: "LIST" }];
+        if (result?.id) tags.push({ type: "Org", id: result.id });
         return tags;
       },
     }),
@@ -62,7 +60,7 @@ export const orgService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: ORG_TAG, id: args?.id },
+        { type: "Org", id: args?.id },
       ],
     }),
 
@@ -83,8 +81,8 @@ export const orgService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: ORG_TAG, id },
-        { type: ORG_TAG, id: "LIST" },
+        { type: "Org", id },
+        { type: "Org", id: "LIST" },
       ],
     }),
   }),

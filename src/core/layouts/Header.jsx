@@ -1,6 +1,6 @@
 import { useAuth } from "@core/providers/auth";
 import { Dropdown, Select } from "antd";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import {
@@ -10,6 +10,7 @@ import {
 import SelectShared from "../../shared/components/SelectShared";
 import { useSidebar } from "../providers/sidebar";
 import { useTranslate } from "../providers/translate";
+import { memo } from "react";
 
 const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -61,9 +62,6 @@ const Header = () => {
       toggleMobileSidebar();
     }
   };
-
-  const getLabel = useCallback((item) => item.name, []);
-  const getValue = useCallback((item) => item.id, []);
 
   return (
     <header
@@ -122,8 +120,8 @@ const Header = () => {
                 defaultId={selectedOrg}
                 pageSize={10}
                 searchable={true}
-                getLabel={getLabel}
-                getValue={getValue}
+                getLabel={(item) => item.name}
+                getValue={(item) => item.id}
                 onChange={(item) => {
                   saveSelectedOrg(item);
                 }}
@@ -173,4 +171,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { LANGUAGE } from "@shared/constants/systemConstants";
 import { toNamespaceObject } from "@shared/utils/translateHelper";
 import TranslateContext from "./useTranslate";
@@ -13,28 +13,31 @@ const enNamespaceModules = import.meta.glob("@assets/locales/en/*.json", {
 const viTranslations = toNamespaceObject(viNamespaceModules);
 const enTranslations = toNamespaceObject(enNamespaceModules);
 
+const allTranslations = { vi: viTranslations, en: enTranslations };
+
 export const TranslateProvider = ({ children }) => {
   const [language, setLanguage] = useState(
     localStorage.getItem(LANGUAGE) || "vi",
   );
 
-  const translations = {
-    vi: viTranslations,
-    en: enTranslations,
-  };
+  const translate = useCallback(
+    (key) =>
+      key.split(".").reduce((o, k) => o?.[k], allTranslations[language]) ?? key,
+    [language],
+  );
 
-  const translate = (key) =>
-    key.split(".").reduce((o, k) => o?.[k], translations[language]) ?? key;
-
-  const changeLanguage = (lang) => {
+  const changeLanguage = useCallback((lang) => {
     setLanguage(lang);
     localStorage.setItem(LANGUAGE, lang);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({ language, setLanguage, translate, changeLanguage }),
+    [language, translate, changeLanguage],
+  );
 
   return (
-    <TranslateContext.Provider
-      value={{ language, setLanguage, translate, changeLanguage }}
-    >
+    <TranslateContext.Provider value={value}>
       {children}
     </TranslateContext.Provider>
   );

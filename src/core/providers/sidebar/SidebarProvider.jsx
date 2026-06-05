@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SidebarContext } from "./useSidebar";
 
 export const SidebarProvider = ({ children }) => {
@@ -26,36 +26,40 @@ export const SidebarProvider = ({ children }) => {
     };
   }, []);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setIsExpanded((prev) => !prev);
-  };
+  }, []);
 
-  const closeSidebar = () => setIsMobileOpen(false);
+  const closeSidebar = useCallback(() => setIsMobileOpen(false), []);
 
-  const toggleMobileSidebar = () => {
+  const toggleMobileSidebar = useCallback(() => {
     setIsMobileOpen((prev) => !prev);
-  };
+  }, []);
 
-  const toggleSubmenu = (item) => {
+  const toggleSubmenu = useCallback((item) => {
     setOpenSubmenu((prev) => (prev === item ? null : item));
-  };
+  }, []);
+
+  const value = useMemo(() => ({
+    isExpanded: isMobile ? false : isExpanded,
+    isMobileOpen,
+    isHovered,
+    activeItem,
+    openSubmenu,
+    toggleSidebar,
+    toggleMobileSidebar,
+    setIsHovered,
+    setActiveItem,
+    toggleSubmenu,
+    closeSidebar,
+  }), [
+    isMobile, isExpanded, isMobileOpen, isHovered, activeItem, openSubmenu,
+    toggleSidebar, toggleMobileSidebar, setIsHovered, setActiveItem,
+    toggleSubmenu, closeSidebar,
+  ]);
 
   return (
-    <SidebarContext.Provider
-      value={{
-        isExpanded: isMobile ? false : isExpanded,
-        isMobileOpen,
-        isHovered,
-        activeItem,
-        openSubmenu,
-        toggleSidebar,
-        toggleMobileSidebar,
-        setIsHovered,
-        setActiveItem,
-        toggleSubmenu,
-        closeSidebar,
-      }}
-    >
+    <SidebarContext.Provider value={value}>
       {children}
     </SidebarContext.Provider>
   );

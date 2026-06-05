@@ -1,6 +1,6 @@
-import { Empty, Input, Table } from "antd";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslate } from "@core/providers/translate";
+import { Empty, Input, Table } from "antd";
+import { memo, useEffect, useMemo, useState } from "react";
 import "../../styles/table-shared.css";
 
 const TableShared = ({
@@ -18,17 +18,28 @@ const TableShared = ({
   const translateCommon = translate("common") || {};
   const shouldShowSearch = search.useSearch;
 
+  // ─── Stabilize reference for inline pagination objects ─────────────────
+  const stablePagination = useMemo(
+    () => pagination,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pagination?.current, pagination?.pageSize, pagination?.total, pagination?.onChange],
+  );
+
+  const paginationWithDefaults = useMemo(() => ({
+    ...stablePagination,
+    showSizeChanger: true,
+    responsive: true,
+    locale: {
+      items_per_page: `/ ${translateCommon?.pagination?.page}`,
+    },
+  }), [stablePagination, translateCommon?.pagination?.page]);
+
   const [stableLoading, setStableLoading] = useState(isLoading);
-  const timerRef = useRef(null);
 
   useEffect(() => {
-    if (isLoading) {
-      clearTimeout(timerRef.current);
-      setStableLoading(true);
-    } else {
-      timerRef.current = setTimeout(() => setStableLoading(false), 50);
-    }
-    return () => clearTimeout(timerRef.current);
+    const delay = isLoading ? 0 : 50;
+    const timer = setTimeout(() => setStableLoading(isLoading), delay);
+    return () => clearTimeout(timer);
   }, [isLoading]);
 
   const emptyDataSource = useMemo(() => {
@@ -43,15 +54,13 @@ const TableShared = ({
     return columns.map((column, index) => ({
       ...column,
       key: `empty-${index}`,
-      render: (_, __, rowIndex) => (
+      /* eslint-disable no-unused-vars */
+      render: (value, record, rowIndex) => (
+      /* eslint-enable no-unused-vars */
         <div
-          className="animate-shimmer h-5 rounded"
+          className="h-5 rounded bg-gray-100"
           style={{
             width: index % 3 === 0 ? "60%" : index % 3 === 1 ? "80%" : "100%",
-            background:
-              "linear-gradient(90deg, #e8ecf0 25%, #f5f7fa 50%, #e8ecf0 75%)",
-            backgroundSize: "200% 100%",
-            animationDelay: `${rowIndex * 0.08 + index * 0.05}s`,
           }}
         />
       ),
@@ -93,18 +102,11 @@ const TableShared = ({
             />
           ),
         }}
-        pagination={{
-          ...pagination,
-          showSizeChanger: true,
-          responsive: true,
-          locale: {
-            items_per_page: `/ ${translateCommon?.pagination?.page}`,
-          },
-        }}
+        pagination={paginationWithDefaults}
         scroll={{ x: "max-content" }}
       ></Table>
     </div>
   );
 };
 
-export default TableShared;
+export default memo(TableShared);

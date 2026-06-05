@@ -2,12 +2,10 @@ import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const EMPLOYEE_EVALUATION_CONTENT_TAG = "EmployeeEvaluationContent";
-
 export const employeeEvaluationContentService = createApi({
   reducerPath: "employeeEvaluationContentService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [EMPLOYEE_EVALUATION_CONTENT_TAG],
+  tagTypes: ["EmployeeEvaluationContent"],
   endpoints: (builder) => ({
     fetchEmployeeEvaluationContents: builder.query({
       query: (args) => ({
@@ -18,11 +16,11 @@ export const employeeEvaluationContentService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: "LIST" },
+          { type: "EmployeeEvaluationContent", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: EMPLOYEE_EVALUATION_CONTENT_TAG, id })),
+            .map((id) => ({ type: "EmployeeEvaluationContent", id })),
         ];
       },
     }),
@@ -35,7 +33,7 @@ export const employeeEvaluationContentService = createApi({
       transformResponse: (response) =>
         response?.success ? response?.data : {},
       providesTags: (result, error, id) => [
-        { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id },
+        { type: "EmployeeEvaluationContent", id },
       ],
     }),
 
@@ -47,9 +45,9 @@ export const employeeEvaluationContentService = createApi({
       }),
       transformResponse: (res) => (res?.success ? res?.data : null),
       invalidatesTags: (result) => {
-        const tags = [{ type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: "LIST" }];
+        const tags = [{ type: "EmployeeEvaluationContent", id: "LIST" }];
         if (result?.id)
-          tags.push({ type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: result.id });
+          tags.push({ type: "EmployeeEvaluationContent", id: result.id });
         return tags;
       },
     }),
@@ -61,8 +59,8 @@ export const employeeEvaluationContentService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: args?.id },
-        { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: "LIST" },
+        { type: "EmployeeEvaluationContent", id: args?.id },
+        { type: "EmployeeEvaluationContent", id: "LIST" },
       ],
     }),
 
@@ -72,8 +70,8 @@ export const employeeEvaluationContentService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id },
-        { type: EMPLOYEE_EVALUATION_CONTENT_TAG, id: "LIST" },
+        { type: "EmployeeEvaluationContent", id },
+        { type: "EmployeeEvaluationContent", id: "LIST" },
       ],
     }),
   }),

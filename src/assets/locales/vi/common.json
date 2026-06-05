@@ -49,7 +49,9 @@
     "selectBranch": "-- Chọn chi nhánh --",
     "selectArea": "-- Chọn khu vực --",
     "selectStatus": "-- Chọn trạng thái --",
-    "selectService": "-- Chọn dịch vụ --"
+    "selectService": "-- Chọn dịch vụ --",
+    "selectTopic": "-- Chọn chủ đề --",
+    "selectAction": "-- Chọn hành động --"
   },
   "forbidden": {
     "title": "Quyền bị từ chối",

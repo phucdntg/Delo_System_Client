@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const paginationDefault = {
   current: 1,
@@ -22,7 +22,7 @@ const useTable = ({ resetKey } = {}) => {
     }
   }, [resetKey]);
 
-  const handleTableChange = (
+  const handleTableChange = useCallback((
     pagination = paginationDefault,
     filters = {},
     sorters = {},
@@ -30,18 +30,18 @@ const useTable = ({ resetKey } = {}) => {
     setPagination(pagination);
     setFilters(filters);
     setSorters(sorters);
-  };
+  }, []);
 
-  const handleSearch = (value) => {
+  const handleSearch = useCallback((value) => {
     setSearchTerm(value);
     setPagination(paginationDefault);
-  };
+  }, []);
 
-  const resetTable = () => {
+  const resetTable = useCallback(() => {
     setPagination(paginationDefault);
     setFilters({});
     setSorters({});
-  };
+  }, []);
 
   return {
     pagination,

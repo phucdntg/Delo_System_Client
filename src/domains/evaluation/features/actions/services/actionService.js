@@ -117,6 +117,7 @@ export const {
   useGetActionsQuery,
   useLazyGetActionsQuery,
   useGetActionByIdQuery,
+  useLazyGetActionByIdQuery,
   useCreateActionMutation,
   useCreateActionWithIconMutation,
   useUpdateActionMutation,

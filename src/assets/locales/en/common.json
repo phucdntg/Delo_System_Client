@@ -49,7 +49,9 @@
     "selectBranch": "-- Select branch --",
     "selectArea": "-- Select area --",
     "selectStatus": "-- Select status --",
-    "selectService": "-- Select service --"
+    "selectService": "-- Select service --",
+    "selectTopic": "-- Select topic --",
+    "selectAction": "-- Select action --"
   },
   "forbidden": {
     "title": "Access Denied",

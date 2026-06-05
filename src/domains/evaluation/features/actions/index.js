@@ -3,6 +3,7 @@ export {
   useGetActionsQuery,
   useLazyGetActionsQuery,
   useGetActionByIdQuery,
+  useLazyGetActionByIdQuery,
   useCreateActionMutation,
   useCreateActionWithIconMutation,
   useUpdateActionMutation,

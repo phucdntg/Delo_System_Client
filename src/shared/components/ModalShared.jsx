@@ -1,6 +1,7 @@
 import { usePermission } from "@core/hooks/usePermission";
 import { useTranslate } from "@core/providers/translate";
 import { Modal } from "antd";
+import { memo } from "react";
 
 const ModalShared = ({
   title,
@@ -39,4 +40,4 @@ const ModalShared = ({
   );
 };
 
-export default ModalShared;
+export default memo(ModalShared);

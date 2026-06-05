@@ -14,6 +14,7 @@
       "name": "Tên chủ đề",
       "description": "Mô tả",
       "isActive": "Trạng thái",
+      "branch": "Chi nhánh",
       "placeholder": {
         "name": "Nhập tên chủ đề",
         "description": "Nhập mô tả"
@@ -25,6 +26,7 @@
     "placeholder": {
       "name": "Nhập tên",
       "description": "Nhập mô tả",
+      "branch": "Chọn chi nhánh",
       "selectTopic": "Chọn chủ đề",
       "label": "Nhập nhãn",
       "color": "Nhập mã màu",
@@ -46,7 +48,14 @@
   "table": {
     "name": "Tên",
     "description": "Mô tả",
+    "branch": "Chi nhánh",
     "topic": "Chủ đề",
+    "label": "Nhãn",
+    "icon": "Icon",
+    "color": "Màu sắc",
+    "displayOrder": "Thứ tự hiển thị",
+    "content": "Nội dung",
+    "action": "Hành động",
     "status": "Trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",

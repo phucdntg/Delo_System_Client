@@ -2,12 +2,10 @@ import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { buildParams } from "@shared/utils/queryHelper";
 
-const SERVICE_TAG = "Service";
-
 export const serviceService = createApi({
   reducerPath: "serviceService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [SERVICE_TAG],
+  tagTypes: ["Service"],
   endpoints: (builder) => ({
     fetchServices: builder.query({
       query: (args) => ({
@@ -18,11 +16,11 @@ export const serviceService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: SERVICE_TAG, id: "LIST" },
+          { type: "Service", id: "LIST" },
           ...rows
             .map((x) => x?.id)
             .filter(Boolean)
-            .map((id) => ({ type: SERVICE_TAG, id })),
+            .map((id) => ({ type: "Service", id })),
         ];
       },
     }),
@@ -34,7 +32,7 @@ export const serviceService = createApi({
       }),
       transformResponse: (response) =>
         response?.success ? response?.data : {},
-      providesTags: (result, error, id) => [{ type: SERVICE_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "Service", id }],
     }),
   }),
 });

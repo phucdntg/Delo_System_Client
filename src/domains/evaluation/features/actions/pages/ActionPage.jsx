@@ -1,44 +1,98 @@
 import { PlusOutlined } from "@ant-design/icons";
+import { config } from "@core/config";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
+import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
+import { useLazyGetTopicsQuery } from "@domains/evaluation";
+import { useLazyFetchBranchesQuery } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
+import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
-import { useGetTopicsQuery } from "@domains/evaluation";
-import { App, Button, Select, Space, Tag } from "antd";
-import { useMemo } from "react";
+import { App, Button, Image, Space, Tag } from "antd";
+import { useCallback, useRef } from "react";
 import ActionFormModal from "../components/ActionFormModal";
 import {
   useCreateActionMutation,
   useCreateActionWithIconMutation,
   useDeleteActionMutation,
   useGetActionsQuery,
-  useUpdateActionMutation,
   useUpdateActionIconMutation,
+  useUpdateActionMutation,
 } from "../services/actionService";
 
 export default function ActionPage() {
+  const { selectedOrg } = useAuth();
   const { message: messageApi } = App.useApp();
   const { translate } = useTranslate();
   const translateEval = translate("evaluation") || {};
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
-    useTable();
+  const {
+    pagination,
+    searchTerm,
+    filters,
+    handleSearch,
+    handleTableChange,
+    setFilters,
+  } = useTable();
 
-  const { data: topicsData } = useGetTopicsQuery({
-    pagination: { current: 1, pageSize: 1000 },
-  });
+  // ─── Branch filter ──────────────────────────────────────────────────
+  const [fetchBranches] = useLazyFetchBranchesQuery();
 
-  const topicOptions = useMemo(
-    () =>
-      (topicsData?.data || []).map((t) => ({
-        label: t.name,
-        value: t.id,
-      })),
-    [topicsData],
+  const fetchBranchesFn = useCallback(
+    async (page, pageSize, query) => {
+      try {
+        return await fetchBranches({
+          keyword: query,
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchBranchesFn failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [fetchBranches],
+  );
+
+  // ─── Topic filter (scoped by branch) ────────────────────────────────
+  const [triggerFetchTopics] = useLazyGetTopicsQuery();
+  const branchFilterIdRef = useRef();
+
+  const fetchFilterTopics = useCallback(
+    async (page, pageSize, query) => {
+      if (!branchFilterIdRef.current) {
+        return { data: [], meta: { totalPages: 0 } };
+      }
+      try {
+        return await triggerFetchTopics({
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+          keyword: query,
+          filters: { branchId: branchFilterIdRef.current },
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchFilterTopics failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [triggerFetchTopics],
+  );
+
+  const handleBranchChange = useCallback(
+    (branch) => {
+      const branchId = branch?.id || undefined;
+      branchFilterIdRef.current = branchId;
+      setFilters((prev) => ({
+        ...prev,
+        "topic.branchId": branchId,
+        topicId: undefined,
+      }));
+    },
+    [setFilters],
   );
 
   const {
@@ -61,12 +115,19 @@ export default function ActionPage() {
   const handleSubmit = async (values) => {
     const isEdit = !!dataEditing?.id;
     const hasFile = values._iconFile instanceof File;
-    const { _iconFile, ...data } = values;
+    const { _iconFile, _iconRemoved: iconRemoved, ...data } = values;
 
     try {
       if (isEdit) {
         if (hasFile) {
-          await updateActionIcon({ id: dataEditing.id, formData: _iconFile, ...data }).unwrap();
+          await updateActionIcon({
+            id: dataEditing.id,
+            formData: _iconFile,
+            ...data,
+          }).unwrap();
+        } else if (iconRemoved) {
+          // User explicitly removed the icon — clear it on server
+          await updateAction({ id: dataEditing.id, ...data, icon: "" }).unwrap();
         } else {
           await updateAction({ id: dataEditing.id, ...data }).unwrap();
         }
@@ -110,53 +171,49 @@ export default function ActionPage() {
       title: translateEval?.table?.topic,
       dataIndex: "topicId",
       key: "topic",
-      render: (topicId) => {
-        const topic = topicsData?.data?.find((t) => t.id === topicId);
-        return topic ? <Tag color="blue">{topic.name}</Tag> : "-";
+      render: (topicId, record) => {
+        return record?.topic?.name
+          ? <Tag color="blue">{record.topic.name}</Tag>
+          : "-";
+      },
+    },
+    {
+      title: translateEval?.table?.branch,
+      key: "branch",
+      render: (record) => {
+        return record?.topic?.branch?.name
+          ? <Tag color="blue">{record.topic.branch.name}</Tag>
+          : "-";
       },
     },
     {
       title: translateEval?.table?.icon,
       dataIndex: "icon",
       key: "icon",
-      render: (icon) => icon || "-",
-    },
-    {
-      title: translateEval?.table?.color,
-      dataIndex: "color",
-      key: "color",
-      render: (color) =>
-        color ? (
-          <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span
-              style={{
-                display: "inline-block",
-                width: 16,
-                height: 16,
-                borderRadius: 4,
-                backgroundColor: color,
-              }}
-            />
-            {color}
-          </span>
+      render: (icon) =>
+        icon ? (
+          <Image
+            src={`${config.baseUrl}/download/evaluation-icons/${icon}`}
+            alt={icon}
+            width={40}
+            height={40}
+            style={{ objectFit: "contain", borderRadius: 4 }}
+            fallback=""
+          />
         ) : (
           "-"
         ),
-    },
-    {
-      title: translateEval?.table?.displayOrder,
-      dataIndex: "displayOrder",
-      key: "displayOrder",
-      width: 100,
     },
     {
       title: translateEval?.table?.status,
       dataIndex: "isActive",
       key: "isActive",
       render: (value) =>
-        value
-          ? <Tag color="green">{commonText?.status?.active || "Active"}</Tag>
-          : <Tag color="red">{commonText?.status?.inactive || "Inactive"}</Tag>,
+        value ? (
+          <Tag color="green">{commonText?.status?.active || "Active"}</Tag>
+        ) : (
+          <Tag color="red">{commonText?.status?.inactive || "Inactive"}</Tag>
+        ),
     },
     {
       title: translateEval?.table?.actions,
@@ -173,16 +230,13 @@ export default function ActionPage() {
 
   return (
     <>
-      {open && (
-        <ActionFormModal
-          open={open}
-          onClose={closeModal}
-          onSubmit={handleSubmit}
-          initialValue={dataEditing}
-          confirmLoading={false}
-          topics={topicsData?.data || []}
-        />
-      )}
+      <ActionFormModal
+        open={open}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        initialValue={dataEditing}
+        confirmLoading={false}
+      />
 
       <TableShared
         isLoading={isLoading}
@@ -202,19 +256,37 @@ export default function ActionPage() {
           handleSearch,
         }}
         topRightComponent={
-          <Select
-            allowClear
-            style={{ width: 200 }}
-            placeholder={translateEval?.filter?.topic || "-- Lọc theo chủ đề --"}
-            options={topicOptions}
-            onChange={(value) => {
-              setFilters((prev) => ({
-                ...prev,
-                topicId: value || undefined,
-              }));
-            }}
-            value={filters?.topicId}
-          />
+          <Space>
+            <SelectShared
+              style={{ width: 200 }}
+              allowClear
+              placeholder={commonText?.placeholder?.selectBranch}
+              fetchFn={fetchBranchesFn}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+              onChange={handleBranchChange}
+              value={filters?.["topic.branchId"]}
+              resetKey={selectedOrg}
+            />
+
+            <SelectShared
+              style={{ width: 200 }}
+              allowClear
+              disabled={!filters?.["topic.branchId"]}
+              placeholder={commonText?.placeholder?.selectTopic}
+              fetchFn={fetchFilterTopics}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+              onChange={(item) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  topicId: item?.id || undefined,
+                }));
+              }}
+              value={filters?.topicId}
+              resetKey={filters?.["topic.branchId"]}
+            />
+          </Space>
         }
         topLeftComponent={
           <Button

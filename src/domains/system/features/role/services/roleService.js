@@ -1,13 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "@core/services/axiosBaseQuery";
 import { buildParams } from "@shared/utils/queryHelper";
-import { ROLE_TAG } from "../constants";
 import { branchService } from "../../branch";
 
 export const roleService = createApi({
   reducerPath: "roleService",
   baseQuery: axiosBaseQuery(),
-  tagTypes: [ROLE_TAG],
+  tagTypes: ["Role"],
   endpoints: (builder) => ({
     fetchRoles: builder.query({
       query: (args) => ({
@@ -63,8 +62,8 @@ export const roleService = createApi({
       providesTags: (result) => {
         const rows = result?.data ?? [];
         return [
-          { type: ROLE_TAG, id: "LIST" },
-          ...rows.map((x) => ({ type: ROLE_TAG, id: x.id })),
+          { type: "Role", id: "LIST" },
+          ...rows.map((x) => ({ type: "Role", id: x.id })),
         ];
       },
     }),
@@ -75,7 +74,7 @@ export const roleService = createApi({
         method: "get",
       }),
       transformResponse: (response) => response?.data || null,
-      providesTags: (result, error, id) => [{ type: ROLE_TAG, id }],
+      providesTags: (result, error, id) => [{ type: "Role", id }],
     }),
 
     createRole: builder.mutation({
@@ -86,8 +85,8 @@ export const roleService = createApi({
       }),
       transformResponse: (res) => (res?.success ? res?.data : null),
       invalidatesTags: (result) => {
-        const tags = [{ type: ROLE_TAG, id: "LIST" }];
-        if (result?.id) tags.push({ type: ROLE_TAG, id: result.id });
+        const tags = [{ type: "Role", id: "LIST" }];
+        if (result?.id) tags.push({ type: "Role", id: result.id });
         return tags;
       },
     }),
@@ -99,8 +98,8 @@ export const roleService = createApi({
         data: body,
       }),
       invalidatesTags: (result, error, args) => [
-        { type: ROLE_TAG, id: args?.id },
-        { type: ROLE_TAG, id: "LIST" },
+        { type: "Role", id: args?.id },
+        { type: "Role", id: "LIST" },
       ],
     }),
 
@@ -110,8 +109,8 @@ export const roleService = createApi({
         method: "delete",
       }),
       invalidatesTags: (result, error, id) => [
-        { type: ROLE_TAG, id },
-        { type: ROLE_TAG, id: "LIST" },
+        { type: "Role", id },
+        { type: "Role", id: "LIST" },
       ],
     }),
   }),

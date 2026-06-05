@@ -1,12 +1,12 @@
+import { allRTKServices } from "@core/services/allRTKServices";
+import { store } from "@core/store";
 import { useLazyGetCurrentUserQuery } from "@domains/auth";
 import {
   ACCESS_TOKEN,
   ORG_ID,
   REFRESH_TOKEN,
 } from "@shared/constants/systemConstants";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { allRTKServices } from "@core/services/allRTKServices";
-import { store } from "@core/store";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AuthContext } from "./useAuth";
 
@@ -123,6 +123,10 @@ export function AuthProvider({ children }) {
           { type: "Area", id: "LIST" },
           { type: "Branch", id: "LIST" },
           { type: "Role", id: "LIST" },
+          { type: "EvaluationTopic", id: "LIST" },
+          { type: "EvaluationTarget", id: "LIST" },
+          { type: "EvaluationContent", id: "LIST" },
+          { type: "EvaluationAction", id: "LIST" },
         ]),
       );
     });
@@ -134,7 +138,7 @@ export function AuthProvider({ children }) {
     }
   }, [user, selectedOrg, saveSelectedOrg]);
 
-  const value = {
+  const value = useMemo(() => ({
     token,
     user,
     loading,
@@ -146,7 +150,7 @@ export function AuthProvider({ children }) {
     setToken: saveToken,
     setUser: saveUser,
     updateUser,
-  };
+  }), [token, user, loading, selectedOrg, domainActive, saveSelectedOrg, logout, saveToken, saveUser, updateUser]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

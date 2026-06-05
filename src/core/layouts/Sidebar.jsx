@@ -3,11 +3,12 @@ import { DOMAIN_MODULES } from "@core/navigation/domainModules";
 import { useAuth } from "@core/providers/auth";
 import { PATH } from "@shared/constants/systemConstants";
 import { useEffect, useRef, useState } from "react";
+import { memo } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useSidebar } from "../providers/sidebar";
 
 const Sidebar = () => {
-  const { isExpanded, isMobileOpen, isHovered, closeSidebar, setIsHovered } =
+  const { isExpanded, isMobileOpen, isHovered, closeSidebar } =
     useSidebar();
   const { domainActive } = useAuth();
 
@@ -57,7 +58,7 @@ const Sidebar = () => {
     <aside
       ref={sidebarRef}
       style={{ top: window.innerWidth < 1024 ? `${headerHeight}px` : 0 }}
-      className={`fixed select-none flex flex-col left-0 bg-white h-screen min-h-0 transition-all duration-300 ease-in-out md:z-1000 z-100000 border-r border-gray-200
+      className={`fixed select-none flex flex-col left-0 bg-gray-dark h-screen min-h-0 transition-all duration-300 ease-in-out md:z-1000 z-100000 border-r border-white/8
         ${isExpanded || isMobileOpen ? "w-72.5" : isHovered ? "w-72.5" : "w-22.5"}
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
@@ -95,7 +96,7 @@ const Sidebar = () => {
             {isSidebarOpen && (
               /* Expanded: label đầy đủ */
               <div className="flex items-center gap-2 px-3 pt-4 pb-1 text-xl">
-                <span className="text-sm font-semibold tracking-widest uppercase text-gray-400 truncate">
+                <span className="text-sm font-semibold tracking-widest uppercase text-white/40 truncate">
                   {module.label}
                 </span>
               </div>
@@ -133,7 +134,7 @@ const Sidebar = () => {
             </ul>
 
             {idx < visibleModules.length - 1 && (
-              <div className="mx-3 my-1 border-t border-gray-200" />
+              <div className="mx-3 my-1 border-t border-white/8" />
             )}
           </div>
         ))}
@@ -142,4 +143,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

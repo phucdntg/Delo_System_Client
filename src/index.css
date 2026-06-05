@@ -189,23 +189,23 @@ body {
 }
 
 @utility menu-item {
-  @apply relative flex items-center w-full gap-3 px-3 py-2.5 font-medium text-theme-sm border-r-4 border-transparent transition-all duration-200;
+  @apply relative flex items-center w-full gap-3 px-3 py-2.5 font-medium text-theme-sm transition-all duration-200;
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50! text-(--primary-color)! border-r-4 border-(--primary-color)!;
+  @apply bg-white/8! text-white!;
 }
 
 @utility menu-item-inactive {
-  @apply text-gray-500! hover:bg-gray-100 hover:text-gray-700 transition-all duration-200;
+  @apply text-gray-400! hover:bg-white/5 hover:text-gray-200 transition-all duration-200;
 }
 
 @utility menu-item-icon {
-  @apply text-gray-500 group-hover:text-gray-700;
+  @apply text-gray-400 group-hover:text-gray-200;
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500!;
+  @apply text-(--primary-color)!;
 }
 
 @utility menu-item-icon-size {
@@ -215,7 +215,7 @@ body {
 }
 
 @utility menu-item-icon-inactive {
-  @apply text-gray-500 group-hover:text-gray-700;
+  @apply text-gray-400 group-hover:text-gray-200;
 }
 
 @utility menu-item-arrow {

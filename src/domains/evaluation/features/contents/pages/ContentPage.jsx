@@ -1,13 +1,19 @@
 import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import useTable from "@core/hooks/useTable";
+import { useAuth } from "@core/providers";
 import { useTranslate } from "@core/providers/translate";
+import {
+  useLazyGetActionsQuery,
+  useLazyGetTopicsQuery,
+} from "@domains/evaluation";
+import { useLazyFetchBranchesQuery } from "@domains/system";
 import DeleteButton from "@shared/components/DeleteButton";
 import EditButton from "@shared/components/EditButton";
+import SelectShared from "@shared/components/SelectShared";
 import TableShared from "@shared/components/TableShared";
-import { useGetTopicsQuery, useLazyGetActionsQuery } from "@domains/evaluation";
-import { App, Button, Select, Space, Tag } from "antd";
-import { useMemo, useCallback, useState } from "react";
+import { App, Button, Space, Tag } from "antd";
+import { useCallback, useRef } from "react";
 import ContentFormModal from "../components/ContentFormModal";
 import {
   useCreateContentMutation,
@@ -17,57 +23,114 @@ import {
 } from "../services/contentService";
 
 export default function ContentPage() {
+  const { selectedOrg } = useAuth();
   const { message: messageApi } = App.useApp();
   const { translate } = useTranslate();
   const translateEval = translate("evaluation") || {};
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
-    useTable();
+  const {
+    pagination,
+    searchTerm,
+    filters,
+    handleSearch,
+    handleTableChange,
+    setFilters,
+  } = useTable();
 
-  // Fetch topics for filter
-  const { data: topicsData } = useGetTopicsQuery({
-    pagination: { current: 1, pageSize: 1000 },
-  });
+  // ─── Branch filter ──────────────────────────────────────────────────
+  const [fetchBranches] = useLazyFetchBranchesQuery();
 
-  const topicOptions = useMemo(
-    () =>
-      (topicsData?.data || []).map((t) => ({
-        label: t.name,
-        value: t.id,
-      })),
-    [topicsData],
-  );
-
-  // Fetch actions lazily based on selected topic
-  const [triggerFetchActions] = useLazyGetActionsQuery();
-  const [actionOptions, setActionOptions] = useState([]);
-
-  const handleTopicChange = useCallback(
-    async (topicId) => {
-      setFilters((prev) => ({
-        ...prev,
-        topicId: topicId || undefined,
-        actionId: undefined,
-      }));
-      if (topicId) {
-        try {
-          const res = await triggerFetchActions({
-            pagination: { current: 1, pageSize: 1000 },
-            filters: { topicId },
-          }).unwrap();
-          setActionOptions(
-            (res.data || []).map((a) => ({ label: a.label, value: a.id })),
-          );
-        } catch {
-          setActionOptions([]);
-        }
-      } else {
-        setActionOptions([]);
+  const fetchBranchesFn = useCallback(
+    async (page, pageSize, query) => {
+      try {
+        return await fetchBranches({
+          keyword: query,
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchBranchesFn failed", err);
+        return { data: [], meta: { totalPages: 0 } };
       }
     },
-    [triggerFetchActions, setFilters],
+    [fetchBranches],
+  );
+
+  // ─── Topic filter (scoped by branch) ────────────────────────────────
+  const [triggerFetchTopics] = useLazyGetTopicsQuery();
+  const branchFilterIdRef = useRef();
+
+  const fetchFilterTopics = useCallback(
+    async (page, pageSize, query) => {
+      if (!branchFilterIdRef.current) {
+        return { data: [], meta: { totalPages: 0 } };
+      }
+      try {
+        return await triggerFetchTopics({
+          pagination: { current: page, pageSize },
+          search: query ? "name" : null,
+          keyword: query,
+          filters: { branchId: branchFilterIdRef.current },
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchFilterTopics failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [triggerFetchTopics],
+  );
+
+  const handleBranchChange = useCallback(
+    (branch) => {
+      const branchId = branch?.id || undefined;
+      branchFilterIdRef.current = branchId;
+      setFilters((prev) => ({
+        ...prev,
+        "topic.branchId": branchId,
+        topicId: undefined,
+        actionId: undefined,
+      }));
+    },
+    [setFilters],
+  );
+
+  // ─── Action filter (scoped by selected topic) ────────────────────────
+  const [triggerFetchActions] = useLazyGetActionsQuery();
+  const topicFilterIdRef = useRef();
+
+  const fetchFilterActions = useCallback(
+    async (page, pageSize, query) => {
+      if (!topicFilterIdRef.current) {
+        return { data: [], meta: { totalPages: 0 } };
+      }
+      try {
+        return await triggerFetchActions({
+          pagination: { current: page, pageSize },
+          search: query ? "label" : null,
+          keyword: query,
+          filters: { topicId: topicFilterIdRef.current },
+        }).unwrap();
+      } catch (err) {
+        console.error("fetchFilterActions failed", err);
+        return { data: [], meta: { totalPages: 0 } };
+      }
+    },
+    [triggerFetchActions],
+  );
+
+  const handleTopicChange = useCallback(
+    (item) => {
+      const topicId = item?.id || undefined;
+      topicFilterIdRef.current = topicId;
+      setFilters((prev) => ({
+        ...prev,
+        topicId,
+        actionId: undefined,
+      }));
+    },
+    [setFilters],
   );
 
   const {
@@ -94,6 +157,7 @@ export default function ContentPage() {
         await createContent(values).unwrap();
         messageApi.success(translateEval?.message?.createSuccess);
       }
+
       closeModal();
     } catch (error) {
       console.error(error);
@@ -125,22 +189,46 @@ export default function ContentPage() {
       title: translateEval?.table?.action,
       dataIndex: "actionId",
       key: "action",
-      render: () => "-",
+      render: (actionId, record) => {
+        return record?.action?.label ? (
+          <Tag color="blue">{record.action.label}</Tag>
+        ) : (
+          "-"
+        );
+      },
     },
     {
-      title: translateEval?.table?.displayOrder,
-      dataIndex: "displayOrder",
-      key: "displayOrder",
-      width: 100,
+      title: translateEval?.table?.topic,
+      key: "topic",
+      render: (record) => {
+        return record?.action?.topic?.name ? (
+          <Tag color="blue">{record.action.topic.name}</Tag>
+        ) : (
+          "-"
+        );
+      },
+    },
+    {
+      title: translateEval?.table?.branch,
+      key: "branch",
+      render: (record) => {
+        return record?.action?.topic?.branch?.name ? (
+          <Tag color="blue">{record.action.topic.branch.name}</Tag>
+        ) : (
+          "-"
+        );
+      },
     },
     {
       title: translateEval?.table?.status,
       dataIndex: "isActive",
       key: "isActive",
       render: (value) =>
-        value
-          ? <Tag color="green">{commonText?.status?.active || "Active"}</Tag>
-          : <Tag color="red">{commonText?.status?.inactive || "Inactive"}</Tag>,
+        value ? (
+          <Tag color="green">{commonText?.status?.active || "Active"}</Tag>
+        ) : (
+          <Tag color="red">{commonText?.status?.inactive || "Inactive"}</Tag>
+        ),
     },
     {
       title: translateEval?.table?.actions,
@@ -157,16 +245,13 @@ export default function ContentPage() {
 
   return (
     <>
-      {open && (
-        <ContentFormModal
-          open={open}
-          onClose={closeModal}
-          onSubmit={handleSubmit}
-          initialValue={dataEditing}
-          confirmLoading={isCreating || isUpdating}
-          topicOptions={topicOptions}
-        />
-      )}
+      <ContentFormModal
+        open={open}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        initialValue={dataEditing}
+        confirmLoading={isCreating || isUpdating}
+      />
 
       <TableShared
         isLoading={isLoading}
@@ -187,26 +272,47 @@ export default function ContentPage() {
         }}
         topRightComponent={
           <Space>
-            <Select
-              allowClear
+            <SelectShared
               style={{ width: 200 }}
-              placeholder={translateEval?.filter?.topic || "-- Lọc theo chủ đề --"}
-              options={topicOptions}
+              allowClear
+              placeholder={commonText?.placeholder?.selectBranch}
+              fetchFn={fetchBranchesFn}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
+              onChange={handleBranchChange}
+              value={filters?.["topic.branchId"]}
+              resetKey={selectedOrg}
+            />
+
+            <SelectShared
+              style={{ width: 200 }}
+              allowClear
+              disabled={!filters?.["topic.branchId"]}
+              placeholder={commonText?.placeholder?.selectTopic}
+              fetchFn={fetchFilterTopics}
+              getLabel={(item) => item.name}
+              getValue={(item) => item.id}
               onChange={handleTopicChange}
               value={filters?.topicId}
+              resetKey={filters?.["topic.branchId"]}
             />
-            <Select
-              allowClear
+
+            <SelectShared
               style={{ width: 200 }}
-              placeholder={translateEval?.filter?.action || "-- Lọc theo hành động --"}
-              options={actionOptions}
-              onChange={(value) => {
+              allowClear
+              disabled={!filters?.topicId}
+              placeholder={commonText?.placeholder?.selectAction}
+              fetchFn={fetchFilterActions}
+              getLabel={(item) => item.label}
+              getValue={(item) => item.id}
+              onChange={(item) => {
                 setFilters((prev) => ({
                   ...prev,
-                  actionId: value || undefined,
+                  actionId: item?.id || undefined,
                 }));
               }}
               value={filters?.actionId}
+              resetKey={filters?.topicId}
             />
           </Space>
         }
