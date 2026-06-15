@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const domainSlice = createSlice({
   name: "domain",
   initialState: {
-    domainActive: ["qms", "lookup", "qna", "evaluation"],
+    domainActive: ["qms", "evaluation", "faq"],
   },
   reducers: {
     setDomainActive(state, action) {

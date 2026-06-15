@@ -5,5 +5,26 @@
   "loginBtn": "Sign in",
   "loading": "Signing in...",
   "error": "Login failed",
-  "missingToken": "Login failed: missing token"
+  "missingToken": "Login failed: missing token",
+  "brand": {
+    "innovationHub": "Innovation Hub",
+    "buildingDigitalTrust": "Building Digital Trust",
+    "welcome": "Welcome to the Delo System. A secure environment designed for high-stakes system management, precision data analysis, and technical oversight.",
+    "uptimeSla": "Uptime SLA",
+    "support": "Support"
+  },
+  "card": {
+    "systemLogin": "System Login",
+    "enterCredentials": "Enter your credentials to continue."
+  },
+  "validation": {
+    "usernameRequired": "Please enter your username",
+    "usernameMinLength": "Username must be at least 3 characters",
+    "passwordRequired": "Please enter your password",
+    "passwordMinLength": "Password must be at least 6 characters"
+  },
+  "bottomNote": {
+    "needAccess": "Need access? Please contact ",
+    "systemAdmin": "System Admin"
+  }
 }

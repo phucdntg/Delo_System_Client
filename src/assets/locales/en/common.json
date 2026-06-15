@@ -30,7 +30,8 @@
     "inactive": "Inactive"
   },
   "pagination": {
-    "page": "page"
+    "page": "page",
+    "pageSize": "/ page"
   },
   "chooseOrgRequired": "Please choose an organization",
   "table": {

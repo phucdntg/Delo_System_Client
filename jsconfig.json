@@ -6,9 +6,8 @@
       "@shared/*": ["src/shared/*"],
       "@domains/system": ["src/domains/system/index.js"],
       "@domains/qms": ["src/domains/qms/index.js"],
-      "@domains/qna": ["src/domains/qna/index.js"],
+      "@domains/faq": ["src/domains/faq/index.js"],
       "@domains/evaluation": ["src/domains/evaluation/index.js"],
-      "@domains/lookup": ["src/domains/lookup/index.js"],
       "@domains/auth": ["src/domains/auth/index.js"],
       "@assets/*": ["src/assets/*"],
       "@core/*": ["src/core/*"]

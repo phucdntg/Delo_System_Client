@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AuthContext } from "./useAuth";
 
 export function AuthProvider({ children }) {
-  const domainActive = ["qms", "lookup", "evaluation", "qna"];
+  const domainActive = ["qms", "evaluation", "faq"];
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

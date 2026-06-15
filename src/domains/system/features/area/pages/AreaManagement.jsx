@@ -26,7 +26,7 @@ export default function AreaManagement() {
 
   const [form] = useForm();
   const { open, data: dataEditing, openModal, closeModal } = useModal();
-  const { pagination, handleTableChange, searchTerm, handleSearch } = useTable({
+  const { pagination, handleTableChange, searchTerm, handleSearch, resetTable } = useTable({
     resetKey: selectedOrg,
   });
 
@@ -34,6 +34,7 @@ export default function AreaManagement() {
     data: areas,
     isLoading,
     isFetching,
+    refetch: refetchAreas,
   } = useFetchAreasQuery({
     search: searchTerm.length > 0 ? "name" : null,
     keyword: searchTerm,
@@ -80,7 +81,7 @@ export default function AreaManagement() {
       key: "actions",
       title: areaText?.table?.actions,
       width: 150,
-      fixed: "right",
+      align: "center",
       render: (_, record) => (
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <EditButton onEdit={() => openModal(record)} />
@@ -110,7 +111,7 @@ export default function AreaManagement() {
   };
 
   return (
-    <div>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ModalShared
           title={dataEditing?.id ? areaText?.form?.editTitle : areaText?.form?.addTitle}
@@ -134,6 +135,7 @@ export default function AreaManagement() {
           total: areas?.meta?.totalItems || 0,
           onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchAreas?.(); }}
         search={{
           useSearch: true,
           hint: areaText?.search?.placeholder,

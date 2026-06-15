@@ -41,6 +41,7 @@ const useTable = ({ resetKey } = {}) => {
     setPagination(paginationDefault);
     setFilters({});
     setSorters({});
+    setSearchTerm("");
   }, []);
 
   return {

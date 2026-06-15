@@ -30,7 +30,7 @@ export default function TargetPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters, resetTable } =
     useTable();
 
   const branchId = filters?.topic?.branchId;
@@ -44,6 +44,7 @@ export default function TargetPage() {
     data: targets,
     isLoading,
     isFetching,
+    refetch: refetchTargets,
   } = useGetTargetsQuery({
     pagination,
     search: searchTerm ? "name" : null,
@@ -138,7 +139,7 @@ export default function TargetPage() {
   ];
 
   return (
-    <>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <TargetFormModal
           open={open}
@@ -162,6 +163,7 @@ export default function TargetPage() {
           total: targets?.meta?.totalItems || 0,
           onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchTargets?.(); }}
         search={{
           useSearch: true,
           hint: translateEval?.search?.placeholder,
@@ -216,6 +218,6 @@ export default function TargetPage() {
           </Button>
         }
       />
-    </>
+    </div>
   );
 }

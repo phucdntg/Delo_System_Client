@@ -30,7 +30,8 @@
     "inactive": "Không hoạt động"
   },
   "pagination": {
-    "page": "trang"
+    "page": "trang",
+    "pageSize": "/ trang"
   },
   "chooseOrgRequired": "Vui lòng chọn tổ chức",
   "table": {

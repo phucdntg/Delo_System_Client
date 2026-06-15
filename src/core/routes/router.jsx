@@ -1,10 +1,9 @@
 import { evaluationRoutes } from "@domains/evaluation";
-import { lookupRoutes } from "@domains/lookup";
+import { faqRoutes } from "@domains/faq";
 import { qmsRoutes } from "@domains/qms";
-import { qnaRoutes } from "@domains/qna";
 import { systemRoutes } from "@domains/system";
 import { PATH } from "@shared/constants/systemConstants";
-import { Suspense, lazy } from "react";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import RouteTitleSync from "./RouteTitleSync";
@@ -59,6 +58,7 @@ const routes = [
         handle: { title: "Đăng nhập" },
         element: <LoginPage />,
       },
+      // Protected routes with MainLayout
       {
         path: "",
         element: <MainLayout />,
@@ -91,9 +91,9 @@ const routes = [
             ],
           },
           {
-            path: `/${PATH.QNA.BASE}`,
+            path: `/${PATH.FAQ.BASE}`,
             children: [
-              ...qnaRoutes.map((route) => ({
+              ...faqRoutes.map((route) => ({
                 ...route,
                 element: <RouteGuard route={route} />,
               })),
@@ -103,15 +103,6 @@ const routes = [
             path: `/${PATH.EVALUATION.BASE}`,
             children: [
               ...evaluationRoutes.map((route) => ({
-                ...route,
-                element: <RouteGuard route={route} />,
-              })),
-            ],
-          },
-          {
-            path: `/${PATH.LOOKUP.BASE}`,
-            children: [
-              ...lookupRoutes.map((route) => ({
                 ...route,
                 element: <RouteGuard route={route} />,
               })),

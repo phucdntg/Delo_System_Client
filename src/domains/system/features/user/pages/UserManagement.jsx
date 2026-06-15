@@ -1,9 +1,8 @@
-import { PlusOutlined } from "@ant-design/icons";
 import useModal from "@core/hooks/useModal";
 import { useAuth } from "@core/providers/auth";
 import { useTranslate } from "@core/providers/translate";
 import ModalShared from "@shared/components/ModalShared";
-import { App, Button, Input, Tabs } from "antd";
+import { App, Tabs } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFetchRolesQuery } from "../../role";
@@ -26,7 +25,6 @@ export default function UserManagement() {
   const [form] = useForm();
   const { open, data: userEditing, openModal, closeModal } = useModal();
 
-  const [searchByName, setSearchByName] = useState({});
   const [activeKey, setActiveKey] = useState(() => null);
 
   const { data: roleRes } = useFetchRolesQuery({
@@ -42,7 +40,9 @@ export default function UserManagement() {
 
   const roleGroups = useMemo(() => {
     const minLevel = user?.role?.level ?? null;
-    const filtered = (roleRes?.data || []).filter((r) => minLevel === null || r.level >= minLevel);
+    const filtered = (roleRes?.data || []).filter(
+      (r) => minLevel === null || r.level >= minLevel,
+    );
 
     const groupMap = filtered.reduce((acc, r) => {
       const key = r.name || "";
@@ -53,14 +53,33 @@ export default function UserManagement() {
     return Object.values(groupMap)
       .map((roles) => ({
         name: roles[0].name,
-        roles: roles.sort((a, b) => (a.level ?? Infinity) - (b.level ?? Infinity)),
+        roles: roles.sort(
+          (a, b) => (a.level ?? Infinity) - (b.level ?? Infinity),
+        ),
       }))
-      .sort((a, b) => (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity));
+      .sort(
+        (a, b) =>
+          (a.roles[0]?.level ?? Infinity) - (b.roles[0]?.level ?? Infinity),
+      );
   }, [roleRes?.data, user?.role?.level]);
 
   const onSelectBranchRole = useCallback((roleName, roleId) => {
     setSelectedByName((prev) => ({ ...prev, [roleName]: roleId }));
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteUser(id).unwrap();
+      message.success(
+        t?.page?.messages?.deleteSuccess || "User deactivated successfully",
+      );
+    } catch (error) {
+      console.error("Error deactivating user:", error);
+      message.error(
+        t?.page?.messages?.deleteFailed || "Failed to deactivate user",
+      );
+    }
+  };
 
   const tabItems = useMemo(
     () =>
@@ -72,24 +91,14 @@ export default function UserManagement() {
             group={group}
             selectedByName={selectedByName}
             onSelectBranchRole={onSelectBranchRole}
-            search={searchByName[group.name] || ""}
+            openModal={openModal}
             onEdit={(record) => openModal(record)}
-            onDelete={(record) => handleDelete(record)}
+            onDelete={handleDelete}
           />
         ),
       })),
-    [roleGroups, selectedByName, onSelectBranchRole],
+    [roleGroups, selectedByName, onSelectBranchRole, openModal, handleDelete],
   );
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteUser(id).unwrap();
-      message.success(t?.page?.messages?.deleteSuccess || "User deactivated successfully");
-    } catch (error) {
-      console.error("Error deactivating user:", error);
-      message.error(t?.page?.messages?.deleteFailed || "Failed to deactivate user");
-    }
-  };
 
   const handleSubmit = async () => {
     try {
@@ -102,10 +111,14 @@ export default function UserManagement() {
 
       if (userEditing?.id) {
         await updateUser({ id: userEditing.id, ...payload }).unwrap();
-        message.success(t?.page?.messages?.updateSuccess || "User updated successfully");
+        message.success(
+          t?.page?.messages?.updateSuccess || "User updated successfully",
+        );
       } else {
         await createUser(payload).unwrap();
-        message.success(t?.page?.messages?.createSuccess || "User created successfully");
+        message.success(
+          t?.page?.messages?.createSuccess || "User created successfully",
+        );
       }
 
       closeModal();
@@ -125,23 +138,8 @@ export default function UserManagement() {
     }
   }, [roleGroups, activeKey]);
 
-  const tabBarExtraContent = (
-    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-      <Input
-        placeholder={t?.page?.searchPlaceholder || "Search users"}
-        value={searchByName[activeKey] || ""}
-        onChange={(e) => setSearchByName((s) => ({ ...s, [activeKey]: e.target.value }))}
-        style={{ width: 320 }}
-      />
-    </div>
-  );
-
   return (
-    <div>
-      <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal(null)}>
-        {common?.button?.create || "Create"}
-      </Button>
-
+    <div className="h-full p-5 bg-white rounded flex flex-col">
       {open && (
         <ModalShared
           open={open}
@@ -156,12 +154,15 @@ export default function UserManagement() {
         </ModalShared>
       )}
 
-      <Tabs
-        items={tabItems}
-        activeKey={activeKey}
-        onChange={(key) => setActiveKey(key)}
-        tabBarExtraContent={tabBarExtraContent}
-      />
+      <div className="flex-1 flex flex-col min-h-0">
+        <Tabs
+          className="flex-1 flex flex-col min-h-0 user-tabs"
+          items={tabItems}
+          activeKey={activeKey}
+          onChange={(key) => setActiveKey(key)}
+          tabBarStyle={{ marginBottom: 12 }}
+        />
+      </div>
     </div>
   );
 }

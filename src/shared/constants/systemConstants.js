@@ -34,10 +34,8 @@ export const PATH = {
     CONFIG: "config",
     EVALUATION_CONTENTS: "evaluation-contents",
   },
-  QNA: {
-    BASE: "qna",
-    DASHBOARD: "dashboard",
-    QUESTIONS: "questions",
+  FAQ: {
+    BASE: "faq",
   },
   EVALUATION: {
     BASE: "evaluation",
@@ -48,10 +46,5 @@ export const PATH = {
     ACTIONS: "actions",
     CONTENTS: "contents",
     RECORDS: "records",
-  },
-  LOOKUP: {
-    BASE: "lookup",
-    DASHBOARD: "dashboard",
-    SEARCH: "search",
   },
 };

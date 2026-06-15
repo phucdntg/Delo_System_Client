@@ -24,9 +24,15 @@ export default function OrgManagement() {
 
   const [form] = useForm();
   const { open, data: dataEditing, openModal, closeModal } = useModal();
-  const { pagination, handleTableChange, searchTerm, handleSearch } = useTable();
+  const { pagination, handleTableChange, searchTerm, handleSearch, setSearchTerm, resetTable } =
+    useTable();
 
-  const { data, isLoading, isFetching } = useFetchOrgQuery({
+  const {
+    data,
+    isLoading,
+    isFetching,
+    refetch: refetchOrg,
+  } = useFetchOrgQuery({
     search: searchTerm.length > 0 ? "name" : null,
     keyword: searchTerm,
     pagination: pagination,
@@ -37,12 +43,6 @@ export default function OrgManagement() {
   const [deleteOrg] = useDeleteOrgMutation();
 
   const columns = [
-    // {
-    //   key: "id",
-    //   title: "ID",
-    //   dataIndex: "id",
-    //   width: 100,
-    // },
     {
       key: "name",
       title: translateOrgPage?.table?.name,
@@ -86,8 +86,8 @@ export default function OrgManagement() {
     {
       key: "actions",
       title: translateOrgPage?.table?.action,
-      fixed: "right",
       width: 150,
+      align: "center",
       render: (_, record) => (
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <EditButton onEdit={() => openModal(record)} />
@@ -128,7 +128,7 @@ export default function OrgManagement() {
   };
 
   return (
-    <div>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ModalShared
           title={
@@ -150,6 +150,7 @@ export default function OrgManagement() {
         isFetching={isFetching}
         dataSource={data?.data || []}
         columns={columns}
+        onReload={() => { resetTable?.(); refetchOrg?.(); }}
         search={{
           useSearch: true,
           hint: translateOrgPage?.search?.placeholder,
@@ -159,11 +160,16 @@ export default function OrgManagement() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: data?.meta?.totalItems || 0,
-          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) =>
+            handleTableChange({ current: page, pageSize }),
         }}
         topLeftComponent={
           <>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => openModal()}
+            >
               {translate("common.button")?.create}
             </Button>
           </>

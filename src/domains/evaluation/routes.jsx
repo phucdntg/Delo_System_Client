@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { PATH } from "@shared/constants/systemConstants";
 import { lazy } from "react";
 
@@ -33,3 +32,4 @@ export const evaluationRoutes = [
     requireOrg: true,
   },
 ];
+

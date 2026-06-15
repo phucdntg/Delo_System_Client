@@ -11,7 +11,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Delo System Client is a React-based multi-domain management system built with a domain-driven architecture. The application manages multiple business domains including QMS (Queue Management System), QNA (Q&A), Evaluation, Lookup, and System administration.
+Delo System Client is a React-based multi-domain management system built with a domain-driven architecture. The application manages multiple business domains including QMS (Queue Management System), Evaluation, FAQ, and System administration.
+
+```
+src/
+├── main.jsx                   # Entry point — provider hierarchy
+├── App.jsx                    # Root component — <RouterProvider>
+├── index.css                  # Tailwind v4 entry — @import "tailwindcss", @theme, @utility
+├── core/                      # Shared infrastructure
+│   ├── config/                # App config (VITE_BASE_URL → config.baseUrl)
+│   ├── hooks/                 # Shared hooks (useModal, useTable, useSelect, usePermission)
+│   ├── layouts/               # MainLayout (Sidebar + Header + Outlet)
+│   ├── navigation/            # Sidebar aggregation from all domains
+│   ├── providers/             # AuthProvider, TranslateProvider, SidebarProvider
+│   ├── routes/                # Router config + guards (ProtectedRoute, RequireOrgGuard)
+│   ├── services/              # Axios instance, base query, RTK service registry
+│   └── store/                 # Redux store (auto-registers RTK services + domainSlice)
+├── domains/                   # Bounded contexts
+│   ├── auth/                  # Login only (no routes.jsx — hardcoded in core router)
+│   ├── system/                # Organization, branch, area, role, user, permission
+│   ├── qms/                   # Counters, evaluation-contents, services
+│   ├── faq/                   # FAQ pages (EXCEPTION: no features/ layer, pages at domain root)
+│   └── evaluation/            # Topics, targets, actions, contents (4 CRUD features)
+├── shared/                    # Cross-domain UI
+│   ├── components/            # TableShared, ModalShared, SelectShared, DeleteButton, EditButton
+│   ├── constants/             # PATH, localStorage keys, header name constants
+│   ├── utils/                 # buildParams, eventBus, formatTime, translateHelper
+│   └── pages/                 # NotFoundPage
+├── assets/                    # Static files
+│   ├── images/
+│   └── locales/               # vi/ and en/ JSON translation namespaces
+└── styles/                    # Additional CSS (table-shared.css)
+```
 
 ## Tech Stack
 
@@ -87,17 +118,25 @@ src/domains/{domain}/
 **⚠️ Import Rule (partially enforced — expand `no-restricted-imports` in `eslint.config.js`):**
 Never import directly into internal paths of a feature (e.g., `@domains/qms/features/counter/services/...`). Only use the public API via the domain's `index.js` and feature's `index.js` barrel exports. The same restriction applies to relative imports across features (`../*/services/*`, `../*/hooks/*`, `../*/store/*`).
 
-**Current ESLint enforcement:** Only `@domains/system/features/*` and `@domains/qms/features/*` explicit path patterns are blocked, plus relative `../*/services/*`, `../*/hooks/*`, `../*/store/*` patterns. New domains need their explicit path patterns added to the `no-restricted-imports` rule in `eslint.config.js`. **Violations fail CI lint.**
+**Current ESLint enforcement:** Only `@domains/system/features/*` and `@domains/qms/features/*` explicit path patterns are blocked, plus relative `../*/services/*`, `../*/hooks/*`, `../*/store/*` patterns. New domains need their explicit path patterns added to the `no-restricted-imports` rule in `eslint.config.js`. **Violations fail CI lint.** `@domains/faq` and `@domains/evaluation` are NOT explicitly blocked in the ESLint config — add them if intra-feature import violations occur.
 
 **Available Domains:**
 
 - `system` — Organization, branch, area, role, user, permission management (6 features, all with routes/pages)
 - `qms` — Queue management: counters and evaluation-contents (2 features with routes/pages). Dashboard, services, and config pages are not yet implemented (routes exist but navigation links go to unimplemented pages).
-- `qna` — Q&A management (no routes or features implemented yet — only navigation structure exists)
+- `faq` — FAQ/CMS pages. **Exception:** does not follow the standard `features/{feature}/` structure — pages live at `domains/faq/pages/FaqPage.jsx` directly. Added to replace removed `qna` and `lookup` domains.
 - `evaluation` — Evaluation and reviews. Has 4 features (all with routes/pages): `topics`, `targets`, `actions`, `contents`. Some evaluation features use cascading filter selects (branch → topic → action).
-- `lookup` — Search and lookup (no routes or features implemented yet — only navigation structure exists)
+
+**Evaluation data model:**
+```
+Organization
+ └── EvaluationTopic (chủ đề: "Dịch vụ", "Nhân viên")
+      ├── EvaluationTarget (đối tượng: "Anh Nam", "Quầy số 1")
+      └── EvaluationAction (nút hành động: "😍 Rất hài lòng")
+           └── EvaluationContent (nội dung: "Thái độ kém", "Chậm trễ")
+```
+
 - `auth` — Authentication (login feature only; no domain `routes.jsx` — the login route is hardcoded in `src/core/routes/router.jsx`)
-- `kiosk` — Kiosk-specific features (not yet implemented)
 
 ### Core Structure
 
@@ -112,7 +151,7 @@ The `src/core/` directory contains shared infrastructure:
   - RTK Query services auto-register via `allRTKServices` iteration
   - App state slices (e.g., `domainSlice`) are manually registered alongside — use this pattern for state that must survive HMR
 - **`routes/`** — Centralized routing config with guards (`ProtectedRoute`, `RequireOrgGuard`, `ErrorBoundary`, `RouteTitleSync`)
-- **`navigation/`** — Navigation aggregation from all domains (`DOMAIN_MODULES` array)
+- **`navigation/`** — Navigation aggregation from all domains (`DOMAIN_MODULES` array). Currently imports from `system`, `qms`, `faq`, and `evaluation`.
 - **`providers/`** — Context providers (`AuthProvider`, `SidebarProvider`, `TranslateProvider`). A barrel export (`index.js`) re-exports all providers: `useAuth`, `AuthProvider`, `useSidebar`, `SidebarProvider`, `useTranslate`, `TranslateProvider`.
 - **`layouts/`** — Layout components (`MainLayout` → renders `Sidebar` + `Header` + `<Outlet />`)
 - **`hooks/`** — Shared hooks (`useModal`, `usePermission`, `useSelect`, `useTable`)
@@ -140,7 +179,7 @@ The Redux store combines two patterns:
 
 **`setupListeners`** — The store configuration calls `setupListeners(store.dispatch)` to enable RTK Query's automatic cache refetch on window focus / network reconnect. This is configured in `src/core/store/index.js`.
 
-**⚠️ `domainSlice` vs AuthProvider:** A `domainSlice` Redux slice exists (reducer name: `domain`, action: `setDomainActive`) with initial state `["qms", "lookup", "qna", "evaluation"]`, but `AuthProvider.jsx` uses its own **hardcoded** `domainActive` array instead of dispatching to the slice. If dynamic sidebar visibility from an API response is needed, update `AuthProvider` to dispatch `setDomainActive()` and read domain state from Redux instead.
+**⚠️ `domainSlice` vs AuthProvider:** A `domainSlice` Redux slice exists (reducer name: `domain`, action: `setDomainActive`) with initial state `["qms", "evaluation", "faq"]` in `src/core/store/domainSlice.js`. `AuthProvider.jsx` has its own independently maintained `domainActive` array (same values). If dynamic sidebar visibility from an API response is needed, update `AuthProvider` to dispatch `setDomainActive()` and read domain state from Redux instead.
 
 #### Adding a new RTK Query Service (5-step checklist)
 
@@ -276,15 +315,17 @@ The Axios instance (`src/core/services/axios.js`) handles:
 - Token refresh uses a standalone `axios.post()` call (not the instance) to avoid circular interceptor loops.
 - Axios timeout is 15 seconds.
 
-### Custom Base Query for RTK Query
+### Single RTK Query Base Query
 
-`axiosBaseQuery()` (`src/core/services/axiosBaseQuery.js`) wraps Axios for use with RTK Query. It automatically:
+**`axiosBaseQuery()`** (`src/core/services/axiosBaseQuery.js`) — Default base query for all admin/protected API calls. Wraps the shared Axios instance (with interceptors). It automatically:
 
 - Attaches `x-organization-id` header (lowercase) from `localStorage(ORG_ID)` (unless `skipOrgId` param is set on the query params). **Note:** The constant in `systemConstants.js` is `HEADER_ORG_ID = "X-Organization-Id"` (uppercase X), but the base query sends it as lowercase `x-organization-id`. When configuring API gateways or CORS, use the lowercase form.
 - Attaches `x-device-id` header from `localStorage(DEVICE_ID)` (sent as `"Bearer " + deviceId` in the header)
 - Wraps responses in `{ data }` or `{ error }` format expected by RTK Query
 
 **`skipOrgId` param:** Pass `params: { skipOrgId: true }` in a query to skip the org-id header (used for auth endpoints, public lookups, or cross-org requests). The param is consumed by the base query and not forwarded to the API.
+
+*Only `axiosBaseQuery()` is currently in use.* There is no second base query on this branch. If a kiosk/public base query is needed in the future (for evaluation feedback pages that bypass auth), create a separate Axios instance and base query wrapper that sends `x-device-id` without Bearer prefix and omits JWT/org headers.
 
 ### Route Path Constants
 
@@ -301,13 +342,12 @@ PATH.SYSTEM.USER_MANAGEMENT  → "users"
 PATH.QMS.BASE                → "qms"
 PATH.QMS.COUNTERS            → "counters"
 PATH.QMS.EVALUATION_CONTENTS → "evaluation-contents"
+PATH.FAQ.BASE                → "faq"
 PATH.EVALUATION.BASE         → "evaluation"
 PATH.EVALUATION.TOPICS       → "topics"
 PATH.EVALUATION.TARGETS      → "targets"
 PATH.EVALUATION.ACTIONS      → "actions"
 PATH.EVALUATION.CONTENTS     → "contents"
-PATH.LOOKUP.BASE             → "lookup"
-PATH.QNA.BASE                → "qna"
 ```
 
 Routes and navigation both reference these constants — never hardcode path strings in components. Navigation paths are constructed as `/${PATH.QMS.BASE}/${PATH.QMS.COUNTERS}`.
@@ -339,34 +379,14 @@ Routes are defined per domain in `routes.jsx` as plain arrays of route objects. 
 **`requireOrg` usage across domains:**
 - System: org and role management pages have `requireOrg: false`; branch, area have `requireOrg: true`; user is `false`.
 - QMS: all routes `requireOrg: true`.
-- Evaluation: all routes `requireOrg: true`.
+- Evaluation: admin routes (topics, targets, actions, contents) all `requireOrg: true`.
+- FAQ: `requireOrg: true`.
 
-All domain routes share a common guard stack defined via the **`RouteGuard`** component in `router.jsx`:
+### Single Routing Model (All Protected)
 
-```jsx
-function RouteGuard({ route }) {
-  return (
-    <ErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProtectedRoute>
-          <RequireOrgGuard required={route.requireOrg}>{route.element}</RequireOrgGuard>
-        </ProtectedRoute>
-      </Suspense>
-    </ErrorBoundary>
-  );
-}
-```
+All domain routes (system, qms, evaluation, faq) are mounted inside `MainLayout` and use the same `RouteGuard` stack. There is no distinction between public and protected routes — all routes require authentication via `ProtectedRoute`, and org-sensitive routes use `RequireOrgGuard`.
 
-Each domain route array is then mapped through `RouteGuard`:
-
-```jsx
-...systemRoutes.map((route) => ({
-  ...route,
-  element: <RouteGuard route={route} />,
-})),
-```
-
-The guard stack (from outermost to innermost):
+The guard stack (defined via `RouteGuard` in `router.jsx`, from outermost to innermost):
 
 1. **ErrorBoundary** — Catches rendering errors
 2. **Suspense** — Handles lazy-loaded components (fallback: `<div>Loading...</div>`)
@@ -397,7 +417,7 @@ Navigation is defined as module objects in each domain's `navigation.jsx`:
 }
 ```
 
-Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered by the `Sidebar` component. Visibility is controlled by `AuthProvider`'s hardcoded `domainActive` array (`["qms", "lookup", "evaluation", "qna"]`) — only modules whose `id` is included (or `alwaysVisible: true`) are shown. The `system` module has `alwaysVisible: true`, so it is always displayed. The Redux `domainSlice` has a matching initial state and a `setDomainActive` reducer, but `AuthProvider` does not currently use it. To support dynamic sidebar visibility from an API response, wire `setDomainActive()` dispatching into `AuthProvider`.
+Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered by the `Sidebar` component. Visibility is controlled by `AuthProvider`'s `domainActive` array (currently `["qms", "evaluation", "faq"]`) — only modules whose `id` is included (or `alwaysVisible: true`) are shown. The `system` module has `alwaysVisible: true`, so it is always displayed. The Redux `domainSlice` has a matching initial state and a `setDomainActive` reducer, but `AuthProvider` does not currently use it (they're independently maintained). To support dynamic sidebar visibility from an API response, wire `setDomainActive()` dispatching into `AuthProvider` and read domain state from Redux instead.
 
 **SidebarProvider** manages responsive sidebar state: `isExpanded` (desktop toggle), `isMobileOpen` (mobile overlay), `isHovered` (expand-on-hover for collapsed sidebar), `openSubmenu` (submenu accordion). Uses a `1024px` breakpoint to distinguish mobile vs desktop.
 
@@ -407,7 +427,7 @@ Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered b
 - On mount, reads token from localStorage and fetches current user via `useLazyGetCurrentUserQuery` (only if token exists)
 - **HMR safety:** The `triggerGetCurrentUser` ref is stabilized with `useRef` to prevent the init effect from re-running when HMR replaces the RTK Query service. A `called` flag guard ensures the init function runs only once even under React StrictMode double-invocation.
 - **Error resilience:** If `getCurrentUser` fails (network glitch, HMR timing, server restart), the catch block only logs the error — it does **not** clear the token or user state. Token refresh is handled by the Axios response interceptor, not by AuthProvider.
-- `domainActive` is currently hardcoded as `["qms", "lookup", "evaluation", "qna"]` in `AuthProvider.jsx` (the Redux `domainSlice` has `setDomainActive` but it is not dispatched by `AuthProvider` — update both if dynamic domain activation is needed).
+- `domainActive` is currently `["qms", "evaluation", "faq"]` in `AuthProvider.jsx` (the Redux `domainSlice` has matching initial state at `src/core/store/domainSlice.js` but `setDomainActive` is not currently dispatched by `AuthProvider` — update both if dynamic domain activation from an API response is needed).
 - **saveToken** accepts either a string or an object with `accessToken`/`access_token` and `refreshToken`/`refresh_token` properties
 - **saveSelectedOrg** updates org in localStorage AND iterates over ALL registered RTK services to invalidate cache tags (`Area`, `Branch`, `Role`, `EvaluationTopic`, `EvaluationTarget`, `EvaluationContent`, `EvaluationAction`) — this ensures all domain data refreshes when the org changes. **If you add a new domain with org-scoped data, add its LIST tag type to the invalidation list in `AuthProvider.jsx`.**
 - **updateUser** merges a partial object into the current user state
@@ -448,7 +468,7 @@ Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered b
 
 - **`useModal`** (`src/core/hooks/useModal.js`) — Manages modal open/close state and carries optional record data. Returns `{ open, data, setData, openModal, closeModal }`. `openModal(record)` sets the editing record; `openModal()` (no args) means create mode.
 - **`useTable`** (`src/core/hooks/useTable.js`) — Manages pagination, filters, sorters, searchTerm; auto-resets on `resetKey` change. Returns `{ pagination, filters, sorters, searchTerm, setSearchTerm, setPagination, setFilters, setSorters, handleTableChange, resetTable, handleSearch }`. `handleTableChange` accepts Ant Design Table's `(pagination, filters, sorters)` signature. `handleSearch` resets pagination to page 1. Typically used with `buildParams()` from `queryHelper.js` to construct API query parameters.
-- **`useSelect`** (`src/core/hooks/useSelect.js`) — Manages infinite-scroll select options (dedup, load-more, reset via `resetKey`). Returns `{ options, setOptions, selectedOption, setSelectedOption, onLoadMore, updateOptions }`. `options` are automatically built from `data.data` items into `{ label, value }` objects using `name`/`fullName`/`description` for labels and `id` for values. `updateOptions(newData, mapFn)` allows custom mapping.
+- **`useSelect`** (`src/core/hooks/useSelect.js`) — Simple hook for building select option lists from paginated API data. Accepts `{ data, setCurrentPage, resetKey }`. Auto-deduplicates options by `id`, maps items to `{ label, value }` using `name`/`fullName`/`description`. Provides `onLoadMore` for infinite scroll pagination and `updateOptions(newData, mapFn)` for custom option mapping. For the more complex async select with search, use the `SelectShared` component instead.
 - **`usePermission`** (`src/core/hooks/usePermission.js`) — Returns `{ hasPermission }` where `hasPermission(name)` checks `user.userPermissions` array. Superadmin bypass is built in.
 
 ### Shared Components
@@ -465,6 +485,19 @@ Modules are aggregated in `src/core/navigation/domainModules.jsx` and rendered b
 - **`eventBus`** (`src/shared/utils/eventBus.js`) — Lightweight event emitter built on [mitt](https://github.com/developit/mitt), used for cross-component communication without Redux/context. Usage: `import { eventBus } from "@shared/utils/eventBus"; eventBus.emit("event-name", payload); eventBus.on("event-name", handler);`
 - **`toVNTime` / `isTodayVN`** (`src/shared/utils/formatTime.js`) — Timezone-aware helpers for Vietnamese time (UTC+7). `toVNTime(utcString)` returns a `vi-VN` locale formatted string. `isTodayVN(utcString)` checks if a UTC timestamp falls on today's date in Vietnam timezone.
 - **`config`** (`src/core/config/index.js`) — `config.baseUrl` provides the API base URL. Used in components (e.g., `ActionPage.jsx` builds image URLs with `${config.baseUrl}/download/evaluation-icons/${icon}`).
+
+### ComingSoon Component (`@shared/components/ComingSoon`)
+
+A placeholder component for unimplemented routes. Used primarily in QMS (dashboard, services, config pages that have routes and navigation links but not yet built). Renders a centered "Tính năng đang được phát triển" (Feature under development) message with a tool icon. Usage: `<ComingSoon featureName="Dashboard" />`.
+
+### `buildParams()` Full Signature
+
+Defined in `src/shared/utils/queryHelper.js`. Converts React Router pagination/filters/sort into API query parameters:
+
+- **Pagination:** `{ current: 1, pageSize: 10 }` → `{ offset: 0, limit: 10 }`
+- **Filters:** Nested objects flattened to dot-notation: `{ branch: { id: 5 } }` → `{ "branch.id": 5 }`
+- **Search:** Pass `{ search: "name", keyword: "foo" }` to search the `name` field for "foo"
+- **Sort:** Pass `{ sort: "name", order: "ASC" }`
 
 ### Common CRUD Page Pattern
 
@@ -673,9 +706,8 @@ Import paths use aliases defined in `vite.config.js` and `jsconfig.json`:
 - `@shared/*` → `src/shared/*`
 - `@domains/system` → `src/domains/system/index.js`
 - `@domains/qms` → `src/domains/qms/index.js`
-- `@domains/qna` → `src/domains/qna/index.js`
+- `@domains/faq` → `src/domains/faq/index.js`
 - `@domains/evaluation` → `src/domains/evaluation/index.js`
-- `@domains/lookup` → `src/domains/lookup/index.js`
 - `@domains/auth` → `src/domains/auth/index.js`
 - `@assets/*` → `src/assets/*`
 - `@core/*` → `src/core/*`
@@ -683,6 +715,10 @@ Import paths use aliases defined in `vite.config.js` and `jsconfig.json`:
 Always use these aliases instead of relative paths for cross-domain imports.
 
 **⚠️ When adding a new domain alias, update BOTH `vite.config.js` (resolve.alias) AND `jsconfig.json` (compilerOptions.paths)** — Vite needs the alias for builds, jsconfig provides IntelliSense in IDEs.
+
+### `src/index.css` — Tailwind v4 Configuration Hub
+
+`src/index.css` is the **sole Tailwind configuration file** (no `tailwind.config.js` — Tailwind v4 uses CSS-based config). It imports Tailwind (`@import "tailwindcss"`), then defines the theme and utilities entirely via `@theme`, `@utility`, and `@layer` directives.
 
 ### Tailwind CSS Theme
 
@@ -764,19 +800,17 @@ To add a completely new domain:
 
 - **React Compiler** is configured via `@vitejs/plugin-react`'s `babel` option (not `@rolldown/plugin-babel`). It is **production-only** (`process.env.NODE_ENV === "production"`) to avoid conflicts with React Refresh (HMR) during development. The `babel-plugin-react-compiler` plugin is used directly.
 - **HMR note:** If you experience sidebar domains disappearing or page stuck on "Loading..." after saving a file, this is typically caused by React Compiler conflicting with React Refresh during HMR. The fix is to ensure the compiler runs only in production (see `vite.config.js`).
-- **All routes require authentication** by default (via ProtectedRoute)
-- **Some routes require org selection** (controlled by `requireOrg` flag on the route definition)
-- **The application uses Vietnamese by default** — translation JSON files are in `src/assets/locales/`
-- **No test framework** is currently configured in the project
-- **Code style:** functional components with hooks, Ant Design + Tailwind CSS, camelCase variables/functions, PascalCase components
+- **All routes require authentication** by default (via ProtectedRoute). No public/unauthenticated routes currently exist.
+- **Some admin routes require org selection** (controlled by `requireOrg` flag on the route definition).
+- **The application uses Vietnamese by default** — translation JSON files are in `src/assets/locales/`.
+- **No test framework** is configured in the project.
+- **Code style:** functional components with hooks, Ant Design + Tailwind CSS, camelCase variables/functions, PascalCase components.
 - **ESLint config** is at `eslint.config.js` (flat config format, ESLint v10+), extending `@eslint/js` recommended + `react-hooks` + `react-refresh`. When adding a new domain's import restrictions, add patterns to the `no-restricted-imports` rule in this file.
-- **Ant Design's `App` component** wraps the app in `main.jsx` — use `App.useApp()` for `message`, `notification`, `modal` static methods instead of importing them directly
-- **`ModalShared` uses `forceRender`** — do not remove it, as it ensures child Form instances are mounted even when the modal is closed, preventing "useForm not connected" warnings
-- **Axios timeout** is 15 seconds (configured in `src/core/services/axios.js`)
-- **When adding filters to a page:** Use `setFilters` from `useTable()` to update filter state, then pass `filters` to your RTK Query — `buildParams()` will convert nested filter objects to dot-notation automatically
+- **Ant Design's `App` component** wraps the app in `main.jsx` — use `App.useApp()` for `message`, `notification`, `modal` static methods instead of importing them directly.
+- **`ModalShared` uses `forceRender`** — do not remove it, as it ensures child Form instances are mounted even when the modal is closed, preventing "useForm not connected" warnings.
+- **Axios timeout** is 15 seconds (configured in `src/core/services/axios.js`).
+- **ComingSoon component** is the standard placeholder for unimplemented routes (used by QMS dashboard, services, config). It accepts a `featureName` prop for the title.
 - **Cross-feature data fetching:** Use RTK Query hooks from other features via the domain public API (e.g., `useGetTopicsQuery` in TargetPage imports from `@domains/evaluation`). This is allowed because it goes through the public barrel export.
-- **Agent skills** (composition-patterns, react-best-practices, react-view-transitions, design-guidelines) are available when installed under `.agents/skills/` and pinned via `skills-lock.json`. See the "Configurable Agent Skills" section above.
-- **`src/styles/table-shared.css`** contains custom styling for the `TableShared` component. Modify there for table appearance.
-- **RULES.md checklist:** before creating a new file, ask: (1) which BC does it belong to? (2) which feature? (3) internal or public? (4) does it duplicate existing logic?
+- **`src/styles/table-shared.css`** contains custom styling for the `TableShared` component.
 - **Icon usage convention:** Sidebar navigation uses icons from `react-icons` (e.g., `MdOutlineTopic`, `MdOutlineDashboard`, `PiBuilding`). Page-level action buttons use icons from `@ant-design/icons` (e.g., `PlusOutlined`, `DeleteOutlined`, `EditOutlined`).
 - **`config` import for dynamic API URLs:** In components that need to reference API download URLs (e.g., icons), import `import { config } from "@core/config"` and use `config.baseUrl`.

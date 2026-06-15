@@ -30,8 +30,15 @@ export default function ActionPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
-    useTable();
+  const {
+    pagination,
+    searchTerm,
+    filters,
+    handleSearch,
+    handleTableChange,
+    setFilters,
+    resetTable,
+  } = useTable();
 
   const branchId = filters?.["topic.branchId"];
 
@@ -44,6 +51,7 @@ export default function ActionPage() {
     data: actions,
     isLoading,
     isFetching,
+    refetch: refetchActions,
   } = useGetActionsQuery({
     pagination,
     search: searchTerm ? "label" : null,
@@ -72,7 +80,11 @@ export default function ActionPage() {
           }).unwrap();
         } else if (iconRemoved) {
           // User explicitly removed the icon — clear it on server
-          await updateAction({ id: dataEditing.id, ...data, icon: "" }).unwrap();
+          await updateAction({
+            id: dataEditing.id,
+            ...data,
+            icon: "",
+          }).unwrap();
         } else {
           await updateAction({ id: dataEditing.id, ...data }).unwrap();
         }
@@ -89,7 +101,9 @@ export default function ActionPage() {
     } catch (error) {
       console.error(error);
       messageApi.error(
-        isEdit ? translateEval?.message?.updateFailed : translateEval?.message?.createFailed,
+        isEdit
+          ? translateEval?.message?.updateFailed
+          : translateEval?.message?.createFailed,
       );
     }
   };
@@ -115,7 +129,11 @@ export default function ActionPage() {
       dataIndex: "topicId",
       key: "topic",
       render: (topicId, record) => {
-        return record?.topic?.name ? <Tag color="blue">{record.topic.name}</Tag> : "-";
+        return record?.topic?.name ? (
+          <Tag color="blue">{record.topic.name}</Tag>
+        ) : (
+          "-"
+        );
       },
     },
     {
@@ -172,7 +190,7 @@ export default function ActionPage() {
   ];
 
   return (
-    <>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ActionFormModal
           open={open}
@@ -192,8 +210,10 @@ export default function ActionPage() {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: actions?.meta?.totalItems || 0,
-          onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
+          onChange: (page, pageSize) =>
+            handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchActions?.(); }}
         search={{
           useSearch: true,
           hint: translateEval?.search?.placeholder,
@@ -243,11 +263,15 @@ export default function ActionPage() {
           </Space>
         }
         topLeftComponent={
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => openModal()}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => openModal()}
+          >
             {commonText?.button?.create}
           </Button>
         }
       />
-    </>
+    </div>
   );
 }

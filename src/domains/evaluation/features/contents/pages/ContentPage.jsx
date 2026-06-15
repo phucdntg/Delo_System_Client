@@ -27,7 +27,7 @@ export default function ContentPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters, resetTable } =
     useTable();
 
   const branchId = filters?.["topic.branchId"];
@@ -47,6 +47,7 @@ export default function ContentPage() {
     data: contents,
     isLoading,
     isFetching,
+    refetch: refetchContents,
   } = useGetContentsQuery({
     pagination,
     search: searchTerm ? "content" : null,
@@ -150,7 +151,7 @@ export default function ContentPage() {
   ];
 
   return (
-    <>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ContentFormModal
           open={open}
@@ -172,6 +173,7 @@ export default function ContentPage() {
           total: contents?.meta?.totalItems || 0,
           onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchContents?.(); }}
         search={{
           useSearch: true,
           hint: translateEval?.search?.placeholder,
@@ -248,6 +250,6 @@ export default function ContentPage() {
           </Button>
         }
       />
-    </>
+    </div>
   );
 }

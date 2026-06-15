@@ -26,7 +26,7 @@ export default function RoleManagement() {
 
   const [form] = useForm();
   const { open, data: dataEditing, openModal, closeModal } = useModal();
-  const { pagination, handleTableChange, searchTerm, handleSearch } = useTable({
+  const { pagination, handleTableChange, searchTerm, handleSearch, resetTable } = useTable({
     resetKey: selectedOrg,
   });
 
@@ -34,6 +34,7 @@ export default function RoleManagement() {
     data: roles,
     isLoading,
     isFetching,
+    refetch: refetchRoles,
   } = useFetchRolesQuery({
     search: searchTerm?.length ? "name" : null,
     keyword: searchTerm,
@@ -71,9 +72,9 @@ export default function RoleManagement() {
     },
     {
       key: "actions",
-      title: roleText?.table?.actions || commonText?.table?.actions,
+      title: commonText?.table?.actions,
       width: 140,
-      fixed: "right",
+      align: "center",
       render: (_, record) => (
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <EditButton onEdit={() => openModal(record)} />
@@ -122,7 +123,7 @@ export default function RoleManagement() {
   };
 
   return (
-    <div>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ModalShared
           title={roleText?.modal?.titleBasicInfo}
@@ -146,6 +147,7 @@ export default function RoleManagement() {
           total: roles?.meta?.totalItems || 0,
           onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchRoles?.(); }}
         search={{
           useSearch: true,
           hint: roleText?.search?.placeholder,

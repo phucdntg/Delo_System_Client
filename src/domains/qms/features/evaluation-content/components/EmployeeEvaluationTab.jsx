@@ -43,6 +43,8 @@ export default function EmployeeEvaluationTab() {
     handleDelete,
     isCreating,
     isUpdating,
+    resetFilters,
+    refetch,
   } = useEmployeeEvaluationContentManager();
 
   // Fetch areas for display map
@@ -232,7 +234,7 @@ export default function EmployeeEvaluationTab() {
   );
 
   return (
-    <div>
+    <div className="h-full">
       <TableShared
         dataSource={dataSource}
         columns={columns}
@@ -249,6 +251,7 @@ export default function EmployeeEvaluationTab() {
           hint: "Tìm kiếm theo nội dung đánh giá",
           handleSearch: handleSearch,
         }}
+        onReload={() => { resetFilters?.(); refetch?.(); }}
         topRightComponent={
           <Space>
             <SelectShared

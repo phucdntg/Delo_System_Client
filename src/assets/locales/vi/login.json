@@ -5,5 +5,26 @@
   "loginBtn": "Đăng nhập",
   "loading": "Đang đăng nhập...",
   "error": "Đăng nhập thất bại",
-  "missingToken": "Đăng nhập thất bại: thiếu token"
+  "missingToken": "Đăng nhập thất bại: thiếu token",
+  "brand": {
+    "innovationHub": "Trung tâm vận hành",
+    "buildingDigitalTrust": "Kiến tạo niềm tin số",
+    "welcome": "Chào mừng đến với Delo System. Một môi trường bảo mật được thiết kế cho quản lý hệ thống, phân tích dữ liệu chính xác và giám sát kỹ thuật.",
+    "uptimeSla": "Cam kết uptime",
+    "support": "Hỗ trợ"
+  },
+  "card": {
+    "systemLogin": "Đăng nhập hệ thống",
+    "enterCredentials": "Nhập thông tin đăng nhập để tiếp tục."
+  },
+  "validation": {
+    "usernameRequired": "Vui lòng nhập tên đăng nhập",
+    "usernameMinLength": "Tên đăng nhập tối thiểu 3 ký tự",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "passwordMinLength": "Mật khẩu tối thiểu 6 ký tự"
+  },
+  "bottomNote": {
+    "needAccess": "Yêu cầu truy cập mới? Vui lòng liên hệ ",
+    "systemAdmin": "Quản trị hệ thống"
+  }
 }

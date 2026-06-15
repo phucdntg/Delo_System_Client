@@ -1,8 +1,13 @@
 .table-shared {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
 .table-shared__toolbar {
+  flex-shrink: 0;
   margin-bottom: 8px;
   width: 100%;
   display: flex;
@@ -15,8 +20,8 @@
 .table-shared__actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: flex-start;
+  gap: 8px;
   flex: 1;
   flex-wrap: wrap;
   min-width: 260px;
@@ -26,9 +31,159 @@
   flex: 0 1 auto;
 }
 
+.table-shared__left-action {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.table-shared__left-action > * + * {
+  margin-left: 8px;
+}
+
 .table-shared__search {
   width: min(320px, 100%);
   min-width: 180px;
+}
+
+/* Body — fills remaining space, constrains table height */
+.table-shared__body {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.table-shared__body .ant-table-wrapper {
+  height: 100%;
+}
+
+.table-shared__body .ant-table-wrapper .ant-table {
+  height: 100%;
+}
+
+.table-shared__body .ant-table-wrapper .ant-table-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.table-shared__body .ant-table-wrapper .ant-table-container .ant-table-header {
+  flex-shrink: 0;
+}
+
+/* Ẩn cột giả scrollbar placeholder của Ant Design — tránh header dư cột */
+.table-shared__body .ant-table-header .ant-table-cell-scrollbar {
+  display: none;
+}
+
+.table-shared__body .ant-table-thead > tr > th {
+  background: #f5f6fa !important;
+  color: #333 !important;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Action buttons trong table: icon to hơn, hover nền tròn */
+.table-shared__body .ant-table-tbody .ant-btn.ant-btn-text {
+  font-size: 18px;
+  border-radius: 100% !important;
+}
+
+.table-shared__body .ant-table-tbody .ant-btn.ant-btn-text:hover {
+  border-radius: 100% !important;
+}
+
+.table-shared__body .ant-table-tbody .ant-table-cell .ant-space {
+  gap: 4px !important;
+}
+
+.table-shared__body
+  .ant-table-thead
+  > tr
+  > th
+  .ant-table-column-sorter
+  .anticon {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.table-shared__body
+  .ant-table-thead
+  > tr
+  > th
+  .ant-table-column-sorter
+  .active
+  .anticon {
+  color: #1677ff;
+}
+
+.table-shared__body .ant-table-wrapper .ant-table-container .ant-table-body {
+  flex: 1;
+  overflow-y: auto !important;
+  min-height: 0;
+}
+
+/* Pagination — pinned to bottom */
+.table-shared__pagination {
+  flex-shrink: 0;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-shared__pagination-left {
+  display: flex;
+  align-items: center;
+}
+
+.table-shared__pagination-total {
+  font-size: 14px;
+  color: #000000;
+}
+
+.table-shared__pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-shared__page-size-select {
+  width: 120px;
+}
+
+/* User Management tabs — fill remaining space */
+.user-tabs,
+.user-tabs .ant-tabs-content-holder,
+.user-tabs .ant-tabs-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.user-tabs .ant-tabs-tabpane {
+  flex: 1;
+  min-height: 0;
+}
+
+.user-tabs .ant-tabs-tabpane[hidden],
+.evaluation-content-tabs .ant-tabs-tabpane[hidden] {
+  display: none;
+}
+
+.evaluation-content-tabs,
+.evaluation-content-tabs .ant-tabs-content-holder,
+.evaluation-content-tabs .ant-tabs-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.evaluation-content-tabs .ant-tabs-tabpane {
+  flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 768px) {

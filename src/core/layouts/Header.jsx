@@ -1,16 +1,15 @@
 import { useAuth } from "@core/providers/auth";
-import { Dropdown, Select } from "antd";
-import { useMemo } from "react";
-import { FaUserCircle } from "react-icons/fa";
-import { IoIosLogOut } from "react-icons/io";
 import {
   useFetchOrgQuery,
   useFetchOrganizationByIdQuery,
 } from "@domains/system";
+import { Dropdown, Select } from "antd";
+import { memo, useMemo } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { IoIosLogOut } from "react-icons/io";
 import SelectShared from "../../shared/components/SelectShared";
 import { useSidebar } from "../providers/sidebar";
 import { useTranslate } from "../providers/translate";
-import { memo } from "react";
 
 const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -42,11 +41,11 @@ const Header = () => {
       id="app-header"
       className="sticky top-0 flex w-full bg-white border-gray-200 z-100 lg:h-auto lg:border-b"
     >
-      <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6 w-full">
+      <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-4 w-full">
         <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 sm:gap-4 lg:border-b-0 lg:px-0 lg:py-4">
           <button
             onClick={handleToggle}
-            className="items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded-lg z-99999 lg:flex lg:h-11 lg:w-11 lg:border cursor-pointer"
+            className="items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded z-99999 lg:flex lg:border cursor-pointer"
             aria-label="Toggle Sidebar"
             data-sidebar-toggle
           >

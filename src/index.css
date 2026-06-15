@@ -9,6 +9,9 @@
 @theme {
   --font-*: initial;
   --font-outfit: Be Vietnam Pro, sans-serif;
+  --font-hanken: "Hanken Grotesk", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;

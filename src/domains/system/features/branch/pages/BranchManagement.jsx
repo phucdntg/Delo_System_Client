@@ -25,11 +25,11 @@ export default function BranchManagement() {
 
   const [form] = useForm();
   const { open, data: dataEditing, openModal, closeModal } = useModal();
-  const { pagination, handleTableChange, searchTerm, handleSearch } = useTable({
+  const { pagination, handleTableChange, searchTerm, handleSearch, resetTable } = useTable({
     resetKey: selectedOrg,
   });
 
-  const { data, isLoading, isFetching } = useFetchBranchesQuery({
+  const { data, isLoading, isFetching, refetch: refetchBranches } = useFetchBranchesQuery({
     search: searchTerm.length > 0 ? "name,address" : null,
     keyword: searchTerm,
     pagination: pagination,
@@ -76,8 +76,8 @@ export default function BranchManagement() {
     {
       key: "actions",
       title: translate("common")?.table?.actions,
-      fixed: "right",
       width: 150,
+      align: "center",
       render: (_, record) => (
         <Space style={{ display: "flex", justifyContent: "center" }}>
           <EditButton onEdit={() => openModal(record)} />
@@ -112,7 +112,7 @@ export default function BranchManagement() {
   };
 
   return (
-    <div>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <ModalShared
           title={
@@ -134,6 +134,7 @@ export default function BranchManagement() {
         isFetching={isFetching}
         dataSource={data?.data || []}
         columns={columns}
+        onReload={() => { resetTable?.(); refetchBranches?.(); }}
         search={{
           useSearch: true,
           hint: translateBranchPage?.search?.placeholder,

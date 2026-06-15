@@ -28,13 +28,14 @@ export default function TopicPage() {
   const commonText = translate("common") || {};
 
   const { open, openModal, closeModal, data: dataEditing } = useModal();
-  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters } =
+  const { pagination, searchTerm, filters, handleSearch, handleTableChange, setFilters, resetTable } =
     useTable();
 
   const {
     data: topics,
     isLoading,
     isFetching,
+    refetch: refetchTopics,
   } = useGetTopicsQuery({
     pagination,
     search: "name",
@@ -103,7 +104,12 @@ export default function TopicPage() {
       title: translateEval?.table?.status,
       dataIndex: "isActive",
       key: "isActive",
-      render: (value) => (value ? translateEval?.table?.active : translateEval?.table?.inactive),
+      render: (value) =>
+        value ? (
+          <Tag color="green">{commonText?.status?.active || "Active"}</Tag>
+        ) : (
+          <Tag color="red">{commonText?.status?.inactive || "Inactive"}</Tag>
+        ),
     },
     {
       title: translateEval?.table?.actions,
@@ -119,7 +125,7 @@ export default function TopicPage() {
   ];
 
   return (
-    <>
+    <div className="h-full p-5 bg-white rounded">
       {open && (
         <TopicFormModal
           open={open}
@@ -143,6 +149,7 @@ export default function TopicPage() {
           total: topics?.meta?.totalItems || 0,
           onChange: (page, pageSize) => handleTableChange({ current: page, pageSize }),
         }}
+        onReload={() => { resetTable?.(); refetchTopics?.(); }}
         search={{
           useSearch: true,
           hint: translateEval?.search?.placeholder,
@@ -173,6 +180,6 @@ export default function TopicPage() {
           </Button>
         }
       />
-    </>
+    </div>
   );
 }

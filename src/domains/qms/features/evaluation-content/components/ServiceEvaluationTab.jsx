@@ -45,6 +45,8 @@ export default function ServiceEvaluationTab() {
     handleDelete,
     isCreating,
     isUpdating,
+    resetFilters,
+    refetch,
   } = useServiceEvaluationContentManager();
 
   // Fetch services for display
@@ -256,7 +258,7 @@ export default function ServiceEvaluationTab() {
   );
 
   return (
-    <div>
+    <div className="h-full">
       <TableShared
         dataSource={dataSource}
         columns={columns}
@@ -273,6 +275,7 @@ export default function ServiceEvaluationTab() {
           hint: "Tìm kiếm theo nội dung đánh giá",
           handleSearch: handleSearch,
         }}
+        onReload={() => { resetFilters?.(); refetch?.(); }}
         topRightComponent={
           <Space>
             <SelectShared

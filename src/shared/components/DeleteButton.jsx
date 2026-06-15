@@ -1,6 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, Popconfirm } from "antd";
 import { useTranslate } from "@core/providers/translate";
+import { Button, Popconfirm } from "antd";
 import { memo } from "react";
 
 const DeleteButton = memo(({ onDelete }) => {
@@ -13,7 +13,7 @@ const DeleteButton = memo(({ onDelete }) => {
       cancelText={translate("common.button.cancel")}
       onConfirm={onDelete}
     >
-      <Button shape="circle" danger icon={<DeleteOutlined />} />
+      <Button type="text" danger icon={<DeleteOutlined />} />
     </Popconfirm>
   );
 });
