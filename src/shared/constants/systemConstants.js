@@ -6,6 +6,7 @@ export const REFRESH_TOKEN = "refresh_token";
 export const USER_INFO = "user_info";
 
 export const ORG_ID = "org_id";
+export const BRANCH_ID = "branch_id";
 
 export const DEVICE_ID = "device_id";
 
@@ -36,6 +37,8 @@ export const PATH = {
   },
   FAQ: {
     BASE: "faq",
+    CREATE: "create",
+    DETAIL: ":id",
   },
   EVALUATION: {
     BASE: "evaluation",

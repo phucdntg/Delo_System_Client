@@ -3,17 +3,18 @@ import {
   useFetchOrgQuery,
   useFetchOrganizationByIdQuery,
 } from "@domains/system";
-import { Dropdown, Select } from "antd";
+import LocaleSwitcher from "@shared/components/LocaleSwitcher";
+import SelectShared from "@shared/components/SelectShared";
+import { Dropdown } from "antd";
 import { memo, useMemo } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
-import SelectShared from "../../shared/components/SelectShared";
 import { useSidebar } from "../providers/sidebar";
 import { useTranslate } from "../providers/translate";
 
 const Header = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-  const { language: currentLang, translate, changeLanguage } = useTranslate();
+  const { translate } = useTranslate();
   const menuText = translate("menu");
 
   const { user, selectedOrg, saveSelectedOrg, logout } = useAuth();
@@ -103,15 +104,7 @@ const Header = () => {
               />
             )}
 
-            <Select
-              style={{ width: 70 }}
-              value={currentLang}
-              onChange={(val) => changeLanguage(val)}
-              options={[
-                { label: "VI", value: "vi" },
-                { label: "EN", value: "en" },
-              ]}
-            />
+            <LocaleSwitcher />
 
             <Dropdown
               menu={{

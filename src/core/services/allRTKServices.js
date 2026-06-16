@@ -22,6 +22,8 @@ import {
   topicService,
 } from "@domains/evaluation";
 
+import { questionFlowService } from "@domains/faq";
+
 export const allRTKServices = {
   authService,
   branchService,
@@ -40,4 +42,6 @@ export const allRTKServices = {
   targetService,
   actionService,
   contentService,
+
+  questionFlowService,
 };

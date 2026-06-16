@@ -1,6 +1,3 @@
-export { faqNavigation } from "./navigation";
-export * from "./routes";
-
 export {
   questionFlowService,
   useGetQuestionFlowsQuery,
@@ -9,4 +6,4 @@ export {
   useCreateQuestionFlowMutation,
   useUpdateQuestionFlowMutation,
   useDeleteQuestionFlowMutation,
-} from "./features/question-flows";
+} from "./services/questionFlowService";

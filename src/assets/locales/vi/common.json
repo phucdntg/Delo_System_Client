@@ -11,7 +11,10 @@
     "ok": "Đồng ý"
   },
   "confirm": {
-    "delete": "Bạn có chắc chắn muốn xóa?"
+    "delete": {
+      "title": "Xác nhận xóa",
+      "description": "Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác."
+    }
   },
   "message": {
     "deleteSuccess": "Xóa thành công",

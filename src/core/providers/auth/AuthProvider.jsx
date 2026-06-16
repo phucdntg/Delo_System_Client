@@ -3,6 +3,7 @@ import { store } from "@core/store";
 import { useLazyGetCurrentUserQuery } from "@domains/auth";
 import {
   ACCESS_TOKEN,
+  BRANCH_ID,
   ORG_ID,
   REFRESH_TOKEN,
 } from "@shared/constants/systemConstants";
@@ -88,8 +89,18 @@ export function AuthProvider({ children }) {
   const saveUser = useCallback((u) => {
     if (u) {
       setUser(u);
+
+      if (u.organizationId != null) {
+        localStorage.setItem(ORG_ID, String(u.organizationId));
+        setSelectedOrg(u.organizationId);
+      }
+      if (u.branchId != null) {
+        localStorage.setItem(BRANCH_ID, String(u.branchId));
+      }
     } else {
       setUser(null);
+      localStorage.removeItem(ORG_ID);
+      localStorage.removeItem(BRANCH_ID);
     }
   }, []);
 
@@ -138,19 +149,33 @@ export function AuthProvider({ children }) {
     }
   }, [user, selectedOrg, saveSelectedOrg]);
 
-  const value = useMemo(() => ({
-    token,
-    user,
-    loading,
-    isAuthenticated: !!token,
-    selectedOrg,
-    domainActive,
-    saveSelectedOrg,
-    logout,
-    setToken: saveToken,
-    setUser: saveUser,
-    updateUser,
-  }), [token, user, loading, selectedOrg, domainActive, saveSelectedOrg, logout, saveToken, saveUser, updateUser]);
+  const value = useMemo(
+    () => ({
+      token,
+      user,
+      loading,
+      isAuthenticated: !!token,
+      selectedOrg,
+      domainActive,
+      saveSelectedOrg,
+      logout,
+      setToken: saveToken,
+      setUser: saveUser,
+      updateUser,
+    }),
+    [
+      token,
+      user,
+      loading,
+      selectedOrg,
+      domainActive,
+      saveSelectedOrg,
+      logout,
+      saveToken,
+      saveUser,
+      updateUser,
+    ],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

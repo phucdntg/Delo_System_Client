@@ -1,5 +1,5 @@
 import { PATH } from "@shared/constants/systemConstants";
-import { MdOutlineHelpOutline } from "react-icons/md";
+import { MdOutlineAccountTree } from "react-icons/md";
 
 export const faqNavigation = {
   id: "faq",
@@ -10,9 +10,9 @@ export const faqNavigation = {
   dotColor: "bg-purple-500",
   items: [
     {
-      label: "Danh sách FAQ",
+      label: "Quản lý câu hỏi thường gặp",
       path: `/${PATH.FAQ.BASE}`,
-      icon: <MdOutlineHelpOutline />,
+      icon: <MdOutlineAccountTree />,
     },
   ],
 };

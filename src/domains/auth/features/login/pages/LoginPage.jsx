@@ -7,8 +7,9 @@ import {
 import BrandImage from "@assets/images/brand-image.jpg";
 import { useAuth } from "@core/providers/auth";
 import { useTranslate } from "@core/providers/translate";
+import LocaleSwitcher from "@shared/components/LocaleSwitcher";
 import { PATH } from "@shared/constants/systemConstants";
-import { App, Button, Form, Input, Select } from "antd";
+import { App, Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import {
   useLazyGetCurrentUserQuery,
@@ -19,7 +20,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();
   const { message } = App.useApp();
-  const { translate, language, changeLanguage } = useTranslate();
+  const { translate } = useTranslate();
   const t = (key) => translate(`login.${key}`);
   const [form] = Form.useForm();
   const [login, { isLoading }] = useLoginMutation();
@@ -47,15 +48,7 @@ export default function LoginPage() {
           DELO SYSTEM
         </div>
         <div className="flex items-center gap-2">
-          <Select
-            style={{ width: 70 }}
-            value={language}
-            onChange={(val) => changeLanguage(val)}
-            options={[
-              { label: "VI", value: "vi" },
-              { label: "EN", value: "en" },
-            ]}
-          />
+          <LocaleSwitcher />
         </div>
       </header>
 
